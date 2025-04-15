@@ -11,3 +11,7 @@ Miembros del Equipo:
     -Alias Slack: Tomás Soler
     -Página de GitHub: https://github.com/colosoler
     
+    -Nombre: Franco Arce
+    -Legajo: 33307
+    -Alias Slack: Franco Arce
+    -Página de Github: https://github.com/FrancoArcee
