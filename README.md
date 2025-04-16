@@ -15,3 +15,8 @@ Miembros del Equipo:
     -Legajo: 33307
     -Alias Slack: Franco Arce
     -Página de Github: https://github.com/FrancoArcee
+
+    -Nombre: Gil Ramiro
+    -Legajo: 33495
+    -Alias Slack: Ramiro Gil
+    -Página de Github: https://github.com/ramirogil4
