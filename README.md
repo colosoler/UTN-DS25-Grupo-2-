@@ -6,6 +6,7 @@ UTNotas busca que los alumnos de la UTN FRLP tengan un lugar donde buscar materi
 
 Miembros del Equipo:
 
+
     -Nombre: Tomás Soler
     -Legajo: 33378
     -Alias Slack: Tomás Soler
