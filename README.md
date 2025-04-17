@@ -26,3 +26,9 @@ Miembros del Equipo:
     -Legajo: 33376
     -Alias Slack: DanteBarbe
     -Página de Github: https://github.com/DanteBarbe
+
+    -Nombre: Andrada Santiago
+    -Legajo: 33363
+    -Alias Slack: Santiago Andrada
+    -Página de Github: https://github.com/andradasantiago1
+
