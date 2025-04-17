@@ -10,6 +10,14 @@ Equipo:
 Fecha: 10/04/2025
 Versión: v1.0
 
+2. Resumen Ejecutivo
+Plataforma para compartir contenido de las materias de la UTN FRLP. Acceso fácil a material de estudio de todas las carreras. Intercambio de apuntes entre estudiantes. Valoración entre los mismos usuarios.
+
+3. Oportunidad de Negocio
+Problema que existe actualmente: acceso descentralizado al material de estudio de las distintas materias.
+Impacto del problema: alumnos de la UTN-FRLP.
+Soluciones actuales y sus limitaciones: carpetas de Drive creadas por los propios estudiantes e Información dentro de grupos de Whatsapp. Dificultad de acceso a los mismos, pérdida de contenido, falta de contextualidad de cada apunte.
+
 4. Visión del Producto
 Descripción general: el proyecto trata de una aplicación web para compartir
 material de estudio de cada asignatura de la UTN-FRLP.
