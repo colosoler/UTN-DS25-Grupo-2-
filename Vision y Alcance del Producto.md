@@ -42,3 +42,11 @@ Métricas de éxito: se tendrá en cuenta la variación en la cantidad de usuari
 6.2 Fuera del Alcance 
 -  Guardar material de estudio como favoritos 
 -  Ver la cantidad de personas que visualizan cada material de estudio.
+
+7. Supuestos y Restricciones 
+Supuestos: los estudiantes de la UTN-FRLP tendrán la posibilidad de acceder y 
+compartir material de estudio para las diferentes carreras.  
+Restricciones: la poca experiencia y conocimiento en las tecnologías que se 
+utilizaran serán un limitante en la eficiencia y legibilidad en la creación del código, 
+además del personal reducido y las horas disponibles de cada uno para invertir en 
+el proyecto. 
