@@ -3,6 +3,10 @@
 **UTNotas** busca que los alumnos de la UTN FRLP tengan un lugar donde buscar material de estudio (apuntes, finales, parciales viejos) de manera organizada, separada por carreras y materias. Serán los mismos estudiantes los que aportarán este contenido, donde podrán ser calificados por otros estudiantes, todo esto para promover la retroalimentación.
 
 ---
+- **Comisión:** S33
+- **Año:** 2025
+- **Materia:** Desarrollo de Software   
+---
 
 ## Miembros del Equipo
 
