@@ -32,3 +32,13 @@ Objetivos específicos:
 -  Fomentar la colaboración académica mediante una comunidad basada en el aporte de contenido útil.
 -  Mejorar la calidad del material de estudio a través de valoraciones de los usuarios.
 Métricas de éxito: se tendrá en cuenta la variación en la cantidad de usuarios registrados que participan activamente cada mes.
+
+6. Alcance del Producto 
+6.1 Dentro del Alcance 
+-  Material de estudio: 
+-  Compartir. 
+-  Visualizar. 
+-  Calificar.  
+6.2 Fuera del Alcance 
+-  Guardar material de estudio como favoritos 
+-  Ver la cantidad de personas que visualizan cada material de estudio.
