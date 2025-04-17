@@ -50,3 +50,10 @@ Restricciones: la poca experiencia y conocimiento en las tecnologías que se
 utilizaran serán un limitante en la eficiencia y legibilidad en la creación del código, 
 además del personal reducido y las horas disponibles de cada uno para invertir en 
 el proyecto. 
+
+8. Stakeholders Clave
+Cliente/Patrocinadores: estudiantes de la UTN-FRLP.
+Usuarios finales: El sistema lo utilizarán estudiantes:
+● Usuario casual(visualizar contenido académico)
+● Usuario registrado(calificar, subir y visualizar contenido académico).
+Otros interesados: UTN-FRLP y Profesores.
