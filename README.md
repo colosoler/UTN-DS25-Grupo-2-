@@ -21,3 +21,8 @@ Miembros del Equipo:
     -Legajo: 33495
     -Alias Slack: Ramiro Gil
     -Página de Github: https://github.com/ramirogil4
+
+    -Nombre: Barbé Dante
+    -Legajo: 33376
+    -Alias Slack: DanteBarbe
+    -Página de Github: https://github.com/DanteBarbe
