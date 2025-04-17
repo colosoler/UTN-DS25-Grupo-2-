@@ -32,3 +32,7 @@ Miembros del Equipo:
     -Alias Slack: Santiago Andrada
     -Página de Github: https://github.com/andradasantiago1
 
+    -Nombre: Diez Nicolás
+    -Legajo: 33381
+    -Alias Slack: Nicolás Diez
+    -Página de Github: https://github.com/nicodiezz
