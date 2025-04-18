@@ -50,3 +50,18 @@ Restricciones: la poca experiencia y conocimiento en las tecnologías que se
 utilizaran serán un limitante en la eficiencia y legibilidad en la creación del código, 
 además del personal reducido y las horas disponibles de cada uno para invertir en 
 el proyecto. 
+
+8. Stakeholders Clave
+Cliente/Patrocinadores: estudiantes de la UTN-FRLP.
+Usuarios finales: El sistema lo utilizarán estudiantes:
+● Usuario casual(visualizar contenido académico)
+● Usuario registrado(calificar, subir y visualizar contenido académico).
+Otros interesados: UTN-FRLP y Profesores.
+
+9. Riesgos Iniciales (Tabla).
+| *Riesgo*                                          | *Probabilidad* | *Impacto* | *Estrategia de Mitigación*                                                                                                                                   |
+|:----------------------------------------------------|:----------------:|:-----------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Carga de contenido inapropiado o spam              | Alta             | Medio       | Funcionalidad de Reporte de contenido inapropiado                                                                                                              |
+| Almacenamiento insuficiente para una gran cantidad de archivos | Media            | Alto        | Construir un sistema con gran escalabilidad                                                                                                                    |
+| Preferencia por otras alternativas ya en uso       | Baja             | Alto        | Fomentar el uso por medio del sistema de retroalimentación de los usuarios, simplicidad de uso y promoción de las ventajas de esta plataforma                 |
+| Carga de archivos en formato inadecuado            | Medio            | Bajo        | Restringir carga de archivos a formatos adecuados                                                                                                              |
