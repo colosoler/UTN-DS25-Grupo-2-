@@ -1,0 +1,1 @@
+[**1.2 Diagrama Contextual**](UTN-DS25-Grupo-2-\Documentacion\01 - Análisis Inicial\1.2_diagrama_contextual.png)
