@@ -1,0 +1,1 @@
+[**1.3 Identificacion temprana de riesgos**](UTN-DS25-Grupo-2-\Documentacion\01 - Análisis Inicial\1.3_identificacion_temprana_de_riesgos.png)
