@@ -17,3 +17,6 @@ FASE 2
 
 2.2 [**Definición de Reglas de Negocio**](https://github.com/colosoler/UTN-DS25-Grupo-2-/blob/main/Documentacion/02%20-%20Modelado%20de%20Dominio/2.2_definición_reglas_de_negocio.md)
  
+FASE 3
+
+3.2 [**Matriz Impacto/Esfuerzo**](https://github.com/colosoler/UTN-DS25-Grupo-2-/blob/main/Documentacion/03%20-%20Elaboraci%C3%B3n%20del%20Product%20Backlog/3.2_matriz_impacto_esfuerzo.jpg)
