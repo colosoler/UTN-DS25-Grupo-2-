@@ -20,3 +20,5 @@ FASE 2
 FASE 3
 
 3.2 [**Matriz Impacto/Esfuerzo**](https://github.com/colosoler/UTN-DS25-Grupo-2-/blob/main/Documentacion/03%20-%20Elaboraci%C3%B3n%20del%20Product%20Backlog/3.2_matriz_impacto_esfuerzo.jpg)
+
+3.4 [**Historias de Usuario por Feature**](https://github.com/colosoler/UTN-DS25-Grupo-2-/blob/main/Documentacion/03%20-%20Elaboraci%C3%B3n%20del%20Product%20Backlog/3.4_historias_de_usuario_por_feature.md)
