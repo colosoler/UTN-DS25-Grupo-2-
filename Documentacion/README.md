@@ -34,3 +34,5 @@ FASE 6
 [**Mock up - Resultado de busqueda**](https://github.com/colosoler/UTN-DS25-Grupo-2-/blob/main/Documentacion/06%20-%20UX-UI/mockup_resultado_de_busqueda.jpg)
 
 [**Wireframe - Página Principal**](https://github.com/colosoler/UTN-DS25-Grupo-2-/blob/main/Documentacion/06%20-%20UX-UI/wireframe_pagina_principal.jpeg)
+
+[**Wireframe - Subir Material**](https://github.com/colosoler/UTN-DS25-Grupo-2-/blob/main/Documentacion/06%20-%20UX-UI/wireframe_pantalla_subir_material.png)
