@@ -1,1 +1,70 @@
 @import url("../../index.css");
+
+/* Mobile First Approach */
+.navbar{
+    padding: 1rem;
+    flex-direction: row;
+}
+
+/* Tablet */
+@media (min-width: 768px){
+    .navbar{
+        padding: 2rem;
+        flex-direction: row;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1024px){
+    .navbar{
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--primary-color);
+  padding: 0.8em 1.5em;
+  color: var(--text-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  font-weight: var(--font-weight);
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.logo-img {
+  height: 40px;
+  width: auto;
+}
+
+.navbar-logo span {
+  font-size: 1.3em;
+  color: white; /* o var(--background-color) si preferís contraste suave */
+}
+
+.navbar-icons {
+  display: flex;
+  gap: 1.2em;
+}
+
+.navbar-icons img {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  filter: brightness(0) invert(1); /* blanco sobre fondo azul */
+}
+
+.navbar-icons img:hover {
+  transform: scale(1.1);
+  filter: brightness(0) invert(0.8); /* efecto hover más sutil */
+}
