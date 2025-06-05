@@ -39,8 +39,8 @@ export const Result = ({ result }) => {
   return (
     <>
     <section className='result'>
-      <p>@{result.user}</p>
-      <h5>{result.title}</h5>
+      <h3>@{result.user}</h3>
+      <h4>{result.title}</h4>
       <article>
       <p className='description'>{result.description}</p>
       <div className='buttons'>

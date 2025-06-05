@@ -15,7 +15,12 @@
   color: red;
 }
 
+p, h3, h4{
+  margin: 5px;
+}
+
 .description{
+  height: 20px;
   width: 80vw;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -48,7 +53,7 @@ img {
 .result{
   border: 1px solid var(--secondary-text-color);
   margin: 1em;
-  padding: 1em;
+  padding: .5em;
   border-radius: 1em;
 }
 
