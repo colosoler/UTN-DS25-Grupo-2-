@@ -1,0 +1,65 @@
+.upvote svg,
+.downvote svg,
+.options svg {
+  font-size: 24px;
+  color: gray;
+  transition: color 0.2s ease;
+  cursor: pointer;
+}
+
+.upvote.active svg {
+  color: blue;
+}
+
+.downvote.active svg {
+  color: red;
+}
+
+.description{
+  width: 80vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* número de líneas que querés mostrar */
+  -webkit-box-orient: vertical;
+}
+
+article{
+  display: flex;
+  flex-direction: row;
+}
+
+img {
+  width: 20px;
+  height: 20px;
+}
+
+.buttons{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.buttons svg:last-child {
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.result{
+  border: 1px solid var(--secondary-text-color);
+  margin: 1em;
+  padding: 1em;
+  border-radius: 1em;
+}
+
+#upvote{
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+}
+
+#downvote{
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+}
