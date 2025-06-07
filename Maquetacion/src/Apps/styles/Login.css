@@ -84,13 +84,12 @@
   align-items: center;
   height: 100vh;
   
-  /* Fondo con imagen */
-  background-image: url('/images/logo-UTNotas.jpg');
+  /*Fondo con imagen */
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/EdificioUTN.jpeg');
   background-position: center;
   background-repeat: no-repeat;
-  background-size: cover; /* para que cubra todo el contenedor */
-  background-attachment: fixed; /* opcional: para que no se mueva al hacer scroll */
-
+  background-size: cover; 
+  background-attachment: fixed; 
   font-family: var(--font-family);
 }
 
