@@ -1,0 +1,48 @@
+.upvote svg,
+.downvote svg,
+.options svg {
+  font-size: 24px;
+  color: gray;
+  transition: color 0.2s ease;
+  cursor: pointer;
+}
+
+.upvote.active svg {
+  color: blue;
+}
+
+.downvote.active svg {
+  color: red;
+}
+
+p, h3, h4{
+  margin: 5px;
+}
+
+article{
+  display: flex;
+  flex-direction: row;
+}
+
+.buttons{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.buttons svg:last-child {
+  font-size: 28px;
+  cursor: pointer;
+}
+
+#upvote{
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+}
+
+#downvote{
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+}

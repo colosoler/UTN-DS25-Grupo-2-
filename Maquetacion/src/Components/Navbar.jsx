@@ -1,4 +1,5 @@
 import './styles/Navbar.css';
+import { Link } from 'react-router-dom';
 
 export const Navbar = () => {
   return (
@@ -7,7 +8,7 @@ export const Navbar = () => {
         <span>📝<strong>UTN</strong>otas</span>
       </div>
       <div className="navbar-icons">
-        <img src="./images/hogar.png" alt="Inicio"/>
+        <Link to="/home"><img src="./images/hogar.png" alt="Inicio"/></Link>
         <img src="./images/plus-pequeno.png" alt="Agregar contenido"/>
         <img src="./images/avatar.png" alt="Perfil"/>
       </div>

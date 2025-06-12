@@ -1,71 +1,17 @@
 import './styles/Result.css';
-import { MdArrowUpward, MdArrowDownward, MdMoreHoriz } from 'react-icons/md';
-import { useState } from 'react';
+import Card from 'react-bootstrap/Card';
+import {Vote} from './Vote.jsx';
 
-export const Result = ({ result }) => {
-  const [upvoted, setUpvoted] = useState(false);
-  const [upvotes, setUpvotes] = useState(result.upvotes);
-  const [downvoted, setDownvoted] = useState(false);
-  const [downvotes, setDownvotes] = useState(result.downvotes);
-
-  const handleUpvote = () => {
-    if (upvoted) {
-      setUpvoted(false);
-      setUpvotes(upvotes - 1);
-    } else {
-      setUpvoted(true);
-      setUpvotes(upvotes + 1);
-      if (downvoted) {
-        setDownvoted(false);
-        setDownvotes(downvotes - 1);
-      }
-    }
-  };
-
-  const handleDownvote = () => {
-    if (downvoted) {
-      setDownvoted(false);
-      setDownvotes(downvotes - 1);
-    } else {
-      setDownvoted(true);
-      setDownvotes(downvotes + 1);
-      if (upvoted) {
-        setUpvoted(false);
-        setUpvotes(upvotes - 1);
-      }
-    }
-  };
-
+export const Result = ({result}) => {
   return (
-    <>
-    <section className='result'>
-      <h3>@{result.user}</h3>
-      <h4>{result.title}</h4>
-      <article>
-      <p className='description'>{result.description}</p>
-      <div className='buttons'>
-        <div
-          id='upvote'
-          className={`upvote ${upvoted ? 'active' : ''}`}
-          onClick={handleUpvote}
-          style={{ cursor: 'pointer' }}
-        >
-          <MdArrowUpward />
-          <p>{upvotes}</p>
-        </div>
-        <div
-        id='downvote'
-          className={`downvote ${downvoted ? 'active' : ''}`}
-          onClick={handleDownvote}
-          style={{ cursor: 'pointer' }}
-        >
-          <MdArrowDownward />
-          <p>{downvotes}</p>
-        </div>
-        <MdMoreHoriz />
-      </div>
-      </article>
-    </section>
-    </>
+    <Card>
+      <Card.Body>
+        <Card.Title>{result.title}</Card.Title>
+        <Card.Subtitle className="mb-2 text-muted">@{result.user}</Card.Subtitle>
+        <Card.Text>{result.description}</Card.Text>
+        <Card.Link href="#">Card Link</Card.Link>
+        <Vote key={result.upvotes + result.downvotes} result={result} ></Vote>
+      </Card.Body>
+    </Card>
   );
-};
+}
