@@ -14,33 +14,13 @@
   color: red;
 }
 
-#report svg:hover {
-  color: red;
-  transition: color 0.2s ease;
-  cursor: pointer;
-}
-
-#share svg:hover {
-  cursor: pointer;
-}
-
 p, h3, h4{
   margin: 5px;
 }
 
-article{
+.vote{
   display: flex;
   flex-direction: row;
-}
-
-.buttons{
-  display: flex;
-  flex-direction: row;
-}
-
-.buttons svg:last-child {
-  font-size: 28px;
-  cursor: pointer;
 }
 
 #upvote, #downvote{
@@ -48,8 +28,4 @@ article{
   flex-direction: row;
   margin: 10px;
   align-items: center;
-}
-
-#report, #share{
-  margin: 10px;
 }

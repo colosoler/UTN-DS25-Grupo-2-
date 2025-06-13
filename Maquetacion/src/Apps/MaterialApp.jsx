@@ -1,6 +1,6 @@
 import Information from '../Components/Information'
 import { Material } from '../Components/Material';
-import {Vote} from '../Components/Vote';
+import {Buttons} from '../Components/Buttons';
 import './styles/MaterialApp.css';
 
 export const MaterialApp = ({result}) => {
@@ -11,7 +11,7 @@ export const MaterialApp = ({result}) => {
       <Material />
       <Information result={result} />
       <div className='material-icons'>
-        <Vote result={result}/>
+        <Buttons result={result}/>
       </div>
 
       <></>

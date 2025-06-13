@@ -1,6 +1,5 @@
-import { MdArrowUpward, MdArrowDownward, MdMoreHoriz, MdFlag, MdShare } from 'react-icons/md';
+import { MdArrowUpward, MdArrowDownward } from 'react-icons/md';
 import { useState } from 'react';
-import ReportModel from './ReportModel';
 import './styles/Vote.css';
 export const Vote = ({ result }) => {
     const [upvoted, setUpvoted] = useState(false);
@@ -38,7 +37,7 @@ export const Vote = ({ result }) => {
 
     return (
         <>
-          <div className='buttons'>
+          <div className='vote'>
             <div
                 id='upvote'
                 className={`upvote ${upvoted ? 'active' : ''}`}
@@ -55,16 +54,7 @@ export const Vote = ({ result }) => {
                 <MdArrowDownward />
                 <p>{downvotes}</p>
             </div>
-            <div id='report'>
-              <ReportModel />
-            </div>
-            <div id='share'>
-              <MdShare />
-            </div>
-            <MdMoreHoriz />
           </div>
         </>
     );
 };
-
-export default Vote;

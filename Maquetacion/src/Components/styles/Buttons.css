@@ -1,0 +1,27 @@
+#report svg:hover {
+  color: red;
+  transition: color 0.2s ease;
+  cursor: pointer;
+}
+
+#share svg:hover {
+  cursor: pointer;
+}
+
+.buttons{
+  display: flex;
+  flex-direction: row;
+}
+
+.buttons svg:last-child {
+  font-size: 28px;
+  cursor: pointer;
+}
+
+#report, #share, #options{
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+  align-items: center;
+}
+

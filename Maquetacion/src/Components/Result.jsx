@@ -1,6 +1,6 @@
 import './styles/Result.css';
 import Card from 'react-bootstrap/Card';
-import {Vote} from './Vote.jsx';
+import {Buttons} from './Buttons';
 import {Link} from 'react-router-dom';
 
 export const Result = ({result}) => {
@@ -11,7 +11,7 @@ export const Result = ({result}) => {
         <Card.Subtitle className="mb-2 text-muted">@{result.user}</Card.Subtitle>
         <Card.Text>{result.description}</Card.Text>
         <Link to={`/material/${result.id}`}>Ver material</Link>
-        <Vote key={result.upvotes + result.downvotes} result={result} ></Vote>
+        <Buttons key={result.upvotes + result.downvotes} result={result} ></Buttons>
       </Card.Body>
     </Card>
   );
