@@ -6,6 +6,7 @@ import { Navbar } from './components/Navbar'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { Login } from './Apps/Login'
 import { Signup } from './Apps/Signup'
+import { CreateMaterialApp } from './Apps/CreateMaterialApp.jsx'
 
 function App() {
   const location = useLocation();
@@ -25,6 +26,7 @@ function App() {
           <Route path="/home" element={<HomeApp/>} />
           <Route path="/carrera/:id" element={<CarreraDetailApp/>} />
           <Route path="/search" element={<SearchResultApp/>} />
+          <Route path="/add" element={<CreateMaterialApp/>} />
         </Routes>   
       </main>
     </>
