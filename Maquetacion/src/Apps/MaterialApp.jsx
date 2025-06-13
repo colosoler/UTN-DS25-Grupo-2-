@@ -10,7 +10,10 @@ export const MaterialApp = ({result}) => {
       <h1 className='title'>{result.title}</h1>
       <Material />
       <Information result={result} />
-      <Vote result={result}/>
+      <div className='material-icons'>
+        <Vote result={result}/>
+      </div>
+
       <></>
     </section>
     </>

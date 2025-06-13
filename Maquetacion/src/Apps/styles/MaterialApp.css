@@ -1,3 +1,7 @@
 .title{
     margin: 1em;
 }
+
+.material-icons{
+    display: flex;
+}

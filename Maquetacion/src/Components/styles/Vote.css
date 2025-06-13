@@ -2,7 +2,6 @@
 .downvote svg,
 .options svg {
   font-size: 24px;
-  color: gray;
   transition: color 0.2s ease;
   cursor: pointer;
 }
@@ -13,6 +12,16 @@
 
 .downvote.active svg {
   color: red;
+}
+
+#report svg:hover {
+  color: red;
+  transition: color 0.2s ease;
+  cursor: pointer;
+}
+
+#share svg:hover {
+  cursor: pointer;
 }
 
 p, h3, h4{
@@ -27,7 +36,6 @@ article{
 .buttons{
   display: flex;
   flex-direction: row;
-  align-items: center;
 }
 
 .buttons svg:last-child {
@@ -35,14 +43,13 @@ article{
   cursor: pointer;
 }
 
-#upvote{
+#upvote, #downvote{
   display: flex;
   flex-direction: row;
   margin: 10px;
+  align-items: center;
 }
 
-#downvote{
-  display: flex;
-  flex-direction: row;
+#report, #share{
   margin: 10px;
 }
