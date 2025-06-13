@@ -1,0 +1,5 @@
+.material-container{
+    height: 50vh;
+    padding: 2em;
+    background-color: var(--primary-color);
+}

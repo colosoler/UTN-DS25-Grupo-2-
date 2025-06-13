@@ -1,16 +1,40 @@
 import './App.css'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { HomeApp } from './Apps/HomeApp'
 import { CarreraDetailApp } from './Apps/CarreraDetailApp'
 import { SearchResultApp} from './Apps/SearchResultApp'
-import { Navbar } from './components/Navbar'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import MaterialRouteWrapper from './Apps/MaterialRouteWrapper'
+import { Navbar } from './Components/Navbar'
 import { Login } from './Apps/Login'
 import { Signup } from './Apps/Signup'
+
+const results = [
+  { id: '1',
+    user: 'user1', 
+    title: 'Titulo', 
+    description:'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quaerat laborum sunt, error quo autem voluptatum quod saepe molestias voluptate porro dignissimos, ipsum, animi ex? Rerum id cupiditate dolor exercitationem magni?',
+    upvotes: 15,
+    downvotes:20
+  },
+  { id: '2',
+    user: 'user2', 
+    title: 'Titulo23', 
+    description:'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quaerat laborum sunt, error quo autem voluptatum quod saepe molestias voluptate porro dignissimos, ipsum, animi ex? Rerum id cupiditate dolor exercitationem magni?',
+    upvotes: 15,
+    downvotes:20
+  },
+  { id: '3',
+    user: 'user3', 
+    title: 'Titulo3', 
+    description:'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quaerat laborum sunt, error quo autem voluptatum quod saepe molestias voluptate porro dignissimos, ipsum, animi ex? Rerum id cupiditate dolor exercitationem magni?',
+    upvotes: 15,
+    downvotes:20
+  }
+]
 
 function App() {
   const location = useLocation();
 
-  // Con esto oculto el Navbar cuando estamos en Login o en Signup
   const hideNavbar = location.pathname === '/' || location.pathname === '/signup';
   return (
     <>
@@ -24,7 +48,8 @@ function App() {
           <Route path="/result" element={<SearchResultApp/>} />
           <Route path="/home" element={<HomeApp/>} />
           <Route path="/carrera/:id" element={<CarreraDetailApp/>} />
-          <Route path="/search" element={<SearchResultApp/>} />
+          <Route path="/search" element={<SearchResultApp results={results}/>} />
+          <Route path="/material/:id" element={<MaterialRouteWrapper results={results}/>} />
         </Routes>   
       </main>
     </>
