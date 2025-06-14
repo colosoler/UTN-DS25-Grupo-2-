@@ -9,7 +9,7 @@ export const SearchResultApp = ({results}) => {
         <section id='results'>
           <div className="results-list">
             {results.map(result => (
-              <Result key={result.id} result={result}></Result>
+              <Result key={result.id} result={result} shareUrl={`${window.location.origin}/material/${result.id}`} />
             ))}
           </div>
         </section>

@@ -1,23 +1,22 @@
 import './styles/Buttons.css';
-import { MdShare, MdMoreHoriz } from 'react-icons/md';
+import { MdMoreHoriz } from 'react-icons/md';
 import ReportModel from './ReportModel';
-import {Vote} from './Vote';
+import { Vote } from './Vote';
+import {Share} from './Share';
 
-export const Buttons = ({result}) => {
-  return (
-    <>
-    <article className='buttons'>
-        <Vote result={result}/>
-        <div id='report'>
-            <ReportModel />
-        </div>
-        <div id='share'>
-          <MdShare />
-        </div>
-        <div id='options'>
-            <MdMoreHoriz />
-        </div>
-    </article>
-    </>
-  )
-}
+export const Buttons = ({ result, shareUrl }) => {
+    return (
+        <>
+            <article className="buttons">
+                <Vote result={result} />
+                <div id="report">
+                    <ReportModel />
+                </div>
+                <Share shareUrl={shareUrl} />
+                <div id="options">
+                    <MdMoreHoriz />
+                </div>
+            </article>
+        </>
+    );
+};

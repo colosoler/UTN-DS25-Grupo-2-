@@ -5,3 +5,7 @@
 .material-icons{
     display: flex;
 }
+
+.modal-open{
+    padding-right: 0;
+}

@@ -4,6 +4,8 @@ import {Buttons} from '../Components/Buttons';
 import './styles/MaterialApp.css';
 
 export const MaterialApp = ({result}) => {
+  const link = `${window.location.origin}/material/${result.id}`;
+
   return (
     <>
     <section className="container">
@@ -11,10 +13,8 @@ export const MaterialApp = ({result}) => {
       <Material />
       <Information result={result} />
       <div className='material-icons'>
-        <Buttons result={result}/>
+        <Buttons result={result} shareUrl={link}/>
       </div>
-
-      <></>
     </section>
     </>
   );
