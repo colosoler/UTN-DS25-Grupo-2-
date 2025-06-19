@@ -59,7 +59,6 @@
   hyphens: auto;
 }
 
-/* Responsive adjustments */
 @media (max-width: 1350px) {
   .carrera-card {
     max-width: 380px;

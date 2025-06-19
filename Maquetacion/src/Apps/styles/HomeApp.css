@@ -54,7 +54,6 @@ h1 {
   align-items: center;
 }
 
-/* Responsive adjustments */
 @media (max-width: 1350px) {
   .carreras-container {
     max-width: 1200px;

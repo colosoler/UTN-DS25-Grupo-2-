@@ -1,6 +1,6 @@
 @import url("../../index.css");
 
-/* Mobile First Approach */
+/* Mobile */
 .navbar{
     padding: 1rem;
     flex-direction: row;
@@ -48,7 +48,7 @@
 
 .navbar-logo span {
   font-size: 1.3em;
-  color: white; /* o var(--background-color) si preferís contraste suave */
+  color: white;
 }
 
 .navbar-icons {
@@ -61,10 +61,10 @@
   height: 28px;
   cursor: pointer;
   transition: transform 0.2s ease;
-  filter: brightness(0) invert(1); /* blanco sobre fondo azul */
+  filter: brightness(0) invert(1);
 }
 
 .navbar-icons img:hover {
   transform: scale(1.1);
-  filter: brightness(0) invert(0.8); /* efecto hover más sutil */
+  filter: brightness(0) invert(0.8);
 }
