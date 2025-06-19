@@ -1,42 +1,180 @@
-.carrera {
-  position: relative;
+.carrera-card {
+  border: 2px solid #e0e0e0;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  cursor: pointer;
   width: 100%;
-  height: 160px;
+  max-width: 400px;
+  height: 240px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  background-color: white;
   overflow: hidden;
+}
+
+.carrera-card:hover {
+  border-color: #007bff;
+  box-shadow: 0 12px 35px rgba(0, 123, 255, 0.25);
+  transform: translateY(-6px);
+}
+
+.carrera-body {
+  padding: 40px 35px;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: 30px;
+}
+
+.icon-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 16px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
+  width: 100px;
+  height: 100px;
+  background-color: #f8f9fa;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 3px solid #e9ecef;
 }
 
-.carrera:hover {
-  transform: scale(1.03);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+.carrera-icon {
+  font-size: 3.5rem;
+  color: #495057;
+  font-weight: bold;
 }
 
-.carrera img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.carrera-info {
+  flex: 1;
+  min-width: 0;
+  padding-left: 15px;
 }
 
-.carrera::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
-  z-index: 1;
+.carrera-name {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.3;
+  margin: 0;
+  word-wrap: break-word;
+  hyphens: auto;
 }
 
-.carrera h2 {
-  position: absolute;
-  color: white;
-  font-size: 24px;
-  font-family: 'Roboto', sans-serif;
-  text-align: center;
-  z-index: 2;
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+/* Responsive adjustments */
+@media (max-width: 1350px) {
+  .carrera-card {
+    max-width: 380px;
+    height: 220px;
+  }
+  
+  .carrera-body {
+    padding: 35px 30px;
+    gap: 25px;
+  }
+  
+  .icon-container {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .carrera-icon {
+    font-size: 3.2rem;
+  }
+  
+  .carrera-name {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .carrera-card {
+    max-width: 350px;
+    height: 200px;
+  }
+  
+  .carrera-body {
+    padding: 30px 25px;
+    gap: 22px;
+  }
+  
+  .icon-container {
+    width: 85px;
+    height: 85px;
+  }
+  
+  .carrera-icon {
+    font-size: 3rem;
+  }
+  
+  .carrera-name {
+    font-size: 1.4rem;
+    line-height: 1.25;
+  }
+}
+
+@media (max-width: 992px) {
+  .carrera-card {
+    max-width: 360px;
+    height: 180px;
+  }
+  
+  .carrera-body {
+    padding: 25px 22px;
+    gap: 20px;
+  }
+  
+  .icon-container {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .carrera-icon {
+    font-size: 2.8rem;
+  }
+  
+  .carrera-name {
+    font-size: 1.3rem;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 768px) {
+  .carrera-card {
+    max-width: 380px;
+    height: 160px;
+  }
+  
+  .carrera-body {
+    padding: 22px 20px;
+    gap: 18px;
+  }
+  
+  .icon-container {
+    width: 75px;
+    height: 75px;
+  }
+  
+  .carrera-icon {
+    font-size: 2.6rem;
+  }
+  
+  .carrera-name {
+    font-size: 1.2rem;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 576px) {
+  .carrera-card {
+    max-width: 350px;
+    height: 150px;
+  }
+  
+  .carrera-body {
+    padding: 20px 18px;
+    gap: 16px;
+  }
+  
+  .carrera-name {
+    font-size: 1.1rem;
+  }
 }
