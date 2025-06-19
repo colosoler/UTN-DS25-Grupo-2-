@@ -3,44 +3,52 @@ import { Searchbar } from '../Components/Searchbar.jsx';
 import './styles/HomeApp.css';
 
 export const carreras = [
-  { id: 1, 
+  { 
+    id: 1, 
     name: 'Ingeniería Mecánica', 
-    image:'/images/Mecanica.jpg'
+    icon: 'bi-gear-fill'
   },
-  { id: 2, 
+  { 
+    id: 2, 
     name: 'Ingeniería en Sistemas de Información', 
-    image:'/images/Sistemas.jpg'
+    icon: 'bi-laptop'
   },
-  { id: 3, 
+  { 
+    id: 3, 
     name: 'Ingeniería Química', 
-    image:'/images/Quimica.jpg'
+    icon: 'bi-flask'
   },
-  { id: 4, 
+  { 
+    id: 4, 
     name: 'Ingeniería Civil', 
-    image:'/images/Civil.jpg'
+    icon: 'bi-building'
   },
-  { id: 5, 
+  { 
+    id: 5, 
     name: 'Ingeniería Industrial', 
-    image:'/images/Industrial.jpg'
+    icon: 'bi-tools'
   },
-  { id: 6, 
+  { 
+    id: 6, 
     name: 'Ingeniería Eléctrica', 
-    image:'/images/Electrica.jpg'
+    icon: 'bi-lightning-charge-fill'
   },
 ];
 
 export const HomeApp = () => {
   return (
-    <>
-    <Searchbar></Searchbar>
-    <section id='carreras'>
-      <h1>Seleccioná tu carrera</h1>
-      <div className="carreras-list">
-        {carreras.map(carrera => (
-          <Carrera key={carrera.id} carrera={carrera}></Carrera>
-        ))}
-      </div>
-    </section>
-    </>
+    <div className="home-wrapper">
+      <Searchbar />
+      <section id='carreras'>
+        <div className="carreras-container">
+          <h1>Seleccioná tu carrera</h1>
+          <div className="carreras-grid">
+            {carreras.map(carrera => (
+              <Carrera key={carrera.id} carrera={carrera} />
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
   )
 }

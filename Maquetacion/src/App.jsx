@@ -8,6 +8,8 @@ import { Navbar } from './Components/Navbar'
 import { Login } from './Apps/Login'
 import { Signup } from './Apps/Signup'
 import { CreateMaterialApp } from './Apps/CreateMaterialApp.jsx'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const results = [
   { id: '1',

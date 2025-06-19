@@ -6,32 +6,133 @@
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.home-wrapper {
+  min-height: 100vh;
+  background-color: var(--background-color);
+}
+
 #carreras {
   background-color: var(--background-color);
+  min-height: calc(100vh - 80px);
+  padding: 30px 20px 40px 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.carreras-container {
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
 }
 
 h1 {
   text-align: center;
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   font-family: 'Roboto', sans-serif;
+  margin-bottom: 40px;
+  color: #333;
+  font-weight: 600;
 }
 
-.carreras-list {
+.carreras-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   gap: 30px;
+  width: 100%;
   justify-items: center;
-  padding: 20px;
+  align-items: center;
 }
 
-@media (max-width: 900px) {
-  .carreras-list {
-    grid-template-columns: repeat(2, 1fr);
+/* Responsive adjustments */
+@media (max-width: 1350px) {
+  .carreras-container {
+    max-width: 1200px;
+  }
+  
+  .carreras-grid {
+    gap: 25px;
   }
 }
 
-@media (max-width: 600px) {
-  .carreras-list {
+@media (max-width: 1200px) {
+  .carreras-container {
+    max-width: 1000px;
+  }
+  
+  .carreras-grid {
+    gap: 20px;
+  }
+  
+  h1 {
+    font-size: 2.6rem;
+    margin-bottom: 35px;
+  }
+}
+
+@media (max-width: 992px) {
+  .carreras-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 25px;
+  }
+  
+  .carreras-container {
+    max-width: 800px;
+  }
+  
+  h1 {
+    font-size: 2.4rem;
+    margin-bottom: 30px;
+  }
+  
+  #carreras {
+    padding: 25px 15px 35px 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .carreras-grid {
     grid-template-columns: 1fr;
+    grid-template-rows: repeat(6, 1fr);
+    gap: 20px;
+  }
+  
+  .carreras-container {
+    max-width: 400px;
+  }
+  
+  h1 {
+    font-size: 2.2rem;
+    margin-bottom: 25px;
+  }
+  
+  #carreras {
+    padding: 20px 10px 30px 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  #carreras {
+    padding: 15px 10px 25px 10px;
+  }
+  
+  .carreras-grid {
+    gap: 15px;
   }
 }
