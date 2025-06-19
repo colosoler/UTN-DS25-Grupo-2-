@@ -7,6 +7,7 @@ import MaterialRouteWrapper from './Apps/MaterialRouteWrapper'
 import { Navbar } from './Components/Navbar'
 import { Login } from './Apps/Login'
 import { Signup } from './Apps/Signup'
+import { CreateMaterialApp } from './Apps/CreateMaterialApp.jsx'
 
 const results = [
   { id: '1',
@@ -50,6 +51,7 @@ function App() {
           <Route path="/carrera/:id" element={<CarreraDetailApp/>} />
           <Route path="/search" element={<SearchResultApp results={results}/>} />
           <Route path="/material/:id" element={<MaterialRouteWrapper results={results}/>} />
+          <Route path="/add" element={<CreateMaterialApp/>} />
         </Routes>   
       </main>
     </>

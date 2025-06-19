@@ -2,7 +2,7 @@ import { Carrera } from '../Components/Carrera.jsx';
 import { Searchbar } from '../Components/Searchbar.jsx';
 import './styles/HomeApp.css';
 
-const carreras = [
+export const carreras = [
   { id: 1, 
     name: 'Ingeniería Mecánica', 
     image:'/images/Mecanica.jpg'
