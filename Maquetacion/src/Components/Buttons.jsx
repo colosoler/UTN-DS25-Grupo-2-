@@ -1,8 +1,8 @@
 import './styles/Buttons.css';
-import { MdMoreHoriz } from 'react-icons/md';
 import ReportModel from './ReportModel';
 import { Vote } from './Vote';
-import {Share} from './Share';
+import { Share } from './Share';
+import { OptionsDropdown } from './OptionsDropdown';
 
 export const Buttons = ({ result, shareUrl }) => {
     return (
@@ -14,7 +14,7 @@ export const Buttons = ({ result, shareUrl }) => {
                 </div>
                 <Share shareUrl={shareUrl} />
                 <div id="options">
-                    <MdMoreHoriz />
+                    <OptionsDropdown result={result} />
                 </div>
             </article>
         </>
