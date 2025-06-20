@@ -1,9 +1,9 @@
 import { Card } from 'react-bootstrap';
 import './styles/Carrera.css';
 
-export const Carrera = ({carrera}) => {
+export const Carrera = ({carrera, onClick}) => {
   return (
-    <Card className="carrera-card">
+    <Card className="carrera-card" onClick={onClick}>
       <Card.Body className="carrera-body">
         <div className="icon-container">
           <i className={`bi ${carrera.icon} carrera-icon`}></i>
