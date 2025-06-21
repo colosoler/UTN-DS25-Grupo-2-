@@ -4,7 +4,8 @@ import { Container, Row, Col, Form, Button, Image } from 'react-bootstrap';
 import '../Apps/styles/Signup.css'
 
 export const Signup = () => {
-
+  const [name, setName] = useState('') 
+  const [surname, setSurname] = useState('') 
   const [username, setUsername] = useState('')  
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -37,6 +38,32 @@ export const Signup = () => {
           </Row>
         </Container>
         <h2>Crear Cuenta</h2>
+        <Form.Group controlId="formName">
+          <Form.Control
+            required
+            type="name"
+            placeholder="Nombre"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="form-control"
+          />
+          <Form.Control.Feedback type="invalid">
+            Ingresá un nombre válido.
+          </Form.Control.Feedback>
+        </Form.Group>
+        <Form.Group controlId="formSurname">
+          <Form.Control
+            required
+            type="surname"
+            placeholder="Apellido"
+            value={surname}
+            onChange={(e) => setSurname(e.target.value)}
+            className="form-control"
+          />
+          <Form.Control.Feedback type="invalid">
+            Ingresá un apellido válido.
+          </Form.Control.Feedback>
+        </Form.Group>
         <Form.Group controlId="formUsername">
           <Form.Control
             required
