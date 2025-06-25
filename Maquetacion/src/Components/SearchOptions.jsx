@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { Form, ListGroup, Row, Col, Image } from 'react-bootstrap';
+import { useForm } from '../Hooks/useForm';
 
-export const SearchOptions = ({options, name, placeholder}) => {
-    const [option, setOption] = useState('');
+export const SearchOptions = ({options, onChange, name, placeholder}) => {
     const [filtered, setFiltered] = useState(options);
     const [showList, setShowList] = useState(false);
-    const handleOptionChange = (event) => {
-        const input = event.target.value;
-        setOption(input);
-        const filtered = options.filter(m => m.toLowerCase().includes(input.toLowerCase()));
+    const [option, setOption] = useState('');
+
+    const handleChangeOptions = (e) =>{
+        onChange(e);
+        const filtered = options.filter(o => o.toLowerCase().includes(e.target.value.toLowerCase()));
         setFiltered(filtered);
-    }
+    };
     return (
         <>  
             <Form.Control
@@ -18,7 +19,7 @@ export const SearchOptions = ({options, name, placeholder}) => {
                 placeholder={placeholder}
                 name={name}
                 value={option}
-                onChange={handleOptionChange}
+                onChange={handleChangeOptions}
                 onFocus={() => setShowList(true)}
                 onBlur={() => setTimeout(() =>setShowList(false), 100)}
                 autoComplete="off"
