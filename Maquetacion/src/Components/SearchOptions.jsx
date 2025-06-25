@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Form, ListGroup, Row, Col, Image } from 'react-bootstrap';
-import { useForm } from '../Hooks/useForm';
+import { Form, ListGroup} from 'react-bootstrap';
+
 
 export const SearchOptions = ({options, onChange, name, placeholder}) => {
     const [filtered, setFiltered] = useState(options);
@@ -9,6 +9,7 @@ export const SearchOptions = ({options, onChange, name, placeholder}) => {
 
     const handleChangeOptions = (e) =>{
         onChange(e);
+        setOption(e.target.value);
         const filtered = options.filter(o => o.toLowerCase().includes(e.target.value.toLowerCase()));
         setFiltered(filtered);
     };
