@@ -34,6 +34,11 @@ export const carreras = [
     name: 'Ingeniería Eléctrica', 
     icon: 'bi-lightning-charge-fill'
   },
+  { 
+    id: 7, 
+    name: 'Sin Carrera', 
+    icon: ''
+  },
 ];
 
 export const HomeApp = () => {
