@@ -1,0 +1,254 @@
+.profile-settings-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.profile-settings-form h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 2rem;
+  margin-top: 0;
+}
+
+/* Profile Photo Section */
+.profile-photo-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.profile-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #f0f0f0;
+}
+
+.profile-photo-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #f8f9fa;
+  border: 3px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #6c757d;
+  font-weight: 300;
+}
+
+.profile-photo-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.profile-photo-buttons .btn-primary {
+  background-color: var(--primary-color);
+  border-color: #2c3e50;
+  color: white;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.profile-photo-buttons .btn-primary:hover {
+  background-color: var(--secondary-color)
+}
+
+.profile-photo-buttons .btn-danger {
+  background-color: transparent;
+  border: 1px solid #dee2e6;
+  color: #6c757d;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.profile-photo-buttons .btn-danger:hover {
+  background-color: grey;
+  border-color: #adb5bd;
+}
+
+/* Form Layout - Two columns per row */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-row .form-group {
+  margin-bottom: 0;
+}
+
+/* Override Bootstrap default margins for form groups inside rows */
+.form-row .mb-3 {
+  margin-bottom: 0 !important;
+}
+
+/* Single column for full-width elements if needed */
+.form-single {
+  margin-bottom: 1.5rem;
+}
+
+.mb-3, .mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  display: block;
+  font-size: 0.875rem;
+}
+
+/* Form Controls */
+.form-control, .form-select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background-color: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  outline: none;
+  border-color: #2c3e50;
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+}
+
+.form-control::placeholder {
+  color: #9ca3af;
+}
+
+/* Form Text (Helper text) */
+.text-muted {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+  line-height: 1.4;
+}
+
+/* Submit Button */
+.w-100 {
+  width: 100%;
+  background-color: #2c3e50;
+  border-color: #2c3e50;
+  color: white;
+  font-weight: 500;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 1.5rem;
+}
+
+.w-100:hover {
+  background-color: #34495e;
+}
+
+/* Error Message */
+.profile-error {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+}
+
+/* Validation Feedback */
+.invalid-feedback {
+  color: #dc3545;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.is-invalid {
+  border-color: #dc3545;
+}
+
+.is-invalid:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-settings-container {
+    padding: 1rem;
+    max-width: 100%;
+  }
+  
+  /* Stack fields vertically on mobile */
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .profile-photo-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .profile-photo-buttons {
+    flex-direction: row;
+    width: 100%;
+  }
+  
+  .profile-photo-buttons .btn-primary,
+  .profile-photo-buttons .btn-danger {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .profile-settings-container {
+    padding: 0.75rem;
+  }
+  
+  .profile-photo-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+/* Override Bootstrap styles if needed */
+.btn.me-2 {
+  margin-right: 0 !important;
+}
+
+/* Ensure consistent spacing */
+.form-group {
+  margin-bottom: 0;
+}
+
+/* Better alignment for form elements */
+.form-row .form-control,
+.form-row .form-select {
+  height: auto;
+  min-height: 44px;
+}

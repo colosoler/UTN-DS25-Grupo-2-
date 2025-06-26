@@ -9,6 +9,7 @@ import { Login } from './Apps/Login'
 import { Signup } from './Apps/Signup'
 import { CreateMaterialApp } from './Apps/CreateMaterialApp.jsx'
 import { ProfilePage } from './Apps/ProfilePage.jsx'
+import { SettingsPage } from './Apps/SettingsPage.jsx'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -57,6 +58,7 @@ function App() {
           <Route path="/material/:id" element={<MaterialRouteWrapper results={results}/>} />
           <Route path="/add" element={<CreateMaterialApp/>} />
           <Route path="/profile" element={<ProfilePage/>} />
+          <Route path="/settings" element={<SettingsPage/>} />
         </Routes>   
       </main>
     </>
