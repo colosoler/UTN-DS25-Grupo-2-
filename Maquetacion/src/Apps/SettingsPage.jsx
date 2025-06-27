@@ -51,7 +51,7 @@ export const SettingsPage = () => {
   return (
     <div className="profile-settings-container">
       <Form.Group className="mb-4">
-        <Form.Label>Foto de Perfil</Form.Label>
+        <Form.Label className="profile-photo-label">Foto de Perfil</Form.Label>
         <div className="profile-photo-section">
           {profilePic ? (
             <img
@@ -83,7 +83,6 @@ export const SettingsPage = () => {
       <Form noValidate validated={validated} onSubmit={handleSubmit} className="profile-settings-form">
         <h2>Configuración de Perfil</h2>
 
-        {/* Primera fila: Nombre y Apellido */}
         <div className="form-row">
           <Form.Group controlId="formName">
             <Form.Label>Nombre</Form.Label>
@@ -118,7 +117,6 @@ export const SettingsPage = () => {
           </Form.Group>
         </div>
 
-        {/* Segunda fila: Usuario y Email */}
         <div className="form-row">
           <Form.Group controlId="formUsername">
             <Form.Label>Usuario</Form.Label>
@@ -153,7 +151,6 @@ export const SettingsPage = () => {
           </Form.Group>
         </div>
 
-        {/* Tercera fila: Contraseña y Carrera */}
         <div className="form-row">
           <Form.Group controlId="formPassword">
             <Form.Label>Contraseña</Form.Label>
