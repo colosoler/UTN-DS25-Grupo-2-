@@ -1,0 +1,105 @@
+.stats-card {
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 12px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Tarjetas de material */
+.material-card {
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 12px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.material-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Botón de editar */
+.edit-btn {
+  transition: all 0.2s ease;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color);
+}
+
+.edit-btn:hover {
+  background-color: rgba(74, 144, 226, 0.1); /* var(--primary-color) con opacidad */
+  color: var(--primary-color) !important;
+  transform: scale(1.1);
+}
+
+/* Votos sin interacción */
+.vote-display {
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.votes-display {
+  background-color: rgba(248, 249, 250, 0.5);
+  border-radius: 8px;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .votes-display {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .votes-display > div:first-child {
+    justify-content: center;
+  }
+}
+
+/* Animaciones */
+.btn {
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Colores de los votos */
+.vote-display .text-success {
+  color: #28a745 !important;
+}
+
+.vote-display .text-danger {
+  color: #dc3545 !important;
+}
+
+.vote-display .text-warning {
+  color: #ffc107 !important;
+}
+
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  font-weight: var(--font-weight);
+  background-color: var(--background-color);
+  color: var(--text-color);
+}

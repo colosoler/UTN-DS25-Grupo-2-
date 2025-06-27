@@ -10,32 +10,36 @@ import { Signup } from './Apps/Signup'
 import { CreateMaterialApp } from './Apps/CreateMaterialApp.jsx'
 import { ProfilePage } from './Apps/ProfilePage.jsx'
 import { SettingsPage } from './Apps/SettingsPage.jsx'
+import { MyPosts } from './Apps/MyPosts.jsx'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const results = [
-  { id: '1',
-    user: 'user1', 
-    title: 'Titulo', 
-    description:'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quaerat laborum sunt, error quo autem voluptatum quod saepe molestias voluptate porro dignissimos, ipsum, animi ex? Rerum id cupiditate dolor exercitationem magni?',
-    upvotes: 15,
-    downvotes:20
+  {
+    id: "1",
+    title: "Apuntes de Matemáticas - Cálculo Diferencial",
+    description: "Resumen completo de los conceptos básicos de cálculo diferencial con ejemplos prácticos.",
+    user: "usuario1",
+    upvotes: 20,
+    downvotes: 5,
   },
-  { id: '2',
-    user: 'user2', 
-    title: 'Titulo23', 
-    description:'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quaerat laborum sunt, error quo autem voluptatum quod saepe molestias voluptate porro dignissimos, ipsum, animi ex? Rerum id cupiditate dolor exercitationem magni?',
-    upvotes: 15,
-    downvotes:20
+  {
+    id: "2",
+    title: "Video Tutorial - Programación en Python",
+    description: "Tutorial paso a paso para aprender los fundamentos de Python desde cero.",
+    user: "usuario1",
+    upvotes: 10,
+    downvotes: 1,
   },
-  { id: '3',
-    user: 'user3', 
-    title: 'Titulo3', 
-    description:'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quaerat laborum sunt, error quo autem voluptatum quod saepe molestias voluptate porro dignissimos, ipsum, animi ex? Rerum id cupiditate dolor exercitationem magni?',
+  {
+    id: "3",
+    title: "Resumen de Historia Universal",
+    description: "Cronología detallada de eventos históricos importantes del siglo XX.",
+    user: "usuario1",
     upvotes: 15,
-    downvotes:20
-  }
+    downvotes: 3,
+  },
 ]
 
 function App() {
@@ -59,6 +63,7 @@ function App() {
           <Route path="/add" element={<CreateMaterialApp/>} />
           <Route path="/profile" element={<ProfilePage/>} />
           <Route path="/settings" element={<SettingsPage/>} />
+          <Route path="/myposts" element={<MyPosts results={results}/>} />
         </Routes>   
       </main>
     </>
