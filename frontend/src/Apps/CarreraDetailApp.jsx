@@ -2,6 +2,7 @@ import { Accordion } from 'react-bootstrap';
 import { ListGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
 const anios = [
   {
     anio: "1ero",
@@ -45,6 +46,7 @@ const anios = [
   }
 ]
 export const CarreraDetailApp = () => {
+  const { id } = useParams();  
   return (
     <Container>
       <Accordion>
@@ -55,7 +57,7 @@ export const CarreraDetailApp = () => {
               <ListGroup variant="flush">
                 {anio.materias.map((materia) => (
                   <ListGroup.Item key={materia.id}>
-                    <Link to="/search">{materia.nombre}</Link>
+                    <Link to={`/search/?carrera=${id}&materia=${materia.id}`}>{materia.nombre}</Link>
                   </ListGroup.Item>
                 ))}
               </ListGroup>
