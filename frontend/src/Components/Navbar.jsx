@@ -50,7 +50,7 @@ export const Navbar = () => {
                 Ver perfil
               </Dropdown.Item>
               <Dropdown.Item className='dropdown-item' as={Link} to="/myposts">
-                <img className='dropdown-icon' src="./images/settings-icon.svg" alt="mis-publicaciones" />
+                <img className='dropdown-icon' src="./images/files-icon.svg" alt="mis-publicaciones" />
                 Mis publicaciones
               </Dropdown.Item>
               <Dropdown.Item className='dropdown-item' as={Link} to="/settings">
