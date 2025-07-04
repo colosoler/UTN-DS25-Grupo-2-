@@ -7,6 +7,8 @@ import Col from "react-bootstrap/Col"
 import Card from "react-bootstrap/Card"
 import { Link } from "react-router-dom"
 import { MdEdit, MdArrowUpward, MdArrowDownward } from "react-icons/md"
+import { useFetch } from "../Hooks/useFetch"
+import { SERVER_URL } from "../Constants"
 import './styles/MyPosts.css'
 
 export const MyPosts = () => {
