@@ -4,39 +4,39 @@ import { useNavigate } from 'react-router-dom';
 import './styles/HomeApp.css';
 
 export const carreras = [
-  { 
-    id: 1, 
-    name: 'Ingeniería Mecánica', 
+  {
+    id: 1,
+    name: 'Ingeniería Mecánica',
     icon: 'bi-gear-fill'
   },
-  { 
-    id: 2, 
-    name: 'Ingeniería en Sistemas de Información', 
+  {
+    id: 2,
+    name: 'Ingeniería en Sistemas de Información',
     icon: 'bi-laptop'
   },
-  { 
-    id: 3, 
-    name: 'Ingeniería Química', 
+  {
+    id: 3,
+    name: 'Ingeniería Química',
     icon: 'bi-flask'
   },
-  { 
-    id: 4, 
-    name: 'Ingeniería Civil', 
+  {
+    id: 4,
+    name: 'Ingeniería Civil',
     icon: 'bi-building'
   },
-  { 
-    id: 5, 
-    name: 'Ingeniería Industrial', 
+  {
+    id: 5,
+    name: 'Ingeniería Industrial',
     icon: 'bi-tools'
   },
-  { 
-    id: 6, 
-    name: 'Ingeniería Eléctrica', 
+  {
+    id: 6,
+    name: 'Ingeniería Eléctrica',
     icon: 'bi-lightning-charge-fill'
   },
-  { 
-    id: 7, 
-    name: 'Sin Carrera', 
+  {
+    id: 7,
+    name: 'Sin Carrera',
     icon: ''
   },
 ];
@@ -55,13 +55,15 @@ export const HomeApp = () => {
         <div className="carreras-container">
           <h1>Seleccioná tu carrera</h1>
           <div className="carreras-grid">
-            {carreras.map(carrera => (
-              <Carrera 
-                key={carrera.id} 
-                carrera={carrera} 
-                onClick={() => handleCarreraClick(carrera.id)}
-              />
-            ))}
+            {carreras
+              .filter(carrera => carrera.name !== 'Sin Carrera') // no muestra 'sin carrera'
+              .map(carrera => (
+                <Carrera
+                  key={carrera.id}
+                  carrera={carrera}
+                  onClick={() => handleCarreraClick(carrera.id)}
+                />
+              ))}
           </div>
         </div>
       </section>
