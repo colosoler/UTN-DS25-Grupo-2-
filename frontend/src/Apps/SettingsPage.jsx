@@ -1,19 +1,24 @@
 import React, { useState, useRef } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Form, Button } from 'react-bootstrap'
+import { DeleteConfirmAccount } from '../Components/DeleteConfirmAccount'
+import { Alert } from '../Components/Alert'
 import './styles/SettingsPage.css'
 
 export const SettingsPage = () => {
-  const [name, setName] = useState('') 
-  const [surname, setSurname] = useState('') 
-  const [username, setUsername] = useState('')  
+  const [name, setName] = useState('')
+  const [surname, setSurname] = useState('')
+  const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [career, setCareer] = useState('')
   const [validated, setValidated] = useState(false)
   const [error, setError] = useState('')
-  const navigate = useNavigate()
+  const [showSuccessToast, setShowSuccessToast] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
 
+  const navigate = useNavigate()
   const [profilePic, setProfilePic] = useState(null)
   const fileInputRef = useRef(null)
 
@@ -23,12 +28,18 @@ export const SettingsPage = () => {
 
     if (form.checkValidity() === false) {
       e.stopPropagation()
-    } else {
-      alert('Perfil actualizado correctamente')
-      navigate('/profile')
+      setValidated(true)
+      return
     }
 
-    setValidated(true)
+    setSuccessMessage('Perfil actualizado correctamente')
+    setShowSuccessToast(true)
+    setValidated(false)
+
+    setTimeout(() => {
+      setShowSuccessToast(false)
+      navigate('/profile')
+    }, 1500)
   }
 
   const handleChangePhotoClick = () => {
@@ -48,6 +59,24 @@ export const SettingsPage = () => {
     setProfilePic(null)
   }
 
+  const handleOpenDeleteModal = () => setShowDeleteModal(true)
+  const handleCloseDeleteModal = () => setShowDeleteModal(false)
+
+  const handleConfirmDelete = () => {
+    setShowDeleteModal(false)
+    setSuccessMessage('Cuenta eliminada correctamente')
+    setShowSuccessToast(true)
+
+    setTimeout(() => {
+      setShowSuccessToast(false)
+      navigate('/')
+    }, 1500)
+  }
+
+  const handleToastClose = () => {
+    setShowSuccessToast(false)
+  }
+
   return (
     <div className="profile-settings-container">
       <Form.Group className="mb-4">
@@ -55,9 +84,9 @@ export const SettingsPage = () => {
         <div className="profile-photo-section">
           {profilePic ? (
             <img
-                src={profilePic ? profilePic : "/images/profile-user-icon.png"}
-                alt="Foto de perfil"
-                className="profile-photo"
+              src={profilePic}
+              alt="Foto de perfil"
+              className="profile-photo"
             />
           ) : (
             <div className="profile-photo-placeholder">?</div>
@@ -84,13 +113,14 @@ export const SettingsPage = () => {
         <h2>Configuración de Perfil</h2>
 
         <div className="form-row">
-          <Form.Group controlId="formName">
+          <Form.Group controlId="formName" className="mb-3">
             <Form.Label>Nombre</Form.Label>
             <Form.Control
               type="text"
               placeholder="Nombre"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              required={false}
             />
             <Form.Control.Feedback type="invalid">
               Por favor ingresá un nombre válido.
@@ -100,13 +130,14 @@ export const SettingsPage = () => {
             </Form.Text>
           </Form.Group>
 
-          <Form.Group controlId="formSurname">
+          <Form.Group controlId="formSurname" className="mb-3">
             <Form.Label>Apellido</Form.Label>
             <Form.Control
               type="text"
               placeholder="Apellido"
               value={surname}
               onChange={(e) => setSurname(e.target.value)}
+              required={false}
             />
             <Form.Control.Feedback type="invalid">
               Por favor ingresá un apellido válido.
@@ -118,13 +149,14 @@ export const SettingsPage = () => {
         </div>
 
         <div className="form-row">
-          <Form.Group controlId="formUsername">
+          <Form.Group controlId="formUsername" className="mb-3">
             <Form.Label>Usuario</Form.Label>
             <Form.Control
               type="text"
               placeholder="Nombre de usuario"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              required={false}
             />
             <Form.Control.Feedback type="invalid">
               Por favor ingresá un usuario válido.
@@ -133,14 +165,15 @@ export const SettingsPage = () => {
               Dejá este campo vacío para no modificar el usuario.
             </Form.Text>
           </Form.Group>
-          
-          <Form.Group controlId="formEmail">
+
+          <Form.Group controlId="formEmail" className="mb-3">
             <Form.Label>Correo Electrónico</Form.Label>
             <Form.Control
               type="email"
               placeholder="Correo electrónico"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required={false}
             />
             <Form.Control.Feedback type="invalid">
               Por favor ingresá un correo válido.
@@ -152,37 +185,38 @@ export const SettingsPage = () => {
         </div>
 
         <div className="form-row">
-          <Form.Group controlId="formPassword">
+          <Form.Group controlId="formPassword" className="mb-3">
             <Form.Label>Contraseña</Form.Label>
             <Form.Control
               type="password"
               placeholder="Nueva contraseña (opcional)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required={false}
             />
             <Form.Text className="text-muted">
               Dejá en blanco para mantener la contraseña actual.
             </Form.Text>
           </Form.Group>
 
-          <Form.Group controlId="formCareer">
+          <Form.Group controlId="formCareer" className="mb-3">
             <Form.Label>Carrera</Form.Label>
             <Form.Select
-                value={career}
-                onChange={(e) => setCareer(e.target.value)}
+              value={career}
+              onChange={(e) => setCareer(e.target.value)}
             >
-                <option value="" disabled>
-                    Seleccioná tu carrera
-                </option>
-                <option value="civil">Ingeniería Civil</option>
-                <option value="electrica">Ingeniería Eléctrica</option>
-                <option value="industrial">Ingeniería Industrial</option>
-                <option value="mecanica">Ingeniería Mecánica</option>
-                <option value="quimica">Ingeniería Química</option>
-                <option value="sistemas">Ingeniería en Sistemas</option>
+              <option value="" disabled>
+                Seleccioná tu carrera
+              </option>
+              <option value="civil">Ingeniería Civil</option>
+              <option value="electrica">Ingeniería Eléctrica</option>
+              <option value="industrial">Ingeniería Industrial</option>
+              <option value="mecanica">Ingeniería Mecánica</option>
+              <option value="quimica">Ingeniería Química</option>
+              <option value="sistemas">Ingeniería en Sistemas</option>
             </Form.Select>
             <Form.Control.Feedback type="invalid">
-                Por favor seleccioná una carrera.
+              Por favor seleccioná una carrera.
             </Form.Control.Feedback>
             <Form.Text className="text-muted">
               Podés dejarlo vacío para no modificar la carrera.
@@ -192,10 +226,35 @@ export const SettingsPage = () => {
 
         {error && <p className="profile-error">{error}</p>}
 
-        <Button type="submit" className="w-100">
+        <Button type="submit" className="w-100 mb-2">
           Guardar cambios
         </Button>
+
+        <Button
+          type="button"
+          className="w-100"
+          variant="danger"
+          onClick={handleOpenDeleteModal}
+        >
+          Eliminar cuenta
+        </Button>
       </Form>
+
+      <DeleteConfirmAccount
+        show={showDeleteModal}
+        onHide={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        message="¿Estás seguro de que querés eliminar tu cuenta?"
+        confirmText="acción"
+        buttonTitle="Eliminar cuenta"
+      />
+
+      <Alert
+        show={showSuccessToast}
+        message={successMessage}
+        onClose={handleToastClose}
+        variant="success"
+      />
     </div>
   )
 }

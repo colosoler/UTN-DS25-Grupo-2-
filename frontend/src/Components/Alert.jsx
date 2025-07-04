@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { Toast, ToastContainer } from "react-bootstrap"
 
-export const Alert = ({ show, message, onClose, variant = "success" }) => {
+export const Alert = ({ show, message, onClose, variant = "success"}) => {
   const [showToast, setShowToast] = useState(show)
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export const Alert = ({ show, message, onClose, variant = "success" }) => {
   }
 
   return (
-    <ToastContainer position="bottom-start" className="p-3">
+    <ToastContainer position="top-center" className="p-3">
       <Toast
         show={showToast}
         onClose={handleClose}
