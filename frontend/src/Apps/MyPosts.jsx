@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect } from "react"
 import { DeleteConfirmModal } from "../Components/DeleteConfirmModal"
 import { Share } from "../Components/Share"
@@ -9,41 +7,18 @@ import Col from "react-bootstrap/Col"
 import Card from "react-bootstrap/Card"
 import { Link } from "react-router-dom"
 import { MdEdit, MdArrowUpward, MdArrowDownward } from "react-icons/md"
+import { useFetch } from "../Hooks/useFetch"
+import { SERVER_URL } from "../Constants"
 import './styles/MyPosts.css'
 
+export const MyPosts = () => {
+  const { data, isLoading, error } = useFetch("/apuntes", SERVER_URL);
+  if (isLoading) return <p>Cargando apuntes...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
-// Datos de ejemplo
-const mockMaterials = [
-  {
-    id: "1",
-    title: "Apuntes de Matemáticas - Cálculo Diferencial",
-    description: "Resumen completo de los conceptos básicos de cálculo diferencial con ejemplos prácticos.",
-    user: "usuario1",
-    upvotes: 20,
-    downvotes: 5,
-  },
-  {
-    id: "2",
-    title: "Video Tutorial - Programación en Python",
-    description: "Tutorial paso a paso para aprender los fundamentos de Python desde cero.",
-    user: "usuario1",
-    upvotes: 10,
-    downvotes: 1,
-  },
-  {
-    id: "3",
-    title: "Resumen de Historia Universal",
-    description: "Cronología detallada de eventos históricos importantes del siglo XX.",
-    user: "usuario1",
-    upvotes: 15,
-    downvotes: 3,
-  },
-]
-
-export const MyPosts = ({ results }) => {
-  const [materials, setMaterials] = useState(results)
+  const [materials, setMaterials] = useState(data)
   const [searchValue, setSearchValue] = useState("")
-  const [filteredMaterials, setFilteredMaterials] = useState(results)
+  const [filteredMaterials, setFilteredMaterials] = useState(data)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [materialToDelete, setMaterialToDelete] = useState(null)
   const [showForm, setShowForm] = useState(false)
