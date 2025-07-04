@@ -1,30 +1,38 @@
-import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { Container, Row, Col, Form, Button, Image } from 'react-bootstrap';
-import '../Apps/styles/Signup.css'
+import { useState } from "react"
+import { useNavigate, Link } from "react-router-dom"
+import { Container, Row, Col, Form, Button, Image } from "react-bootstrap"
+import { Alert } from "../Components/Alert"
+import "../Apps/styles/Signup.css"
 
 export const Signup = () => {
-  const [name, setName] = useState('') 
-  const [surname, setSurname] = useState('') 
-  const [username, setUsername] = useState('')  
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [name, setName] = useState("")
+  const [surname, setSurname] = useState("")
+  const [username, setUsername] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [validated, setValidated] = useState(false)
-  const [error, setError] = useState('')
-  const [career, setCareer] = useState('')
+  const [error, setError] = useState("")
+  const [career, setCareer] = useState("")
+  const [showSuccessToast, setShowSuccessToast] = useState(false)
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
     const form = e.currentTarget
-
     if (form.checkValidity() === false) {
       e.stopPropagation()
     } else {
-        navigate('/home')
+      setShowSuccessToast(true)
+      // Este timeout permite que se muestre el mensaje y luego se redirija
+      setTimeout(() => {
+        navigate("/home")
+      }, 1000)
     }
-
     setValidated(true)
+  }
+
+  const handleToastClose = () => {
+    setShowSuccessToast(false)
   }
 
   return (
@@ -47,9 +55,7 @@ export const Signup = () => {
             onChange={(e) => setName(e.target.value)}
             className="form-control"
           />
-          <Form.Control.Feedback type="invalid">
-            Ingresá un nombre válido.
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">Ingresá un nombre válido.</Form.Control.Feedback>
         </Form.Group>
         <Form.Group controlId="formSurname">
           <Form.Control
@@ -60,9 +66,7 @@ export const Signup = () => {
             onChange={(e) => setSurname(e.target.value)}
             className="form-control"
           />
-          <Form.Control.Feedback type="invalid">
-            Ingresá un apellido válido.
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">Ingresá un apellido válido.</Form.Control.Feedback>
         </Form.Group>
         <Form.Group controlId="formUsername">
           <Form.Control
@@ -73,11 +77,8 @@ export const Signup = () => {
             onChange={(e) => setUsername(e.target.value)}
             className="form-control"
           />
-          <Form.Control.Feedback type="invalid">
-            Ingresá un usuario válido.
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">Ingresá un usuario válido.</Form.Control.Feedback>
         </Form.Group>
-        
         <Form.Group controlId="formEmail">
           <Form.Control
             required
@@ -87,11 +88,8 @@ export const Signup = () => {
             onChange={(e) => setEmail(e.target.value)}
             className="form-control"
           />
-          <Form.Control.Feedback type="invalid">
-            Ingresá un correo válido.
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">Ingresá un correo válido.</Form.Control.Feedback>
         </Form.Group>
-
         <Form.Group controlId="formPassword">
           <Form.Control
             required
@@ -101,20 +99,12 @@ export const Signup = () => {
             onChange={(e) => setPassword(e.target.value)}
             className="form-control"
           />
-          <Form.Control.Feedback type="invalid">
-            Ingresá una contraseña.
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">Ingresá una contraseña.</Form.Control.Feedback>
         </Form.Group>
-
-       <Form.Group controlId="formRole">
-        <Form.Select
-            required
-            className="form-control"
-            value={career}
-            onChange={(e) => setCareer(e.target.value)}
-  >
+        <Form.Group controlId="formRole">
+          <Form.Select required className="form-control" value={career} onChange={(e) => setCareer(e.target.value)}>
             <option value="" disabled>
-                Seleccioná tu carrera
+              Seleccioná tu carrera
             </option>
             <option value="civil">Ingeniería Civil</option>
             <option value="electrica">Ingeniería Eléctrica</option>
@@ -122,22 +112,24 @@ export const Signup = () => {
             <option value="mecanica">Ingeniería Mecánica</option>
             <option value="quimica">Ingeniería Química</option>
             <option value="sistemas">Ingeniería en Sistemas</option>
-        </Form.Select>
-        <Form.Control.Feedback type="invalid">
-            Seleccioná una carrera.
-        </Form.Control.Feedback>
+          </Form.Select>
+          <Form.Control.Feedback type="invalid">Seleccioná una carrera.</Form.Control.Feedback>
         </Form.Group>
-
         {error && <p className="signup-error">{error}</p>}
-
         <Button type="submit" className="w-100">
           Registrarme
         </Button>
-
         <p className="signup-register-link">
           ¿Ya tenés cuenta? <Link to="/">Inicia Sesión</Link>
         </p>
       </Form>
+
+      <Alert
+        show={showSuccessToast}
+        message="¡Cuenta creada exitosamente! Redirigiendo..."
+        onClose={handleToastClose}
+        variant="success"
+      />
     </div>
   )
 }

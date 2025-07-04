@@ -1,30 +1,38 @@
-import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { Container, Row, Col, Form, Button, Image } from 'react-bootstrap';
-import '../Apps/styles/Login.css'
+import { useState } from "react"
+import { useNavigate, Link } from "react-router-dom"
+import { Container, Row, Col, Form, Button, Image } from "react-bootstrap"
+import { Alert } from "../Components/Alert"
+import "../Apps/styles/Login.css"
 
 export const Login = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [validated, setValidated] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState("")
+  const [showSuccessToast, setShowSuccessToast] = useState(false)
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
     const form = e.currentTarget
-
     if (form.checkValidity() === false) {
       e.stopPropagation()
     } else {
-      if (email === 'admin@utn.com' && password === '1234') {
-        navigate('/home')
+      if (email === "admin@utn.com" && password === "1234") {
+        setShowSuccessToast(true)
+        // Este timeout permite que se muestre el mensaje y luego se redirija
+        setTimeout(() => {
+          navigate("/home")
+        },2500)
       } else {
-        setError('Credenciales incorrectas')
+        setError("Credenciales incorrectas")
       }
     }
-
     setValidated(true)
+  }
+
+  const handleToastClose = () => {
+    setShowSuccessToast(false)
   }
 
   return (
@@ -38,7 +46,6 @@ export const Login = () => {
           </Row>
         </Container>
         <h2>Iniciar Sesión</h2>
-
         <Form.Group controlId="formEmail">
           <Form.Control
             required
@@ -48,11 +55,8 @@ export const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
             className="form-control"
           />
-          <Form.Control.Feedback type="invalid">
-            Ingresá un correo válido.
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">Ingresá un correo válido.</Form.Control.Feedback>
         </Form.Group>
-
         <Form.Group controlId="formPassword">
           <Form.Control
             required
@@ -62,21 +66,23 @@ export const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             className="form-control"
           />
-          <Form.Control.Feedback type="invalid">
-            Ingresá una contraseña.
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">Ingresá una contraseña.</Form.Control.Feedback>
         </Form.Group>
-
         {error && <p className="login-error">{error}</p>}
-
         <Button type="submit" className="w-100">
           Ingresar
         </Button>
-
         <p className="login-register-link">
           ¿No tenés cuenta? <Link to="/signup">Registrate</Link>
         </p>
       </Form>
+
+      <Alert
+        show={showSuccessToast}
+        message="¡Sesión iniciada exitosamente! Redirigiendo..."
+        onClose={handleToastClose}
+        variant="success"
+      />
     </div>
   )
 }
