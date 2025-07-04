@@ -16,14 +16,8 @@ import { useFetch } from './Hooks/useFetch'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-const SERVER_URL = "https://utnotas.free.beeceptor.com";
-
-
 function App() {
   const location = useLocation();
-  const { data, isLoading, error } = useFetch("/apuntes", SERVER_URL);
-  if (isLoading) return <p>Cargando apuntes...</p>;
-  if (error) return <p>Error: {error.message}</p>;
 
   const hideNavbar = location.pathname === '/' || location.pathname === '/signup';
   return (
@@ -38,12 +32,12 @@ function App() {
           <Route path="/result" element={<SearchResultApp/>} />
           <Route path="/home" element={<HomeApp/>} />
           <Route path="/carrera/:id" element={<CarreraDetailApp/>} />
-          <Route path="/search" element={<SearchResultApp results={data}/>} />
-          <Route path="/material/:id" element={<MaterialRouteWrapper results={data}/>} />
+          <Route path="/search" element={<SearchResultApp/>} />
+          <Route path="/material/:id" element={<MaterialRouteWrapper/>} />
           <Route path="/add" element={<CreateMaterialApp/>} />
           <Route path="/profile" element={<ProfilePage/>} />
           <Route path="/settings" element={<SettingsPage/>} />
-          <Route path="/myposts" element={<MyPosts results={data}/>} />
+          <Route path="/myposts" element={<MyPosts/>} />
         </Routes>   
       </main>
     </>
