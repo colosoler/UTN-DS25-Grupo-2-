@@ -13,29 +13,35 @@ import './styles/MyPosts.css'
 
 export const MyPosts = () => {
   const { data, isLoading, error } = useFetch("/apuntes", SERVER_URL);
-  if (isLoading) return <p>Cargando apuntes...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
-  const [materials, setMaterials] = useState(data)
+  const [materials, setMaterials] = useState([])
   const [searchValue, setSearchValue] = useState("")
-  const [filteredMaterials, setFilteredMaterials] = useState(data)
+  const [filteredMaterials, setFilteredMaterials] = useState([])
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [materialToDelete, setMaterialToDelete] = useState(null)
   const [showForm, setShowForm] = useState(false)
+  
+    useEffect(() => {
+    if (data) {
+      setMaterials(data);
+      setFilteredMaterials(data);
+    }
+  }, [data]);
 
-  // Filtrar materiales basado en búsqueda en tiempo real
   useEffect(() => {
     if (searchValue) {
       const filtered = materials.filter(
         (material) =>
           material.title.toLowerCase().includes(searchValue.toLowerCase()) ||
-          material.description.toLowerCase().includes(searchValue.toLowerCase()),
-      )
-      setFilteredMaterials(filtered)
+          material.description.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      setFilteredMaterials(filtered);
     } else {
-      setFilteredMaterials(materials)
+      setFilteredMaterials(materials);
     }
-  }, [searchValue, materials])
+  }, [searchValue, materials]);
+
+  if (isLoading) return <p>Cargando apuntes...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
   const handleDeleteClick = (material) => {
     setMaterialToDelete(material)
