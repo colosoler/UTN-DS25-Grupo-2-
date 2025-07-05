@@ -30,7 +30,7 @@ export const SearchOptions = ({options, onChange, name, placeholder}) => {
                     {filtered.map((elem, index) => (
                         <ListGroup.Item
                             key={index}
-                            onMouseDown={() => setOption(elem)}
+                            onMouseDown={() => {setOption(elem); handleChangeOptions({target: {name, value: elem}});}}
                             style={{ cursor: 'pointer' }}>
                             {elem}
                         </ListGroup.Item>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from '../Hooks/useForm.jsx';
 import { Form, Row, Col, Button, Modal } from 'react-bootstrap';
 import { SearchOptions } from '../Components/SearchOptions.jsx';
@@ -10,7 +10,17 @@ const materias = ["A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2", "E1", "E2", "F
 
 export const Searchbar = () => {
   const navigate = useNavigate();
-  const [ formData, setFormData, handleChange ] = useForm();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const [url, setURL] = useState(`${location.pathname}?${searchParams.toString()}`);
+  const getUrl = (newParams) => (`${location.pathname}?${newParams.toString()}`);
+  const [formData, setFormData, handleChange] = useForm((name, value) => {
+    const newParams = new URLSearchParams(searchParams.toString());
+    newParams.set(name, value);
+    setURL(getUrl(newParams));
+    console.log(formData);
+  });
+
   const [showModal, setShowModal] = useState(false);
 
   const handleShowModal = () => setShowModal(true);
@@ -18,12 +28,15 @@ export const Searchbar = () => {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      navigate('/search');
+      navigate(url);
     }
   };
 
   const handleClear = () => {
-    setFormData(formData.hasOwnProperty('search') && { ...formData, search: '' });
+    setFormData(formData.hasOwnProperty('query') && { ...formData, query: '' });
+    const newParams = new URLSearchParams(searchParams.toString());
+    newParams.delete('query');
+    navigate(getUrl(newParams));
   };
 
   return (
@@ -37,8 +50,8 @@ export const Searchbar = () => {
                   type="text"
                   className="form-control focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-l-lg"
                   placeholder="Ingresa un tema o una materia"
-                  name="search"
-                  value={formData.search || ''}
+                  name="query"
+                  value={formData.query || ''}
                   onChange={handleChange}
                   onKeyDown={handleKeyDown}
                 />
@@ -139,7 +152,7 @@ export const Searchbar = () => {
           <Button variant="secondary" onClick={handleCloseModal}>
             Cerrar
           </Button>
-          <Button variant="primary" onClick={handleCloseModal}>
+          <Button variant="primary" onClick={() => { handleCloseModal(), navigate(url) }}>
             Aplicar Filtros
           </Button>
         </Modal.Footer>
