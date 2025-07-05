@@ -5,7 +5,7 @@ import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import Card from "react-bootstrap/Card"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { MdEdit, MdArrowUpward, MdArrowDownward } from "react-icons/md"
 import { useFetch } from "../Hooks/useFetch"
 import { SERVER_URL } from "../Constants"
@@ -13,6 +13,7 @@ import './styles/MyPosts.css'
 
 export const MyPosts = () => {
   const { data, isLoading, error } = useFetch("/apuntes", SERVER_URL);
+  const navigate = useNavigate()
   const [materials, setMaterials] = useState([])
   const [searchValue, setSearchValue] = useState("")
   const [filteredMaterials, setFilteredMaterials] = useState([])
@@ -50,8 +51,7 @@ export const MyPosts = () => {
 
   const handleEdit = (material) => {
     console.log("Editar material:", material.id)
-    // Aquí implementarías la navegación a la página de edición
-    // navigate(`/edit-material/${material.id}`)
+    navigate(`/edit/${material.id}`)
   }
 
   const confirmDelete = () => {
