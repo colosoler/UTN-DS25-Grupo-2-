@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react"
 import { DeleteConfirmModal } from "../Components/DeleteConfirmModal"
 import { Share } from "../Components/Share"
@@ -5,43 +6,44 @@ import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import Card from "react-bootstrap/Card"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { MdEdit, MdArrowUpward, MdArrowDownward } from "react-icons/md"
 import { useFetch } from "../Hooks/useFetch"
 import { SERVER_URL } from "../Constants"
-import './styles/MyPosts.css'
+import "./styles/MyPosts.css"
 
 export const MyPosts = () => {
-  const { data, isLoading, error } = useFetch("/apuntes", SERVER_URL);
+  const { data, isLoading, error } = useFetch("/apuntes", SERVER_URL)
+  const navigate = useNavigate()
   const [materials, setMaterials] = useState([])
   const [searchValue, setSearchValue] = useState("")
   const [filteredMaterials, setFilteredMaterials] = useState([])
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [materialToDelete, setMaterialToDelete] = useState(null)
   const [showForm, setShowForm] = useState(false)
-  
-    useEffect(() => {
+
+  useEffect(() => {
     if (data) {
-      setMaterials(data);
-      setFilteredMaterials(data);
+      setMaterials(data)
+      setFilteredMaterials(data)
     }
-  }, [data]);
+  }, [data])
 
   useEffect(() => {
     if (searchValue) {
       const filtered = materials.filter(
         (material) =>
           material.title.toLowerCase().includes(searchValue.toLowerCase()) ||
-          material.description.toLowerCase().includes(searchValue.toLowerCase())
-      );
-      setFilteredMaterials(filtered);
+          material.description.toLowerCase().includes(searchValue.toLowerCase()),
+      )
+      setFilteredMaterials(filtered)
     } else {
-      setFilteredMaterials(materials);
+      setFilteredMaterials(materials)
     }
-  }, [searchValue, materials]);
+  }, [searchValue, materials])
 
-  if (isLoading) return <p>Cargando apuntes...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (isLoading) return <p>Cargando apuntes...</p>
+  if (error) return <p>Error: {error.message}</p>
 
   const handleDeleteClick = (material) => {
     setMaterialToDelete(material)
@@ -50,8 +52,12 @@ export const MyPosts = () => {
 
   const handleEdit = (material) => {
     console.log("Editar material:", material.id)
-    // Aquí implementarías la navegación a la página de edición
-    // navigate(`/edit-material/${material.id}`)
+    
+    navigate(`/edit/${material.id}`, {
+      state: {
+        materialData: material,
+      },
+    })
   }
 
   const confirmDelete = () => {
@@ -275,5 +281,3 @@ export const MyPosts = () => {
     </Container>
   )
 }
-
-

@@ -11,6 +11,7 @@ import { CreateMaterialApp } from './Apps/CreateMaterialApp.jsx'
 import { ProfilePage } from './Apps/ProfilePage.jsx'
 import { SettingsPage } from './Apps/SettingsPage.jsx'
 import { MyPosts } from './Apps/MyPosts.jsx'
+import { EditMaterial } from './Apps/EditPost.jsx'
 import { useFetch } from './Hooks/useFetch'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -38,6 +39,8 @@ function App() {
           <Route path="/profile" element={<ProfilePage/>} />
           <Route path="/settings" element={<SettingsPage/>} />
           <Route path="/myposts" element={<MyPosts/>} />
+          <Route path="/edit/:id" element={<EditMaterial />} />
+
         </Routes>   
       </main>
     </>
