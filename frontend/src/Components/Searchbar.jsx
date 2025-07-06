@@ -12,13 +12,12 @@ export const Searchbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const [url, setURL] = useState(`${location.pathname}?${searchParams.toString()}`);
-  const getUrl = (newParams) => (`${location.pathname}?${newParams.toString()}`);
+  const getUrl = (params) => (`/search/?${params.toString()}`);
+  const [url, setURL] = useState(getUrl(searchParams));
   const [formData, setFormData, handleChange] = useForm((name, value) => {
     const newParams = new URLSearchParams(searchParams.toString());
     newParams.set(name, value);
     setURL(getUrl(newParams));
-    console.log(formData);
   });
 
   const [showModal, setShowModal] = useState(false);
