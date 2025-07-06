@@ -1,25 +1,29 @@
-"use client"
+
 
 import { useState, useEffect } from "react"
 import { Form, Row, Col, Button, Alert } from "react-bootstrap"
 import { SearchOptions } from "../Components/SearchOptions"
 import { carreras } from "./HomeApp"
 import { useForm } from "../Hooks/useForm"
-import { useFetch } from "../Hooks/useFetch"
-import { useParams } from "react-router-dom"
+import { useParams, useLocation } from "react-router-dom"
 import { SERVER_URL } from "../Constants"
 
 const materias = ["A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2", "E1", "E2", "F1", "F2", "G1", "G2", "H1", "H2"]
 
 export const EditMaterial = () => {
   const { id } = useParams()
+  const location = useLocation()
   const [formData, setFormData, handleChange] = useForm()
-  const { data, isLoading, error } = useFetch(`/apuntes/${id}`, SERVER_URL)
   const [showSuccessToast, setShowSuccessToast] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [materialData, setMaterialData] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    if (data && !isLoading && !error) {
+    // Primero intentar obtener los datos del state de navegación
+    if (location.state?.materialData) {
+      const data = location.state.materialData
+      setMaterialData(data)
       setFormData({
         titulo: data.title || "",
         materia: data.materia || "",
@@ -29,8 +33,41 @@ export const EditMaterial = () => {
         comision: data.comision || "",
         descripcion: data.description || "",
       })
+      setIsLoading(false)
+    } else {
+      
+      fetchMaterialData()
     }
-  }, [data, isLoading, error, setFormData])
+  }, [location.state, setFormData])
+
+  const fetchMaterialData = async () => {
+    try {
+      setIsLoading(true)
+      const response = await fetch(`${SERVER_URL}/apuntes/${id}`)
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+      setMaterialData(data)
+      setFormData({
+        titulo: data.title || "",
+        materia: data.materia || "",
+        carrera: data.carrera || "",
+        tipo: data.tipo || "",
+        parcial: data.parcial || "",
+        comision: data.comision || "",
+        descripcion: data.description || "",
+      })
+    } catch (error) {
+      console.error("Error fetching material:", error)
+      alert("Error al cargar el material. Por favor, intenta desde la lista de materiales.")
+      window.history.back()
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -63,16 +100,29 @@ export const EditMaterial = () => {
         setTimeout(() => {
           window.location.href = "/MyPosts"
         }, 2000)
+      } else {
+        const errorText = await response.text()
+        console.error("Error updating material:", errorText)
+        alert("Error al actualizar el material")
       }
     } catch (error) {
       console.error("Error:", error)
+      alert("Error al actualizar el material")
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  if (isLoading) return <p>Cargando...</p>
-  if (error) return <p>Error: {error.message}</p>
+  if (isLoading) {
+    return (
+      <div className="container mt-5 text-center">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Cargando...</span>
+        </div>
+        <p className="mt-3">Cargando datos del material...</p>
+      </div>
+    )
+  }
 
   return (
     <>
@@ -86,7 +136,7 @@ export const EditMaterial = () => {
       </Alert>
 
       <Form className="container mt-5 bg-light p-4 rounded" onSubmit={handleSubmit}>
-        <h1 className="text-center mb-4">Editando: {data?.title || "Cargando..."}</h1>
+        <h1 className="text-center mb-4">Editando: {materialData?.title || "Material"}</h1>
 
         <Form.Group className="mb-4">
           <Form.Label>Título del material</Form.Label>
