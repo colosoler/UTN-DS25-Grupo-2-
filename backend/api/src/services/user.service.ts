@@ -10,7 +10,7 @@ let users: User[] = [
 ];
 
 
-export async function getUsers(): Promise<User[]> {
+export async function getAllUsers(): Promise<User[]> {
   return users;
 }
 
@@ -56,4 +56,14 @@ UpdateUserRequest): Promise<User> {
  }
  users[userIndex] = { ...users[userIndex], ...updateData };
  return users[userIndex];
+}
+
+export async function deleteUser(id: number): Promise<void> {
+  const userIndex = users.findIndex(u => u.id === id);
+  if (userIndex === -1) {
+    const error = new Error('User not found');
+    (error as any).statusCode = 404;
+    throw error;
+  }
+  users.splice(userIndex, 1); 
 }
