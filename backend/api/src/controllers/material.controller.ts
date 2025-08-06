@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { Material, CreateMaterialRequest, UpdateMaterialRequest, MaterialResponse, MaterialsListResponse } from '../types/materials.types';
-import * as materialService from '../services/materials.service';
+import { Material, CreateMaterialRequest, UpdateMaterialRequest, MaterialResponse, MaterialsListResponse } from '../types/material.types';
+import * as materialService from '../services/material.service';
 
 export async function getAllMaterials(req: Request, res:Response<MaterialsListResponse>, next: NextFunction) {
     try {
         const searchParams = req.query;
-        const materials = await materialService.getAllMaterials(searchParams);
+        const materials = await materialService.getAllMaterials();
         res.json({
             materials,
             total: materials.length,

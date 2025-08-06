@@ -49,4 +49,5 @@ export interface MaterialResponse {
 export interface MaterialsListResponse {
     materials: Material[];
     total: number;
+    message?: string;
 }
