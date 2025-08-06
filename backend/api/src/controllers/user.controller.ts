@@ -58,7 +58,6 @@ next: NextFunction) {
   try {
     const { id } = req.params;
     await userService.deleteUser(parseInt(id));
-
     res.json({
       message: 'User deleted.'
     });
