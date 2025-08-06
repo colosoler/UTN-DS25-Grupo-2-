@@ -4,8 +4,6 @@ const router = Router();
 
 router.get('/', materialController.getAllMaterials);
 
-router.get('/search', materialController.getMaterialsByFilters);
-
 router.post('/', materialController.createMaterial);
 
 router.put('/:id', materialController.updateMaterial);

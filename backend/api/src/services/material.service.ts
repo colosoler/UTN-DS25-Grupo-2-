@@ -39,20 +39,12 @@ export async function getAllMaterials(): Promise<Material[]> {
 
 export async function findMaterials(filters: any): Promise<Material[]> {
   return materials.filter(material => {
-    return Object.entries(filters).every(([key, value]) => {
-      const materialValue = (material as any)[key];
-
-      if (materialValue == null) return false;
-
-      
-      if (typeof materialValue === 'number') {
-        return materialValue === Number(value);
-      }
-
-      return materialValue.toString().toLowerCase().includes((value as string).toLowerCase());
-    });
+    return Object.entries(filters).every(([key, value]) =>
+      (material as any)[key]?.toString().toLowerCase().includes((value as string).toLowerCase())
+    );
   });
 }
+
 
 export async function createMaterial(data: CreateMaterialRequest): Promise<Material> {
   const newMaterial: Material = {
