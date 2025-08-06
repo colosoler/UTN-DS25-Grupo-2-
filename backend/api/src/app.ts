@@ -1,11 +1,16 @@
 import express from 'express';
+import { userRoutes } from './routes/user.routes';
+import { handleError } from './middlewares/error.middleware';
+import { logRequest } from './middlewares/logger.middleware';
 const app = express();
 const PORT = 3000;
 
-app.get('/', (req, res) => {
- res.send('👋 ¡Hola mundo desde Express!' );
-});
-// Inicio del servidor
+app.use(express.json());
+app.use(logRequest);
+
+app.use('/users', userRoutes);
+
+app.use(handleError);
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port  ${PORT}`);
+ console.log(` Server running on port ${PORT}`);
 });
