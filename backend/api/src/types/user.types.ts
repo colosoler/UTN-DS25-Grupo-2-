@@ -22,3 +22,12 @@ export interface UpdateUserRequest {
     email?: string;
     password?: string; 
 }
+
+export interface UserResponse {
+ user: User;
+ message: string;
+}
+export interface UsersListResponse {
+ users: User[];
+ total: number;
+}

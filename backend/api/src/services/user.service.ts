@@ -10,7 +10,7 @@ let users: User[] = [
 ];
 
 
-export async function getUsers(): Promise<User[]> {
+export async function getAllUsers(): Promise<User[]> {
   return users;
 }
 
