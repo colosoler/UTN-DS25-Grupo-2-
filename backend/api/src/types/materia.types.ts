@@ -2,19 +2,19 @@ export interface Materia {
   id: number;
   nombre: string;
   descripcion: string;
-  cuatrimestre: 1 | 2 | "anual";
+  tipo: "anual" | "primer cuatrimestre" | "segundo cuatrimestre";
 }
 
 export interface CreateMateriaRequest {
   nombre: string;
   descripcion: string;
-  cuatrimestre: 1 | 2 | "anual";
+  tipo: "anual" | "primer cuatrimestre" | "segundo cuatrimestre";
 }
 
 export interface UpdateMateriaRequest {
   nombre?: string;
   descripcion?: string;
-  cuatrimestre?: 1 | 2 | "anual";
+  tipo?: "anual" | "primer cuatrimestre" | "segundo cuatrimestre";
 }
 
 export interface MateriaResponse {
