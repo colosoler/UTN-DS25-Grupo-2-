@@ -1,18 +1,18 @@
 import { Router } from 'express';
-import * as bookController from '../controllers/materia.controller'
+import * as materiaController from '../controllers/materia.controller'
 
 const router = Router();
 
 // Ruta -> GET /materias
-router.get('/', bookController.getAllMaterias);
+router.get('/', materiaController.getAllMaterias);
 
 // Ruta -> GET /materias/:id
-router.get('/:id', bookController.getMateriaById);
+router.get('/:id', materiaController.getMateriaById);
 
 // Ruta -> POST /materias
-router.post('/', bookController.createMateria);
+router.post('/', materiaController.createMateria);
 
 // Ruta -> PUT /materias/:id
-router.put('/:id', bookController.updateMateria);
+router.put('/:id', materiaController.updateMateria);
 
 export const materiaRoutes = router;
