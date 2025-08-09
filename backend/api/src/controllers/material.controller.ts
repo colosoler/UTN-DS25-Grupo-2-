@@ -3,21 +3,39 @@ import { Material, CreateMaterialRequest, UpdateMaterialRequest, MaterialRespons
 import * as materialService from '../services/material.service';
 
 export async function getAllMaterials(req: Request, res: Response<MaterialsListResponse>, next: NextFunction) {
-  try {
-    const filters = req.query;
-    const materials = await materialService.findMaterials(filters);
-    res.json({
-      materials,
-      total: materials.length,
-      message: 'Materials retrieved successfully',
-    });
-  } catch (error) {
-    next(error);
-  }
+    try {
+        const materials = await materialService.getAllMaterials();
+        res.json({
+        materials,
+        total: materials.length,
+        message: 'Materials retrieved successfully',
+        });
+    } catch (error) {
+        next(error);
+    }
 }
 
+export async function findMaterials(req: Request, res: Response<MaterialsListResponse>, next: NextFunction) {
+    try {
+        const filters = req.query;
+        const materials = await materialService.findMaterials(filters);
+        res.json({ materials, total: materials.length });
+    } catch (error) {
+        next(error);
+    }
+}
 
-
+export async function getMaterialById(req: Request, res: Response<MaterialResponse>, next: NextFunction) {
+    try {
+        const { id } = req.params;
+        const material = await materialService.getMaterialById(parseInt(id));
+        res.json({ 
+            material, 
+            message: 'Material found succesfully' });
+    } catch (error) {
+        next(error);
+    }
+}
 
 export async function createMaterial( req: Request<{}, MaterialResponse,CreateMaterialRequest>, res: Response<MaterialResponse>, next: NextFunction){
     try {

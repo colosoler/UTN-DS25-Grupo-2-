@@ -1,8 +1,17 @@
 import { Router } from 'express';
 import * as materialController from '../controllers/material.controller';
+
 const router = Router();
 
-router.get('/', materialController.getAllMaterials);
+router.get('/', (req, res, next) => {
+    if (Object.keys(req.query).length > 0) {
+        materialController.findMaterials(req, res, next);
+    } else {
+        materialController.getAllMaterials(req, res, next);
+    }
+});
+
+router.get('/', materialController.getMaterialById);
 
 router.post('/', materialController.createMaterial);
 

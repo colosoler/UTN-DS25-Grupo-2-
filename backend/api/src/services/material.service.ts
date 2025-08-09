@@ -37,14 +37,34 @@ export async function getAllMaterials(): Promise<Material[]> {
   return materials;
 }
 
-export async function findMaterials(filters: any): Promise<Material[]> {
-  return materials.filter(material => {
-    return Object.entries(filters).every(([key, value]) =>
-      (material as any)[key]?.toString().toLowerCase().includes((value as string).toLowerCase())
-    );
-  });
+export async function getMaterialById(id: number): Promise<Material> {
+  const material = materials.find(m => m.id === id);
+  if (!material) {
+    const error = new Error('Material not found');
+    (error as any).statusCode = 404;
+    throw error;
+  }
+  return material;
 }
 
+export async function findMaterials(filters: any): Promise<Material[]> {
+  return materials.filter(material => {
+    return Object.entries(filters).every(([key, value]) => {
+      if (key === 'query') {
+        return [
+          material.titulo,
+          material.descripcion,
+          material.comision,
+          material.materiaId,
+          material.carreraId,
+        ].some(field =>
+          field && field.toString().toLowerCase().includes((value as string).toLowerCase())
+        );
+      }
+      return (material as any)[key]?.toString().toLowerCase() === (value as string).toLowerCase();
+    });
+  });
+}
 
 export async function createMaterial(data: CreateMaterialRequest): Promise<Material> {
   const newMaterial: Material = {
