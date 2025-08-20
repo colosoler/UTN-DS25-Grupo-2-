@@ -13,3 +13,32 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+//Tabla usuario
+model User {
+ id        Int      @id @default(autoincrement())
+ email     String   @unique
+ username  String   @unique
+ name      String   @db.VarChar(50)
+ surname   String   @db.VarChar(50)
+ password  String   @db.VarChar(20)
+ materials     Material[]
+ career   Career
+ role     Role   @default(USER)  
+ createdAt DateTime @default(now())
+}
+
+enum Carrera {
+  Ingenieria_Sistemas
+  Ingenieria_Quimica
+  Ingenieria_Civil
+  Ingenieria_Electrica
+  Ingenieria_Industrial
+  Ingenieria_Mecanica
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
