@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -14,21 +11,76 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//Tabla usuario
+// Tabla usuario
 model User {
- id        Int      @id @default(autoincrement())
- email     String   @unique
- username  String   @unique
- name      String   @db.VarChar(50)
- surname   String   @db.VarChar(50)
- password  String   @db.VarChar(20)
- materials     Material[]
- career   Career
- role     Role   @default(USER)  
- createdAt DateTime @default(now())
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  username  String    @unique
+  name      String    @db.VarChar(50)
+  surname   String    @db.VarChar(50)
+  password  String
+  career    Career    
+  role      Role      @default(USER)  
+  materials Material[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("users")
 }
 
-enum Carrera {
+
+model Carrera {
+  id        String     @id // UUID o código de carrera
+  nombre    String     @db.VarChar(100)
+  materias  Materia[]
+  materials Material[]
+  createdAt DateTime   @default(now())
+
+  @@map("carreras")
+}
+
+
+model Materia {
+  id         String     @id // Código de materia
+  nombre     String     @db.VarChar(100)
+  carreraId  String
+  carrera    Carrera    @relation(fields: [carreraId], references: [id])
+  materials  Material[]
+  createdAt  DateTime   @default(now())
+
+  @@map("materias")
+}
+
+
+model Material {
+  id               Int      @id @default(autoincrement())
+  añoCursada       Int
+  archivos         String[] 
+  cantidadReportes Int      @default(0)
+  comision         String   @db.VarChar(50)
+  descripcion      String   @db.Text
+  fecha            DateTime @default(now())
+  numeroParcial    Int?     
+  titulo           String   @db.VarChar(200)
+  tipo             TipoMaterial
+  
+  // Foreign Keys
+  materiaId String
+  carreraId String
+  userId    Int
+
+  // Relaciones
+  materia   Materia  @relation(fields: [materiaId], references: [id])
+  carrera   Carrera  @relation(fields: [carreraId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("materials")
+}
+
+enum Career {
   Ingenieria_Sistemas
   Ingenieria_Quimica
   Ingenieria_Civil
@@ -42,3 +94,11 @@ enum Role {
   ADMIN
 }
 
+enum TipoMaterial {
+  PARCIAL
+  FINAL
+  APUNTES
+  TP_PRACTICO
+  RESUMEN
+  OTRO
+}
