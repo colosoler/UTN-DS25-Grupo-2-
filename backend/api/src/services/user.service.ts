@@ -14,33 +14,39 @@ let users: User[] = [
 */
 
 export async function getAllUsers(): Promise<User[]> {
-  return users;
+ const users = await prisma.user.findMany({
+ orderBy: { id: 'asc' },
+ });
+ return users;
 }
 
 export async function getUserById(id: number): Promise<User> {
-  const user = users.find(user => user.id === id);
-  if (!user) {
-    const error = new Error('User not found');
-    (error as any).statusCode = 404;
-    throw error;
-  }
-  return user;
-}
-
-export async function createUser(userData: CreateUserRequest): 
-Promise<User> {
- //Reglas de negocio:
- if (userData.password.length < 8) {
-   const error = new Error('Password must be more than 8 characters long');
-   (error as any).statusCode = 400;
-   throw error;
+ const user = await prisma.user.findUnique({ where: { id } });
+ if (!user) {
+ const error = new Error('User not found');
+ (error as any).statusCode = 404;
+ throw error;
  }
- const newUser: User = {
-   id: users.length ? Math.max(...users.map(user => user.id)) + 1 : 1,
-   ...userData,
- };
- users.push(newUser);
- return newUser;
+ return user;
+}
+export async function createUser(data: CreateUserRequest):
+Promise<User> {
+
+ if (data.password.length <= 8) {
+ const error = new Error('Password must be greater than 8');
+ (error as any).statusCode = 400;
+ throw error;
+ } 
+ const created = await prisma.user.create({
+ data: {
+ email: data.email,
+ username: data.username,
+ name: data.name,
+ surname: data.surname,
+ password: data.password
+ },
+ });
+ return created;
 }
 
 export async function updateUser(id: number, updateData: 
