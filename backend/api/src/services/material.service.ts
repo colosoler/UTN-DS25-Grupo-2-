@@ -1,44 +1,16 @@
-import { Material, CreateMaterialRequest, UpdateMaterialRequest } from '../types/material.types';
-
-let materials: Material[] = [
-  {
-    id: 1,
-    añoCursada: 2024,
-    archivos: ['parcial1.pdf'],
-    cantidadReportes: 0,
-    comision: 'A',
-    descripcion: 'Parcial de Sistemas Operativos',
-    fecha: new Date(),
-    numeroParcial: 1,
-    titulo: 'Parcial 1',
-    materiaId: 'MAT101',
-    carreraId: 'CARR123',
-    tipo: 'parcial',
-    userId: '1'
-  },
-  {
-    id: 2,
-    añoCursada: 2023,
-    archivos: ['tp-redes.docx'],
-    cantidadReportes: 1,
-    comision: 'B',
-    descripcion: 'TP final de Redes',
-    fecha: new Date(),
-    numeroParcial: 0,
-    titulo: 'TP Redes',
-    materiaId: 'MAT202',
-    carreraId: 'CARR456',
-    tipo: 'tp',
-    userId: '2'
-  }
-];
+import { CreateMaterialRequest, UpdateMaterialRequest } from '../types/material.types';
+import prisma from '../config/prisma';
+import { Material } from '../generated/prisma';
 
 export async function getAllMaterials(): Promise<Material[]> {
+  const materials = await prisma.material.findMany({
+    orderBy: { createdAt: 'desc' }
+  });
   return materials;
 }
 
 export async function getMaterialById(id: number): Promise<Material> {
-  const material = materials.find(m => m.id === id);
+  const material = await prisma.material.findUnique({ where: { id } });
   if (!material) {
     const error = new Error('Material not found');
     (error as any).statusCode = 404;
@@ -47,58 +19,135 @@ export async function getMaterialById(id: number): Promise<Material> {
   return material;
 }
 
-export async function findMaterials(filters: any): Promise<Material[]> {
-  return materials.filter(material => {
-    return Object.entries(filters).every(([key, value]) => {
-      if (key === 'query') {
-        return [
-          material.titulo,
-          material.descripcion,
-          material.comision,
-          material.materiaId,
-          material.carreraId,
-        ].some(field =>
-          field && field.toString().toLowerCase().includes((value as string).toLowerCase())
-        );
-      }
-      return (material as any)[key]?.toString().toLowerCase() === (value as string).toLowerCase();
-    });
-  });
-}
-
 export async function createMaterial(data: CreateMaterialRequest): Promise<Material> {
-  const newMaterial: Material = {
-    id: materials.length ? Math.max(...materials.map(m => m.id)) + 1 : 1,
-    ...data,
-    cantidadReportes: 0,
-    fecha: new Date()
-  };
-  materials.push(newMaterial);
-  return newMaterial;
+  // Validar que el usuario existe
+  const userExists = await prisma.user.findUnique({
+    where: { id: parseInt(data.userId) }
+  });
+  
+  if (!userExists) {
+    const error = new Error('User not found');
+    (error as any).statusCode = 400;
+    throw error;
+  }
+
+
+  const created = await prisma.material.create({
+    data: {
+      añoCursada: data.añoCursada,
+      archivos: data.archivos,
+      comision: data.comision,
+      descripcion: data.descripcion,
+      numeroParcial: data.numeroParcial,
+      titulo: data.titulo,
+      materiaId: data.materiaId,
+      carreraId: data.carreraId,
+      tipo: data.tipo,
+      userId: parseInt(data.userId),
+      cantidadReportes: 0
+    }
+  });
+  return created;
 }
 
 export async function updateMaterial(id: number, updateData: UpdateMaterialRequest): Promise<Material> {
-  const index = materials.findIndex(m => m.id === id);
-  if (index === -1) {
-    const error = new Error('Material not found');
-    (error as any).statusCode = 404;
-    throw error;
+  // Validar que el usuario existe si se está actualizando
+  if (updateData.userId !== undefined) {
+    const userExists = await prisma.user.findUnique({
+      where: { id: parseInt(updateData.userId) }
+    });
+    
+    if (!userExists) {
+      const error = new Error('User not found');
+      (error as any).statusCode = 400;
+      throw error;
+    }
   }
 
-  materials[index] = {
-    ...materials[index],
-    ...updateData
-  };
-
-  return materials[index];
+  try {
+    const updated = await prisma.material.update({
+      where: { id },
+      data: {
+        ...(updateData.añoCursada !== undefined ? { añoCursada: updateData.añoCursada } : {}),
+        ...(updateData.archivos !== undefined ? { archivos: updateData.archivos } : {}),
+        ...(updateData.comision !== undefined ? { comision: updateData.comision } : {}),
+        ...(updateData.descripcion !== undefined ? { descripcion: updateData.descripcion } : {}),
+        ...(updateData.numeroParcial !== undefined ? { numeroParcial: updateData.numeroParcial } : {}),
+        ...(updateData.titulo !== undefined ? { titulo: updateData.titulo } : {}),
+        ...(updateData.materiaId !== undefined ? { materiaId: updateData.materiaId } : {}),
+        ...(updateData.carreraId !== undefined ? { carreraId: updateData.carreraId } : {}),
+        ...(updateData.tipo !== undefined ? { tipo: updateData.tipo } : {}),
+        ...(updateData.userId !== undefined ? { userId: parseInt(updateData.userId) } : {})
+      }
+    });
+    return updated;
+  } catch (e: any) {
+    if (e.code === 'P2025') {
+      const error = new Error('Material not found');
+      (error as any).statusCode = 404;
+      throw error;
+    }
+    throw e;
+  }
 }
 
-export async function deleteMaterial(id: string): Promise<void> {
-  const index = materials.findIndex(m => m.id === parseInt(id));
-  if (index === -1) {
-    const error = new Error('Material not found');
-    (error as any).statusCode = 404;
-    throw error;
+export async function deleteMaterial(id: number): Promise<void> {
+  try {
+    await prisma.material.delete({
+      where: { id }
+    });
+  } catch (e: any) {
+    if (e.code === 'P2025') {
+      const error = new Error('Material not found');
+      (error as any).statusCode = 404;
+      throw error;
+    }
+    throw e;
   }
-  materials.splice(index, 1);
+}
+
+
+export async function getMaterialsByUser(userId: number): Promise<Material[]> {
+  const materials = await prisma.material.findMany({
+    where: { userId },
+    orderBy: { createdAt: 'desc' }
+  });
+  return materials;
+}
+
+export async function getMaterialsByCarrera(carreraId: string): Promise<Material[]> {
+  const materials = await prisma.material.findMany({
+    where: { carreraId },
+    orderBy: { createdAt: 'desc' }
+  });
+  return materials;
+}
+
+export async function getMaterialsByMateria(materiaId: string): Promise<Material[]> {
+  const materials = await prisma.material.findMany({
+    where: { materiaId },
+    orderBy: { createdAt: 'desc' }
+  });
+  return materials;
+}
+
+export async function incrementReportCount(id: number): Promise<Material> {
+  try {
+    const updated = await prisma.material.update({
+      where: { id },
+      data: {
+        cantidadReportes: {
+          increment: 1
+        }
+      }
+    });
+    return updated;
+  } catch (e: any) {
+    if (e.code === 'P2025') {
+      const error = new Error('Material not found');
+      (error as any).statusCode = 404;
+      throw error;
+    }
+    throw e;
+  }
 }
