@@ -66,7 +66,7 @@ export async function deleteCarrera(
 ) {
   try {
     const { id } = req.params;
-    await carreraservice.deleteCarrera(id);
+    await carreraservice.deleteCarrera(parseInt(id));
     res.status(200).json({ message: 'Carrera eliminada exitosamente' });
   } catch (error) {
     next(error);

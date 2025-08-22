@@ -1,98 +1,22 @@
-import { Carrera, Anio, CreateCarreraRequest, UpdateCarreraRequest } from '../types/carrera.types';
-import { Materia } from '../types/materia.types';
-const materias: Materia[] = [
-  {
-    id: 1,
-    nombre: 'Análisis Matemático',
-    descripcion: 'Curso de matemáticas avanzadas',
-    tipo: "anual"
-  },
-  {
-    id: 2,
-    nombre: 'Algoritmos',
-    descripcion: 'Introducción a la programación',
-    tipo: "anual"
-  },
-  {
-    id: 3,
-    nombre: 'Base de Datos',
-    descripcion: 'Fundamentos de bases de datos',
-    tipo: "primer cuatrimestre"
-  }
-]
-
-const anios: Anio[] = [
-  {
-    numero: 1,
-    materias: [materias[0], materias[1]]
-  },
-  {
-    numero: 2,
-    materias: [materias[2]]
-  }
-]
-
-const carreras: Carrera[] = [
-  {
-    id: 1,
-    nombre: 'Ingeniería en Sistemas',
-    anios: anios
-  },
-  {
-    id: 2,
-    nombre: 'Ingeniería Electrónica',
-    anios: anios
-  },
-  {
-    id: 3,
-    nombre: 'Ingeniería Civil',
-    anios: anios
-  },
-  {
-    id: 4,
-    nombre: 'Ingeniería Industrial',
-    anios: [ ...anios, {
-      numero: 3,
-      materias: [...materias, {
-        id: 100,
-        nombre: 'Redes de Computadoras',
-        descripcion: 'Curso sobre redes y comunicaciones',
-        tipo: "segundo cuatrimestre"
-      }
-      ]
-    }]
-  },
-  {
-    id: 5,
-    nombre: 'Ingeniería Química',
-    anios: anios
-  },
-  {
-    id: 6,
-    nombre: 'Ingeniería Mecánica',
-    anios: anios
-  },
-  {
-    id: 7,
-    nombre: 'Ingeniería en Telecomunicaciones',
-    anios: [ ...anios, {
-      numero: 3,
-      materias: [...materias, {
-        id: 100,
-        nombre: 'Redes de Computadoras',
-        descripcion: 'Curso sobre redes y comunicaciones',
-        tipo: "segundo cuatrimestre"
-      }
-      ]
-    }]
-  }
-];
+import  { Carrera, CarreraMateria}  from '../generated/prisma';
+import { CreateCarreraRequest, UpdateCarreraRequest } from '../types/carrera.types';
+import prisma from '../config/prisma';
 
 export async function getAllCarreras(): Promise<Carrera[]> {
+  const carreras = await prisma.carrera.findMany();
   return carreras;
 }
 export async function getCarreraById(id: number): Promise<Carrera> {
-  const carrera = carreras.find(c => c.id === id);
+  const carrera = await prisma.carrera.findUnique({
+    where: { id },
+    include: {
+      materias:{
+        include: {
+          materia: true,
+        }
+      }
+    }
+  });
   if (!carrera) {
     const error = new Error('Carrera not found');
     (error as any).statusCode = 404;
@@ -101,7 +25,20 @@ export async function getCarreraById(id: number): Promise<Carrera> {
   return carrera;
 }
 export async function findCarreras(filters: any): Promise<Carrera[]> {
-  return carreras.filter(carrera => {
+  return filters.materia?await prisma.carrera.findMany({
+    where: {
+      materias: {
+        some: {
+          materia: {
+              id: parseInt(filters.materia as string)
+            }
+          }
+        }
+      }
+    }
+    ):[];
+  
+  /*carreras.filter(carrera => {
     console.log("carrera: ", carrera);
     console.log("filters: ", filters);
     return Object.entries(filters).every(([key, value]) =>
@@ -110,44 +47,54 @@ export async function findCarreras(filters: any): Promise<Carrera[]> {
         anio['materias'].some((materia: Materia) =>
           materia['id'] === parseInt(value as string)
       )))
-  });
+  });*/
 };
 
 
 
 export async function createCarrera(data: CreateCarreraRequest): Promise<Carrera> {
-  const newCarrera: Carrera = {
-    id: carreras.length ? Math.max(...carreras.map(c => c.id)) + 1 : 1,
-    ...data,
-  };
-  carreras.push(newCarrera);
+  const newCarrera = await prisma.carrera.create({
+    data: {
+      nombre: data.nombre,
+      materias: {
+        create: data.materias/*.map((cM: CarreraMateria) => ({
+          materiaId: cM.materiaId,
+          anio: cM.anio
+        }))*/
+      }
+    },
+  });
   return newCarrera;
 }
 
 export async function updateCarrera(id: number, updateData: UpdateCarreraRequest): Promise<Carrera> {
-  const index = carreras.findIndex(c => c.id === id);
-  if (index === -1) {
-    const error = new Error('Carrera not found');
-    (error as any).statusCode = 404;
-    throw error;
-  }
-
-  carreras[index] = {
-    ...carreras[index],
-    ...updateData
-  };
-
-  return carreras[index];
+  const carrera = await prisma.carrera.update({
+    where: { id },
+    data: {
+      nombre: updateData.nombre,
+      materias: {
+        upsert: {
+          create: updateData.materias,
+          update: updateData.materias
+        }
+      }
+    },
+    include: {
+      materias: true
+    }
+  });
+  return carrera;
 }
 
-export async function deleteCarrera(id: string): Promise<void> {
-  const index = carreras.findIndex(c => c.id === parseInt(id));
-  if (index === -1) {
+export async function deleteCarrera(id: number): Promise<void> {
+  const carrera = await prisma.carrera.delete({
+    where: { id }
+  });
+  if (!carrera) {
     const error = new Error('Carrera not found');
     (error as any).statusCode = 404;
     throw error;
   }
-  carreras.splice(index, 1);
 }
 
 
