@@ -1,20 +1,12 @@
-import { Materia } from './materia.types';
-export interface Anio{
-    numero: number;
-    materias: Materia[];
-}
-export interface Carrera {
-    id: number;
-    nombre: string;
-    anios: Anio[];
-}
+import { Carrera, CarreraMateria } from '../generated/prisma';
+
 export interface CreateCarreraRequest {
     nombre: string;
-    anios: Anio[];
+    materias: CarreraMateria[];
 }
 export interface UpdateCarreraRequest {
     nombre?: string;
-    anios?: Anio[];
+    materias?: CarreraMateria[];
 }
 
 export interface CarreraResponse {
