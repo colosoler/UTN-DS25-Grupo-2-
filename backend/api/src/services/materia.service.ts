@@ -5,20 +5,17 @@ const materias: Materia[] = [
   {
     id: 1,
     nombre: 'Análisis Matemático',
-    descripcion: 'Curso de matemáticas avanzadas',
-    tipo: "anual"
+    descripcion: 'Curso de matemáticas avanzadas'
   },
   {
     id: 2,
     nombre: 'Algoritmos',
-    descripcion: 'Introducción a la programación',
-    tipo: "anual"
+    descripcion: 'Introducción a la programación'
   },
   {
     id: 3,
     nombre: 'Base de Datos',
-    descripcion: 'Fundamentos de bases de datos',
-    tipo: "primer cuatrimestre"
+    descripcion: 'Fundamentos de bases de datos'
   }
 ]
 

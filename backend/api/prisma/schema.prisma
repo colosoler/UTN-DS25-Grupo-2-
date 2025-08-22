@@ -11,51 +11,54 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Tabla usuario
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  username  String    @unique
-  name      String    @db.VarChar(50)
-  surname   String    @db.VarChar(50)
-  password  String
-  career    Career    
-  role      Role      @default(USER)  
-  materials Material[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
+  username   String    @unique
+  name       String    @db.VarChar(50)
+  surname    String    @db.VarChar(50)
+  password   String    
+  materiales Material[] // Establece la relación con los materiales
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   @@map("users")
 }
 
-
 model Carrera {
-  id        String     @id // UUID o código de carrera
-  nombre    String     @db.VarChar(100)
-  materias  Materia[]
-  materials Material[]
-  createdAt DateTime   @default(now())
-
+  id         Int              @id @default(autoincrement())
+  nombre     String           @db.VarChar(100)
+  materias   CarreraMateria[] 
+  materiales Material[] // Establece la relación con materiales
   @@map("carreras")
 }
 
-
 model Materia {
-  id         String     @id // Código de materia
-  nombre     String     @db.VarChar(100)
-  carreraId  String
-  carrera    Carrera    @relation(fields: [carreraId], references: [id])
-  materials  Material[]
-  createdAt  DateTime   @default(now())
+  id          Int              @id @default(autoincrement())
+  nombre      String           @db.VarChar(100)
+  descripcion String           @db.Text
+  carreras    CarreraMateria[]
+  materiales  Material[] // Establece la relación con materiales
 
   @@map("materias")
 }
 
+model CarreraMateria {
+  carreraId Int
+  materiaId Int
+  anio      Int
+
+  carrera   Carrera @relation(fields: [carreraId], references: [id])
+  materia   Materia @relation(fields: [materiaId], references: [id])
+
+  @@id([carreraId, materiaId]) // Esto indica que es una clave compuesta
+  @@map("carrera_materia")
+}
 
 model Material {
   id               Int      @id @default(autoincrement())
   añoCursada       Int
-  archivos         String[] 
+  archivo          String
   cantidadReportes Int      @default(0)
   comision         String   @db.VarChar(50)
   descripcion      String   @db.Text
@@ -63,10 +66,12 @@ model Material {
   numeroParcial    Int?     
   titulo           String   @db.VarChar(200)
   tipo             TipoMaterial
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   
   // Foreign Keys
-  materiaId String
-  carreraId String
+  materiaId Int
+  carreraId Int
   userId    Int
 
   // Relaciones
@@ -74,31 +79,17 @@ model Material {
   carrera   Carrera  @relation(fields: [carreraId], references: [id])
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
   @@map("materials")
-}
-
-enum Career {
-  Ingenieria_Sistemas
-  Ingenieria_Quimica
-  Ingenieria_Civil
-  Ingenieria_Electrica
-  Ingenieria_Industrial
-  Ingenieria_Mecanica
-}
-
-enum Role {
-  USER
-  ADMIN
 }
 
 enum TipoMaterial {
   PARCIAL
+  PARCIAL_RESUELTO
   FINAL
-  APUNTES
-  TP_PRACTICO
+  FINAL_RESUELTO
+  PRACTICA
+  PRACTICA_RESULTA
+  APUNTE
   RESUMEN
   OTRO
 }
