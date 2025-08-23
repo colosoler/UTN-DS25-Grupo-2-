@@ -9,6 +9,20 @@ export async function getAllMaterials(): Promise<Material[]> {
   return materials;
 }
 
+export async function findMaterials(filters: any): Promise<Material[]> {
+  return filters.query ? await prisma.material.findMany({
+    where: {
+      OR: [
+        { titulo: { contains: filters.query as string, mode: 'insensitive' } },
+        { descripcion: { contains: filters.query as string, mode: 'insensitive' } },
+        { comision: { contains: filters.query as string, mode: 'insensitive' } },
+        { materiaId: { contains: filters.query as string, mode: 'insensitive' } },
+        { carreraId: { contains: filters.query as string, mode: 'insensitive' } },
+      ]
+    }
+  }) : [];
+}
+
 export async function getMaterialById(id: number): Promise<Material> {
   const material = await prisma.material.findUnique({ where: { id } });
   if (!material) {
@@ -104,31 +118,6 @@ export async function deleteMaterial(id: number): Promise<void> {
     }
     throw e;
   }
-}
-
-
-export async function getMaterialsByUser(userId: number): Promise<Material[]> {
-  const materials = await prisma.material.findMany({
-    where: { userId },
-    orderBy: { createdAt: 'desc' }
-  });
-  return materials;
-}
-
-export async function getMaterialsByCarrera(carreraId: string): Promise<Material[]> {
-  const materials = await prisma.material.findMany({
-    where: { carreraId },
-    orderBy: { createdAt: 'desc' }
-  });
-  return materials;
-}
-
-export async function getMaterialsByMateria(materiaId: string): Promise<Material[]> {
-  const materials = await prisma.material.findMany({
-    where: { materiaId },
-    orderBy: { createdAt: 'desc' }
-  });
-  return materials;
 }
 
 export async function incrementReportCount(id: number): Promise<Material> {
