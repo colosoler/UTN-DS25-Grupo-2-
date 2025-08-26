@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import * as materialController from '../controllers/material.controller';
+import { validate } from '../middlewares/validation.middleware';
+import { createMaterialSchema, updateMaterialSchema } from '../validations/material.validation';
 
 const router = Router();
 
@@ -11,11 +13,11 @@ router.get('/', (req, res, next) => {
     }
 });
 
-router.get('/', materialController.getMaterialById);
+router.get('/:id', materialController.getMaterialById);
 
-router.post('/', materialController.createMaterial);
+router.post('/', validate(createMaterialSchema), materialController.createMaterial);
 
-router.put('/:id', materialController.updateMaterial);
+router.put('/:id', validate(updateMaterialSchema), materialController.updateMaterial);
 
 router.delete('/:id', materialController.deleteMaterial);
 
