@@ -20,7 +20,7 @@ export async function findMaterials(req: Request, res: Response, next: NextFunct
     }
 }
 
-export async function getMaterialById(req: Request, res: Response<MaterialResponse>, next: NextFunction)  {
+export async function getMaterialById(req: Request, res: Response, next: NextFunction)  {
     try {
         const id = parseInt(req.params.id);
         const material = await materialService.getMaterialById(id);
@@ -30,7 +30,7 @@ export async function getMaterialById(req: Request, res: Response<MaterialRespon
     }
 }
 
-export async function createMaterial( req: Request<{}, MaterialResponse,CreateMaterialRequest>, res: Response<MaterialResponse>, next: NextFunction){
+export async function createMaterial( req: Request, res: Response, next: NextFunction){
     try {
         const newMaterial = await materialService.createMaterial(req.body);
         res.status(201).json({ success: true, message: 'Material created succesfully', data: newMaterial });
@@ -49,7 +49,7 @@ export async function deleteMaterial(req: Request, res: Response, next: NextFunc
     }
 }
 
-export async function updateMaterial(req: Request<{ id: string }, MaterialResponse , UpdateMaterialRequest >, res: Response<MaterialResponse>, next: NextFunction) {
+export async function updateMaterial(req: Request<{ id: string }, MaterialResponse , UpdateMaterialRequest >, res: Response, next: NextFunction) {
     try {
         const id = parseInt(req.params.id);
         const updatedMaterial = await materialService.updateMaterial(id, req.body);
