@@ -1,72 +1,59 @@
 import { Request, Response, NextFunction } from 'express';
-import { Material, CreateMaterialRequest, UpdateMaterialRequest, MaterialResponse, MaterialsListResponse } from '../types/material.types';
 import * as materialService from '../services/material.service';
 
-export async function getAllMaterials(req: Request, res: Response<MaterialsListResponse>, next: NextFunction) {
+export async function getAllMaterials(req: Request, res: Response, next: NextFunction) {
     try {
         const materials = await materialService.getAllMaterials();
-        res.json({
-        materials,
-        total: materials.length,
-        message: 'Materials retrieved successfully',
-        });
+        res.json({ success: true, data: materials });
     } catch (error) {
         next(error);
     }
 }
 
-export async function findMaterials(req: Request, res: Response<MaterialsListResponse>, next: NextFunction) {
+export async function findMaterials(req: Request, res: Response, next: NextFunction) {
     try {
         const filters = req.query;
         const materials = await materialService.findMaterials(filters);
-        res.json({ materials, total: materials.length });
+        res.json({ success: true, data: materials });
     } catch (error) {
         next(error);
     }
 }
 
-export async function getMaterialById(req: Request, res: Response<MaterialResponse>, next: NextFunction) {
+export async function getMaterialById(req: Request, res: Response, next: NextFunction)  {
     try {
-        const { id } = req.params;
-        const material = await materialService.getMaterialById(parseInt(id));
-        res.json({ 
-            material, 
-            message: 'Material found succesfully' });
+        const id = parseInt(req.params.id);
+        const material = await materialService.getMaterialById(id);
+        res.json({ success: true, data: material });
     } catch (error) {
         next(error);
     }
 }
 
-export async function createMaterial( req: Request<{}, MaterialResponse,CreateMaterialRequest>, res: Response<MaterialResponse>, next: NextFunction){
+export async function createMaterial( req: Request, res: Response, next: NextFunction){
     try {
         const newMaterial = await materialService.createMaterial(req.body);
-        res.status(201).json({
-            material: newMaterial,
-            message: 'Material created succesfully'
-        });
+        res.status(201).json({ success: true, message: 'Material created succesfully', data: newMaterial });
     } catch (error) {
-    next(error);
+        next(error);
     }
 }
 
 export async function deleteMaterial(req: Request, res: Response, next: NextFunction) {
     try {
-        const { id } = req.params;
+        const id = parseInt(req.params.id);
         await materialService.deleteMaterial(id);
-        res.status(204).send();
+        res.json({ success: true, message: 'Material deleted succesfully' });
     } catch (error) {
         next(error);
     }
 }
 
-export async function updateMaterial(req: Request<{ id: string }, MaterialResponse , UpdateMaterialRequest >, res: Response<MaterialResponse>, next: NextFunction){
+export async function updateMaterial(req: Request<{ id: string }, MaterialResponse , UpdateMaterialRequest >, res: Response, next: NextFunction) {
     try {
-        const { id } = req.params;
-        const updatedMaterial = await materialService.updateMaterial(parseInt(id), req.body);
-        res.json({
-            material: updatedMaterial,
-            message: 'Material updated successfully'
-        });
+        const id = parseInt(req.params.id);
+        const updatedMaterial = await materialService.updateMaterial(id, req.body);
+        res.json({ success: true, message: 'Material updated succesfully', data: updatedMaterial });
     } catch (error) {
         next(error);
     }
