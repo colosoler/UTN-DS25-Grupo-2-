@@ -1,5 +1,3 @@
-import { TipoMaterial } from "../generated/prisma";
-
 export interface Material {
     id: number;
     añoCursada: number;
@@ -12,7 +10,7 @@ export interface Material {
     titulo: string;
     materiaId: number;
     carreraId: number;
-    tipo: TipoMaterial;
+    tipo: string;
     userId: number;
 }
 
@@ -26,7 +24,7 @@ export interface CreateMaterialRequest {
     titulo: string;
     materiaId: number;
     carreraId: number;
-    tipo: TipoMaterial;
+    tipo: string;
     userId: number;
 }
 
@@ -39,7 +37,7 @@ export interface UpdateMaterialRequest {
     titulo?: string;
     materiaId?: number;
     carreraId?: number;
-    tipo?: TipoMaterial;
+    tipo?: string;
     userId?: number;
 }
 

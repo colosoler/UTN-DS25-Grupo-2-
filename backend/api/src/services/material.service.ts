@@ -10,17 +10,21 @@ export async function getAllMaterials(): Promise<Material[]> {
 }
 
 export async function findMaterials(filters: any): Promise<Material[]> {
-  return filters.query ? await prisma.material.findMany({
+  if (!filters.query) return [];
+
+  const query = filters.query as string;
+
+  return prisma.material.findMany({
     where: {
       OR: [
-        { titulo: { contains: filters.query as string, mode: 'insensitive' } },
-        { descripcion: { contains: filters.query as string, mode: 'insensitive' } },
-        { comision: { contains: filters.query as string, mode: 'insensitive' } },
-        { materiaId: { contains: filters.query as string, mode: 'insensitive' } },
-        { carreraId: { contains: filters.query as string, mode: 'insensitive' } },
-      ]
+        { titulo: { contains: query, mode: 'insensitive' } },
+        { descripcion: { contains: query, mode: 'insensitive' } },
+        { comision: { contains: query, mode: 'insensitive' } },
+        { materiaId: !isNaN(Number(query)) ? { equals: Number(query) } : undefined },
+        { carreraId: !isNaN(Number(query)) ? { equals: Number(query) } : undefined },
+      ].filter(Boolean) //se eliminan los undefined si no son numericos osea materiaId y carreraId
     }
-  }) : [];
+  });
 }
 
 export async function getMaterialById(id: number): Promise<Material> {
@@ -36,7 +40,7 @@ export async function getMaterialById(id: number): Promise<Material> {
 export async function createMaterial(data: CreateMaterialRequest): Promise<Material> {
   // Validar que el usuario existe
   const userExists = await prisma.user.findUnique({
-    where: { id: parseInt(data.userId) }
+    where: { id: data.userId }
   });
   
   if (!userExists) {
@@ -57,7 +61,7 @@ export async function createMaterial(data: CreateMaterialRequest): Promise<Mater
       materiaId: data.materiaId,
       carreraId: data.carreraId,
       tipo: data.tipo,
-      userId: parseInt(data.userId),
+      userId: data.userId,
       cantidadReportes: 0
     }
   });
@@ -68,7 +72,7 @@ export async function updateMaterial(id: number, updateData: UpdateMaterialReque
   // Validar que el usuario existe si se está actualizando
   if (updateData.userId !== undefined) {
     const userExists = await prisma.user.findUnique({
-      where: { id: parseInt(updateData.userId) }
+      where: { id: updateData.userId}
     });
     
     if (!userExists) {
@@ -91,7 +95,7 @@ export async function updateMaterial(id: number, updateData: UpdateMaterialReque
         ...(updateData.materiaId !== undefined ? { materiaId: updateData.materiaId } : {}),
         ...(updateData.carreraId !== undefined ? { carreraId: updateData.carreraId } : {}),
         ...(updateData.tipo !== undefined ? { tipo: updateData.tipo } : {}),
-        ...(updateData.userId !== undefined ? { userId: parseInt(updateData.userId) } : {})
+        ...(updateData.userId !== undefined ? { userId: updateData.userId } : {})
       }
     });
     return updated;

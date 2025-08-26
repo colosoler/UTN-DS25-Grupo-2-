@@ -49,7 +49,7 @@ export async function deleteMaterial(req: Request, res: Response, next: NextFunc
     }
 }
 
-export async function updateMaterial(req: Request<{ id: string }, MaterialResponse , UpdateMaterialRequest >, res: Response, next: NextFunction) {
+export async function updateMaterial(req: Request<{ id: string }>, res: Response, next: NextFunction) {
     try {
         const id = parseInt(req.params.id);
         const updatedMaterial = await materialService.updateMaterial(id, req.body);
