@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { CreateCarreraRequest, UpdateCarreraRequest, CarreraResponse, CarrerasListResponse } from '../types/carrera.types';
+import { CreateCarreraRequest, CarreraResponse, CarrerasListResponse} from '../types/carrera.types';
 import * as carreraservice from '../services/carrera.service'
 
 
@@ -30,9 +30,8 @@ export async function getCarreraById(req: Request, res: Response<CarreraResponse
   }
 }
 
-// Controller que crea una nueva carrera
 export async function createCarrera(
-  req: Request<{}, CarreraResponse, CreateCarreraRequest>,
+  req: Request<CreateCarreraRequest>,
   res: Response<CarreraResponse>,
   next: NextFunction
 ) {
@@ -44,24 +43,9 @@ export async function createCarrera(
   }
 }
 
-// Controller que actualiza una carrera existente
-export async function updateCarrera(
-  req: Request<{ id: string }, CarreraResponse, UpdateCarreraRequest>,
-  res: Response<CarreraResponse>,
-  next: NextFunction
-) {
-  try {
-    const { id } = req.params;
-    const updatedCarrera = await carreraservice.updateCarrera(parseInt(id), req.body);
-    res.status(200).json({ carrera: updatedCarrera, message: 'Carrera actualizada exitosamente' });
-  } catch (error) {
-    next(error);
-  }
-}
-
 export async function deleteCarrera(
-  req: Request<{ id: string }>,
-  res: Response<{ message: string }>,
+  req: Request,
+  res: Response,
   next: NextFunction
 ) {
   try {
@@ -72,4 +56,3 @@ export async function deleteCarrera(
     next(error);
   }
 }
-

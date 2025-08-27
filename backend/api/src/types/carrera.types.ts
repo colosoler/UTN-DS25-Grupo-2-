@@ -2,11 +2,10 @@ import { Carrera, CarreraMateria } from '../generated/prisma';
 
 export interface CreateCarreraRequest {
     nombre: string;
-    materias: CarreraMateria[];
+    materias?: CarreraMateria[];
 }
 export interface UpdateCarreraRequest {
-    nombre?: string;
-    materias?: CarreraMateria[];
+    nombre: string;
 }
 
 export interface CarreraResponse {
