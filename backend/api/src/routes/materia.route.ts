@@ -1,5 +1,8 @@
 import { Router } from 'express';
 import * as materiaController from '../controllers/materia.controller'
+import { validate } from '../middlewares/validation.middleware'
+import { createMateriaSchema, updateMateriaSchema } from '../validations/materia.validation';
+
 
 const router = Router();
 
@@ -10,9 +13,9 @@ router.get('/', materiaController.getAllMaterias);
 router.get('/:id', materiaController.getMateriaById);
 
 // Ruta -> POST /materias
-router.post('/', materiaController.createMateria);
+router.post('/', validate(createMateriaSchema), materiaController.createMateria);
 
 // Ruta -> PUT /materias/:id
-router.put('/:id', materiaController.updateMateria);
+router.put('/:id', validate(updateMateriaSchema), materiaController.updateMateria);
 
 export const materiaRoutes = router;
