@@ -53,7 +53,7 @@ export async function createMaterial(data: CreateMaterialRequest): Promise<Mater
   const created = await prisma.material.create({
     data: {
       añoCursada: data.añoCursada,
-      archivos: data.archivos,
+      archivo: data.archivos,
       comision: data.comision,
       descripcion: data.descripcion,
       numeroParcial: data.numeroParcial,

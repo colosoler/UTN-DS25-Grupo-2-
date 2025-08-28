@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import { createCarreraSchema } from '../validations/carrera.validation';
+import { validate } from '../middlewares/validation.middleware';
 import * as carreraController from '../controllers/carrera.controller'
 
 const router = Router();
@@ -13,9 +15,7 @@ router.get('/', (req, res, next) => {
 
 router.get('/:id', carreraController.getCarreraById);
 
-router.post('/', carreraController.createCarrera);
-
-router.put('/:id', carreraController.updateCarrera);
+router.post('/', validate(createCarreraSchema), carreraController.createCarrera);
 
 router.delete('/:id', carreraController.deleteCarrera);
 
