@@ -2,33 +2,11 @@ import { CreateMateriaRequest, UpdateMateriaRequest } from '../types/materia.typ
 import prisma from '../config/prisma';
 import { Materia } from '../generated/prisma';
 
-
-// Datos de prueba temporales
-// const materias: Materia[] = [
-//   {
-//     id: 1,
-//     nombre: 'Análisis Matemático',
-//     descripcion: 'Curso de matemáticas avanzadas'
-//   },
-//   {
-//     id: 2,
-//     nombre: 'Algoritmos',
-//     descripcion: 'Introducción a la programación'
-//   },
-//   {
-//     id: 3,
-//     nombre: 'Base de Datos',
-//     descripcion: 'Fundamentos de bases de datos'
-//   }
-// ]
-
 // Retorna TODAS las materias (ordenadas en forma ascendente por nombre)
 export async function getAllMaterias(): Promise<Materia[]> {
-  const materias = await prisma.materia.findMany({
+  return prisma.materia.findMany({
     orderBy: { nombre: 'asc' }
   });
-
-  return materias;
 }
 
 
@@ -47,21 +25,16 @@ export async function getMateriaById(id: number): Promise<Materia> {
 
 // Crea una nueva materia, la agrega a la base de datos y la retorna al cliente
 export async function createMateria(datosMateria: CreateMateriaRequest): Promise<Materia> {
-  const materiaNueva = await prisma.materia.create({
-    data: datosMateria
-  });
-
-  return materiaNueva;
+  return prisma.materia.create({ data: datosMateria });
 }
 
 // Actualiza una materia en la base de datos
 export async function updateMateria(id: number, datosNuevos: UpdateMateriaRequest): Promise<Materia> {
   try {
-    const materiaActualizada = await prisma.materia.update({
+    return await prisma.materia.update({
       where: { id },
       data: datosNuevos
-    });
-    return materiaActualizada;
+    });;
   } catch (e: any) {
     if (e.code === 'P2025') {
       const error = new Error('Materia no encontrada');
