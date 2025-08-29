@@ -1,4 +1,3 @@
-import { CreateUserRequest, UpdateUserRequest } from '../types/user.types';
 import prisma from '../config/prisma';
 import { User } from '../generated/prisma';
 
@@ -16,67 +15,41 @@ let users: User[] = [
 export async function getAllUsers(): Promise<User[]> {
  const users = await prisma.user.findMany({
  orderBy: { id: 'asc' },
+ include: { materiales: true }
  });
  return users;
 }
 
 export async function getUserById(id: number): Promise<User> {
- const user = await prisma.user.findUnique({ where: { id } });
- if (!user) {
- const error = new Error('User not found');
- (error as any).statusCode = 404;
- throw error;
- }
- return user;
-}
-export async function createUser(data: CreateUserRequest):
-Promise<User> {
+  const user = await prisma.user.findUnique({
+    where: { id },
+    include: { materiales: true }
+  });
 
- if (data.password.length <= 8) {
- const error = new Error('Password must be greater than 8');
- (error as any).statusCode = 400;
- throw error;
- } 
- const created = await prisma.user.create({
- data: {
- email: data.email,
- username: data.username,
- name: data.name,
- surname: data.surname,
- password: data.password
- },
- });
- return created;
-}
-
-export async function updateUser(id: number, updateData: 
-UpdateUserRequest): Promise<User> {
-  if (updateData.password !== undefined && updateData.password.length < 8) {
-    const error = new Error('Password must be greater than 8');
-    (error as any).statusCode = 400;
+  if (!user) {
+    const error = new Error('User not found');
+    (error as any).statusCode = 404;
     throw error;
   }
-  try {
-    const updated = await prisma.user.update({
-      where: { id },
-      data: {
-...(updateData.username !== undefined ? { username: updateData.username } : {}),
-...(updateData.name !== undefined ? { name: updateData.name } : {}),
-...(updateData.surname !== undefined ? { surname: updateData.surname } : {}),
-...(updateData.email !== undefined ? { email: updateData.email } : {}),
-...(updateData.career !== undefined ? { career: updateData.career } : {}),
-...(updateData.password !== undefined ? { password: updateData.password } : {}),
-      },
-    });
-    return updated;
-  } catch (e: any) {
-    if (e.code === 'P2025') {
-      const error = new Error('User not found');
-      (error as any).statusCode = 404;
-      throw error;
-    }
-    throw e;
-  }
+  return user;
+}
+
+export async function createUser(data: {name: string, surname: string, email: string, username: string, password: string}):Promise<User> {
+ return prisma.user.create({data});
+}
+
+export async function updateUser(id: number, data: Partial<User> ): Promise<User> {
+
+ try {
+   return await prisma.user.update({ where: { id }, data });
+ } catch (e: any) {
+   if (e.code === 'P2025') {
+     const error = new Error('User not found' ) as any;
+     error.statusCode  = 404;
+     throw error;
+   }
+   throw e;
+ }
 }
 
 export async function deleteUser(id: number): Promise<void> {

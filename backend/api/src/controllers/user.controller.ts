@@ -1,6 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { User, CreateUserRequest, UpdateUserRequest,
-UserResponse, UsersListResponse } from '../types/user.types';
 import * as userService from '../services/user.service';
 
 export async function getAllUsers(req: Request, res:Response, next: NextFunction) {
