@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useState } from "react"
 
-//Para cuando tengamos la api: export const SERVER_URL = "http://127.0.0.1:8000/";
+SERVER_URL = "http://127.0.0.1:3000/";
 
-export const useFetch = (endpoint,SERVER_URL) => {
+export const useFetch = (endpoint) => {
     const [state, setState] = useState({
         data: null,
         isLoading: true,
