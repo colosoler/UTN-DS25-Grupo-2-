@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react"
 
-SERVER_URL = "http://127.0.0.1:3000/";
+const SERVER_URL = "http://127.0.0.1:3000/";
 
 export const useFetch = (endpoint) => {
     const [state, setState] = useState({
