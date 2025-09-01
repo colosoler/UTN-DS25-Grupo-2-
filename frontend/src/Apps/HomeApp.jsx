@@ -1,6 +1,5 @@
 import { Carrera } from '../Components/Carrera.jsx';
 import { Searchbar } from '../Components/Searchbar.jsx';
-import { useNavigate } from 'react-router-dom';
 import './styles/HomeApp.css';
 
 export const carreras = [
@@ -33,21 +32,10 @@ export const carreras = [
     id: 6,
     name: 'Ingeniería Eléctrica',
     icon: 'bi-lightning-charge-fill'
-  },
-  {
-    id: 7,
-    name: 'Sin Carrera',
-    icon: ''
-  },
+  }
 ];
 
 export const HomeApp = () => {
-  const navigate = useNavigate();
-
-  const handleCarreraClick = (carreraId) => {
-    navigate(`/carrera/${carreraId}`);
-  };
-
   return (
     <div className="home-wrapper">
       <Searchbar />
@@ -56,12 +44,10 @@ export const HomeApp = () => {
           <h1>Seleccioná tu carrera</h1>
           <div className="carreras-grid">
             {carreras
-              .filter(carrera => carrera.name !== 'Sin Carrera') // no muestra 'sin carrera'
               .map(carrera => (
                 <Carrera
                   key={carrera.id}
                   carrera={carrera}
-                  onClick={() => handleCarreraClick(carrera.id)}
                 />
               ))}
           </div>
