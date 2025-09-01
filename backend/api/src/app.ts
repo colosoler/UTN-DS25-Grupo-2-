@@ -5,11 +5,19 @@ import { materiaRoutes } from './routes/materia.route'
 import { handleError } from './middlewares/error.middleware';
 import { logRequest } from './middlewares/logger.middleware';
 import { carreraRoutes } from './routes/carrera.route';
+require('dotenv').config()
+
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 app.use(logRequest);
+
+const cors = require('cors');
+var corsOptions = {
+  origin: process.env.FRONTEND_URL
+}
+app.use(cors(corsOptions));
 
 app.use('/users', userRoutes);
 app.use('/materials', materialRoutes);
