@@ -9,13 +9,3 @@ export interface UpdateCarreraRequest {
     nombre?: string;
     icon?: string;
 }
-
-export interface CarreraResponse {
-  carrera: Carrera;
-  message: string;
-}
-
-export interface CarrerasListResponse {
-  carreras: Carrera[];
-  total: number;
-}

@@ -47,7 +47,7 @@ export const HomeApp = () => {
         <div className="carreras-container">
           <h1>Seleccioná tu carrera</h1>
           <div className="carreras-grid">
-            {carreras.carreras.map(carrera => (
+            {carreras.map(carrera => (
                 <Carrera
                   key={carrera.id}
                   carrera={carrera}
