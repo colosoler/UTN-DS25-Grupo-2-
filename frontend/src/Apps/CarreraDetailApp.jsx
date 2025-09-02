@@ -1,8 +1,7 @@
-import { Accordion } from 'react-bootstrap';
-import { ListGroup } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
+import { Accordion, Container, Row, Col } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
+import { useFetch } from '../Hooks/useFetch'
+import { CarreraDetailAnio } from '../Components/CarreraDetailAnio'
 const anios = [
   {
     anio: "1ero",
@@ -45,25 +44,39 @@ const anios = [
     ]
   }
 ]
+function sortCarreraMateriasByAnio(carreraMaterias) {
+  let anios = [];
+  for (let i = 0; i < carreraMaterias.at(-1).anio; i++) {
+    anios[i] = {
+      anio: i,
+      materias: carreraMaterias
+        .filter((cm) => (cm.anio === i+1))
+        .map((cm) => (cm.materia))
+    }
+  }
+  console.log(carreraMaterias.at(-1).anio);
+  return anios;
+}
 export const CarreraDetailApp = () => {
-  const { id } = useParams();  
+  const { id } = useParams();
+  const { data: carrera, isLoading, error } = useFetch('carreras/' + id)
+  if (isLoading) return <h1>Cargando...</h1>
+  if (error) { console.log(error); return <h1>Ha Ocurrido un Error</h1> }
   return (
     <Container>
+      <Row className='align-items-center my-3'>
+        <Col>
+        <h1>{carrera.nombre}</h1>
+        </Col>
+        <Col className="icon-container h-100">        
+          <i className={`bi ${carrera.icon} carrera-icon`}></i>
+        </Col>
+      </Row>
       <Accordion>
-        {anios.map((anio, index) => (
-          <Accordion.Item eventKey={index} key={index}>
-            <Accordion.Header>{anio.anio}</Accordion.Header>
-            <Accordion.Body>
-              <ListGroup variant="flush">
-                {anio.materias.map((materia) => (
-                  <ListGroup.Item key={materia.id}>
-                    <Link to={`/search/?carrera=${id}&materia=${materia.id}`}>{materia.nombre}</Link>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            </Accordion.Body>
-          </Accordion.Item>
-        ))
+        {sortCarreraMateriasByAnio(carrera.materias)
+          .map((anio) =>
+            <CarreraDetailAnio key={anio.anio} anio={anio} carreraId={id}/>
+          )
         }
       </Accordion>
     </Container>
