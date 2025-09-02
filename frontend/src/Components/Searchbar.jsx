@@ -1,14 +1,24 @@
 import { useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from '../Hooks/useForm.jsx';
+import { useFetch } from '../Hooks/useFetch.jsx';
 import { Form, Row, Col, Button, Modal } from 'react-bootstrap';
 import { SearchOptions } from '../Components/SearchOptions.jsx';
-import { carreras } from '../Apps/HomeApp.jsx';
-
+const carreras = [
+  {
+    id: 1,
+    name: 'Ingeniería Mecánica',
+    icon: 'bi-gear-fill'
+  }
+]
 
 const materias = ["A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2", "E1", "E2", "F1", "F2", "G1", "G2", "H1", "H2"];
 
 export const Searchbar = () => {
+  /*const { data: carreras, isLoading, error } = useFetch('carreras/')
+  if (isLoading) return <h1>Cargando...</h1>
+  if (error) { console.log(error); return <h1>Ha Ocurrido un Error</h1> }
+  */
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();

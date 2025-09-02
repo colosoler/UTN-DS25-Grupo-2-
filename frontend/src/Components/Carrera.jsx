@@ -1,8 +1,10 @@
 import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom'
 import './styles/Carrera.css';
+import { useEffect } from 'react';
 
 export const Carrera = ({ carrera }) => {
+  useEffect(()=>console.log(carrera),[])
   return (
       <Card className="carrera-card" as={Link} to={`/carrera/${carrera.id}`} >
         <Card.Body className="carrera-body">
@@ -10,7 +12,7 @@ export const Carrera = ({ carrera }) => {
             <i className={`bi ${carrera.icon} carrera-icon`}></i>
           </div>
           <div className="carrera-info">
-            <h5 className="carrera-name">{carrera.name}</h5>
+            <h5 className="carrera-name">{carrera.nombre}</h5>
           </div>
         </Card.Body>
       </Card>
