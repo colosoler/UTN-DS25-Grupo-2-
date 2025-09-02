@@ -46,6 +46,7 @@ export async function createCarrera(data: CreateCarreraRequest): Promise<Carrera
   const newCarrera = await prisma.carrera.create({
     data: {
       nombre: data.nombre,
+      icon: data.icon,
       materias: {
         create: data.materias?.map(m => ({
           anio: m.anio,
