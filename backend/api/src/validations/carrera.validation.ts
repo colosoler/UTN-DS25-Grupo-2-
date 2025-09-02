@@ -16,7 +16,6 @@ export const createCarreraSchema = z.object({
     icon: z.string()
         .min(1, 'El path del icon es un campo requerido')
         .max(100, 'El path del icon no puede exceder los 100 caracteres')
-        .includes(".",{error:"El path del icon debe incluir el formato del mismo"})
         .trim(),
     materias: z.array(createCarreraMateriaSchema).optional()
 });
