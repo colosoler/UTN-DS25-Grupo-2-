@@ -4,7 +4,6 @@ import './styles/Carrera.css';
 import { useEffect } from 'react';
 
 export const Carrera = ({ carrera }) => {
-  useEffect(()=>console.log(carrera),[])
   return (
       <Card className="carrera-card" as={Link} to={`/carrera/${carrera.id}`} >
         <Card.Body className="carrera-body">

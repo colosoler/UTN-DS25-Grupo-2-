@@ -1,13 +1,22 @@
-
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import { SearchOptions } from '../Components/SearchOptions.jsx';
-
 import { useForm } from '../Hooks/useForm.jsx';
-const materias = ["A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2", "E1", "E2", "F1", "F2", "G1", "G2", "H1", "H2"];
+import { useFetch } from '../Hooks/useFetch.jsx';
 
 export const CreateMaterialApp = () => {
-  const [formData,setFormData,handleChange] = useForm()
-  
+  const [formData,setFormData,handleChange] = useForm((name,value,newData)=>{
+    if (name === 'materia' || name === 'carrera'){ 
+      setFormData({...newData, [name+'Id']: value.value, [name]: value.option})
+    }
+  })
+  const { data: materias, isLoading:mIsLoading, error:mError }=useFetch('materias/')
+  const carrerasUrl = formData.materiaId
+    ? `carreras/?materia=${formData.materiaId}`
+    : 'carreras/';
+  const { data:carreras, isLoading: cIsLoading, error:cError }=useFetch(carrerasUrl);
+
+  if (mIsLoading || cIsLoading) return <h1>Cargando...</h1>
+  if (mError || cError) {return <h1>Ha Ocurrido un Error</h1>}
   return (
     <>
       <Form className="container mt-5 bg-light p-4 rounded">
@@ -23,12 +32,12 @@ export const CreateMaterialApp = () => {
         <Row className="mb-3">
           <Col>
             <Form.Group aria-required>
-              <SearchOptions options={materias} onChange={ handleChange } name="materia" placeholder="De que materia es?" />
+              <SearchOptions options={materias.materias.map(e=>({value:e.id,option:e.nombre}))} onChange={ handleChange } name="materia" placeholder="De que materia es?" />
             </Form.Group>
           </Col>
           <Col>
             <Form.Group aria-required>
-              <SearchOptions options={carreras.map((e) => e.name)} onChange={ handleChange } name="carrera" placeholder="En que carrera la cursaste?" />
+              <SearchOptions options={carreras.map(e=>({value:e.id,option:e.nombre}))} onChange={ handleChange } name="carrera" placeholder="En que carrera la cursaste?" />
             </Form.Group>
           </Col>
         </Row>
