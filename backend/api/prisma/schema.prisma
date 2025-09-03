@@ -28,6 +28,7 @@ model User {
 model Carrera {
   id         Int              @id @default(autoincrement())
   nombre     String           @db.VarChar(100)
+  icon     String           @db.VarChar(100) @default("")
   materias   CarreraMateria[] 
   materiales Material[] // Establece la relación con materiales
   @@map("carreras")

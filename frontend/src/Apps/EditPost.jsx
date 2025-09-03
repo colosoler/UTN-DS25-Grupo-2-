@@ -3,13 +3,18 @@
 import { useState, useEffect } from "react"
 import { Form, Row, Col, Button, Alert } from "react-bootstrap"
 import { SearchOptions } from "../Components/SearchOptions"
-import { carreras } from "./HomeApp"
 import { useForm } from "../Hooks/useForm"
 import { useParams, useLocation } from "react-router-dom"
 import { SERVER_URL } from "../Constants"
 
 const materias = ["A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2", "E1", "E2", "F1", "F2", "G1", "G2", "H1", "H2"]
-
+const carreras = [
+  {
+    id: 1,
+    name: 'Ingeniería Mecánica',
+    icon: 'bi-gear-fill'
+  }
+]
 export const EditMaterial = () => {
   const { id } = useParams()
   const location = useLocation()

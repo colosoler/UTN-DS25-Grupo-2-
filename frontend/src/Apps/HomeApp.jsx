@@ -1,6 +1,6 @@
 import { Carrera } from '../Components/Carrera.jsx';
 import { Searchbar } from '../Components/Searchbar.jsx';
-import { useNavigate } from 'react-router-dom';
+import { useFetch } from '../Hooks/useFetch.jsx'
 import './styles/HomeApp.css';
 
 export const carreras = [
@@ -33,21 +33,13 @@ export const carreras = [
     id: 6,
     name: 'Ingeniería Eléctrica',
     icon: 'bi-lightning-charge-fill'
-  },
-  {
-    id: 7,
-    name: 'Sin Carrera',
-    icon: ''
-  },
+  }
 ];
 
 export const HomeApp = () => {
-  const navigate = useNavigate();
-
-  const handleCarreraClick = (carreraId) => {
-    navigate(`/carrera/${carreraId}`);
-  };
-
+  const { data:carreras, isLoading, error }=useFetch('carreras/')
+  if (isLoading) return <h1>Cargando...</h1>
+  if (error) {console.log(error); return <h1>Ha Ocurrido un Error</h1>}
   return (
     <div className="home-wrapper">
       <Searchbar />
@@ -55,13 +47,10 @@ export const HomeApp = () => {
         <div className="carreras-container">
           <h1>Seleccioná tu carrera</h1>
           <div className="carreras-grid">
-            {carreras
-              .filter(carrera => carrera.name !== 'Sin Carrera') // no muestra 'sin carrera'
-              .map(carrera => (
+            {carreras.map(carrera => (
                 <Carrera
                   key={carrera.id}
                   carrera={carrera}
-                  onClick={() => handleCarreraClick(carrera.id)}
                 />
               ))}
           </div>

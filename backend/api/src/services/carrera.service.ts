@@ -11,9 +11,11 @@ export async function getCarreraById(id: number): Promise<Carrera> {
     where: { id },
     include: {
       materias:{
-        include: {
-          materia: true,
-        }
+        select:{
+          anio: true,
+          materia: true
+        },
+        orderBy:{anio: 'asc'}
       }
     }
   });
@@ -22,6 +24,7 @@ export async function getCarreraById(id: number): Promise<Carrera> {
     (error as any).statusCode = 404;
     throw error;
   }
+  
   return carrera;
 }
 export async function findCarreras(filters: any): Promise<Carrera[]> {
@@ -43,6 +46,7 @@ export async function createCarrera(data: CreateCarreraRequest): Promise<Carrera
   const newCarrera = await prisma.carrera.create({
     data: {
       nombre: data.nombre,
+      icon: data.icon,
       materias: {
         create: data.materias?.map(m => ({
           anio: m.anio,

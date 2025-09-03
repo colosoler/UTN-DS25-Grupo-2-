@@ -13,5 +13,9 @@ export const createCarreraSchema = z.object({
         .min(1, 'El nombre es un campo requerido')
         .max(100, 'El nombre no puede exceder los 100 caracteres')
         .trim(),
+    icon: z.string()
+        .min(1, 'El path del icon es un campo requerido')
+        .max(100, 'El path del icon no puede exceder los 100 caracteres')
+        .trim(),
     materias: z.array(createCarreraMateriaSchema).optional()
 });
