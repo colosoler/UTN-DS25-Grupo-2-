@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from '../Hooks/useForm.jsx';
 import { useFetch } from '../Hooks/useFetch.jsx';
 import { Form, Row, Col, Button, Modal } from 'react-bootstrap';
@@ -15,23 +15,21 @@ const carreras = [
 const materias = ["A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2", "E1", "E2", "F1", "F2", "G1", "G2", "H1", "H2"];
 
 export const Searchbar = () => {
-  /*const { data: carreras, isLoading, error } = useFetch('carreras/')
-  if (isLoading) return <h1>Cargando...</h1>
-  if (error) { console.log(error); return <h1>Ha Ocurrido un Error</h1> }
-  */
+  //Aplicar Filtros:
   const navigate = useNavigate();
-  const location = useLocation();
   const [searchParams] = useSearchParams();
+
   const getUrl = (params) => (`/search/?${params.toString()}`);
   const [url, setURL] = useState(getUrl(searchParams));
+
   const [formData, setFormData, handleChange] = useForm((name, value) => {
     const newParams = new URLSearchParams(searchParams.toString());
     newParams.set(name, value);
     setURL(getUrl(newParams));
   });
 
+  // Abrir / Cerrar filtros
   const [showModal, setShowModal] = useState(false);
-
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
@@ -47,6 +45,10 @@ export const Searchbar = () => {
     newParams.delete('query');
     navigate(getUrl(newParams));
   };
+  const { data: carreras, isLoading, error } = useFetch('carreras/')
+  if (isLoading) return <h1>Cargando...</h1>
+  if (error) { console.log(error); return <h1>Ha Ocurrido un Error</h1> }
+ 
 
   return (
     <div className="container-fluid py-3 font-sans">
@@ -116,7 +118,7 @@ export const Searchbar = () => {
               </Col>
               <Col>
                 <Form.Group aria-required>
-                  <SearchOptions options={carreras.map((e) => e.name)} onChange={handleChange} name="carrera" placeholder="En que carrera la cursaste?" />
+                  <SearchOptions options={carreras.map((e) => e.nombre)} onChange={handleChange} name="carrera" placeholder="En que carrera la cursaste?" />
                 </Form.Group>
               </Col>
             </Row>

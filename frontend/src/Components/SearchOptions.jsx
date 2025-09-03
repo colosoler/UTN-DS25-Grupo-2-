@@ -1,16 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Form, ListGroup} from 'react-bootstrap';
 
 
 export const SearchOptions = ({options, onChange, name, placeholder}) => {
     const [filtered, setFiltered] = useState(options);
+    useEffect(() => {
+        setFiltered(options);
+    }, [options]);
     const [showList, setShowList] = useState(false);
-    const [option, setOption] = useState('');
+    const [option, setOption] = useState({value: -1, option: ''});
 
     const handleChangeOptions = (e) =>{
         onChange(e);
-        setOption(e.target.value);
-        const filtered = options.filter(o => o.toLowerCase().includes(e.target.value.toLowerCase()));
+        const newOption= e.target.value?.option || e.target.value
+        setOption({value: e?.value || -1, option:newOption});
+        const filtered = options.filter(o => o.option.toLowerCase().includes(newOption.toLowerCase()));
         setFiltered(filtered);
     };
     return (
@@ -19,7 +23,7 @@ export const SearchOptions = ({options, onChange, name, placeholder}) => {
                 type="text"
                 placeholder={placeholder}
                 name={name}
-                value={option}
+                value={option.option}
                 onChange={handleChangeOptions}
                 onFocus={() => setShowList(true)}
                 onBlur={() => setTimeout(() =>setShowList(false), 100)}
@@ -27,12 +31,12 @@ export const SearchOptions = ({options, onChange, name, placeholder}) => {
             />
             {showList && (
                 <ListGroup>
-                    {filtered.map((elem, index) => (
+                    {filtered.map((elem) => (
                         <ListGroup.Item
-                            key={index}
-                            onMouseDown={() => {setOption(elem); handleChangeOptions({target: {name, value: elem}});}}
+                            key={elem.value}
+                            onMouseDown={() => {setOption(elem); handleChangeOptions({target:{name,value:elem}});}}
                             style={{ cursor: 'pointer' }}>
-                            {elem}
+                            {elem.option}
                         </ListGroup.Item>
                     ))}
                 </ListGroup>
