@@ -2,6 +2,8 @@ import { Accordion, Container, Row, Col } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { useFetch } from '../Hooks/useFetch'
 import { CarreraDetailAnio } from '../Components/CarreraDetailAnio'
+import { intToAnioString } from '../Helpers/intToAnioString';
+
 const anios = [
   {
     anio: "1ero",
@@ -48,13 +50,12 @@ function sortCarreraMateriasByAnio(carreraMaterias) {
   let anios = [];
   for (let i = 0; i < carreraMaterias.at(-1).anio; i++) {
     anios[i] = {
-      anio: i,
+      anio: intToAnioString(i+1),
       materias: carreraMaterias
         .filter((cm) => (cm.anio === i+1))
         .map((cm) => (cm.materia))
     }
   }
-  console.log(carreraMaterias.at(-1).anio);
   return anios;
 }
 export const CarreraDetailApp = () => {
@@ -64,19 +65,27 @@ export const CarreraDetailApp = () => {
   if (error) { console.log(error); return <h1>Ha Ocurrido un Error</h1> }
   return (
     <Container>
-      <Row className='align-items-center my-3'>
-        <Col>
-        <h1>{carrera.nombre}</h1>
-        </Col>
-        <Col className="icon-container h-100">        
-          <i className={`bi ${carrera.icon} carrera-icon`}></i>
+      <Row className="align-items-center my-3 justify-content-center">
+        <Col xs="auto" className="d-flex align-items-center">
+          <h1 className="mb-0 me-3">{carrera.nombre}</h1>
+          <div
+            className="rounded-circle d-flex align-items-center justify-content-center"
+            style={{
+              width: '64px',
+              height: '64px',
+              backgroundColor: '#f0f0f0'
+            }}
+          >
+            <i className={`bi ${carrera.icon} carrera-icon`} style={{ fontSize: '2rem' }}></i>
+          </div>
         </Col>
       </Row>
       <Accordion>
-        {sortCarreraMateriasByAnio(carrera.materias)
+        {carrera.materias.length>0?sortCarreraMateriasByAnio(carrera.materias)
           .map((anio) =>
             <CarreraDetailAnio key={anio.anio} anio={anio} carreraId={id}/>
           )
+          :<p className='text-center my-4'>No hay materias Disponibles para esta carrera</p>
         }
       </Accordion>
     </Container>
