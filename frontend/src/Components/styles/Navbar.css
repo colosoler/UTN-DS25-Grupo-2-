@@ -10,7 +10,7 @@
   font-family: var(--font-family);
   font-size: var(--font-size);
   font-weight: var(--font-weight);
-  height: 64px; /* 🔹 fijo, evita que crezca al colapsar */
+  height: 64px;
 }
 
 .navbar-logo {
@@ -49,7 +49,6 @@
   filter: brightness(0) invert(0.8);
 }
 
-/* Avatar */
 .avatar-toggle {
   cursor: pointer;
   display: inline-block;

@@ -37,19 +37,16 @@ export const Navbar = () => {
             <span><strong>UTN</strong>otas</span>
           </Link>
 
-          {/* Íconos a la derecha */}
           <div className="navbar-icons">
-            {/* Home solo visible en escritorio */}
+            {/* "d-none d-md-block" hace que en pantallas mas chiquitas se vaya el home */}
             <Link to="/home" className="d-none d-md-block">
               <img src="./images/hogar.png" alt="Inicio" />
             </Link>
 
-            {/* Add siempre visible */}
             <Link to="/add">
               <img src="./images/plus-pequeno.png" alt="Agregar contenido" />
             </Link>
 
-            {/* Dropdown de perfil */}
             <Dropdown align="end">
               <Dropdown.Toggle as="div" className="avatar-toggle">
                 <img src="./images/avatar.png" alt="Perfil" className="avatar-img" />
@@ -79,7 +76,6 @@ export const Navbar = () => {
         </Container>
       </nav>
 
-      {/* Modal de logout */}
       <DeleteConfirmAccount
         show={showLogoutModal}
         onHide={handleCloseLogoutModal}
@@ -90,7 +86,6 @@ export const Navbar = () => {
         buttonTitle="Cerrar sesión"
       />
 
-      {/* Toast de confirmación */}
       <Alert
         show={showLogoutToast}
         message="Sesión cerrada correctamente"
