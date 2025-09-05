@@ -1,6 +1,6 @@
 import './styles/Navbar.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { Navbar as RBNavbar, Nav, Dropdown, Container } from 'react-bootstrap';
+import { Dropdown, Container } from 'react-bootstrap';
 import { useState } from 'react';
 import { DeleteConfirmAccount } from '../Components/DeleteConfirmAccount';
 import { Alert } from '../Components/Alert';
@@ -29,19 +29,26 @@ export const Navbar = () => {
 
   return (
     <>
-      <RBNavbar expand="lg" className="navbar">
+      <nav className="navbar">
         <Container fluid className="d-flex justify-content-between align-items-center">
-          {/* Logo + título como Link */}
-          <RBNavbar.Brand as={Link} to="/home" className="navbar-logo">
+          {/* Logo + título a la izquierda */}
+          <Link to="/home" className="navbar-logo">
             <img src="/images/UTNotas.png" alt="UTNotas Logo" className="logo-img" />
             <span><strong>UTN</strong>otas</span>
-          </RBNavbar.Brand>
+          </Link>
 
           {/* Íconos a la derecha */}
-          <Nav className="navbar-icons">
-            <Link to="/home"><img src="./images/hogar.png" alt="Inicio" /></Link>
-            <Link to="/add"><img src="./images/plus-pequeno.png" alt="Agregar contenido" /></Link>
-            
+          <div className="navbar-icons">
+            {/* Home solo visible en escritorio */}
+            <Link to="/home" className="d-none d-md-block">
+              <img src="./images/hogar.png" alt="Inicio" />
+            </Link>
+
+            {/* Add siempre visible */}
+            <Link to="/add">
+              <img src="./images/plus-pequeno.png" alt="Agregar contenido" />
+            </Link>
+
             {/* Dropdown de perfil */}
             <Dropdown align="end">
               <Dropdown.Toggle as="div" className="avatar-toggle">
@@ -68,9 +75,9 @@ export const Navbar = () => {
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
-          </Nav>
+          </div>
         </Container>
-      </RBNavbar>
+      </nav>
 
       {/* Modal de logout */}
       <DeleteConfirmAccount
