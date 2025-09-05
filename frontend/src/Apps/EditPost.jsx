@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect } from "react"
 import { Form, Row, Col, Button, Alert } from "react-bootstrap"
 import { SearchOptions } from "../Components/SearchOptions"
