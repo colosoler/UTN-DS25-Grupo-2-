@@ -2,10 +2,11 @@ import { Router } from 'express';
 import * as materialController from '../controllers/material.controller';
 import { validate } from '../middlewares/validation.middleware';
 import { createMaterialSchema, updateMaterialSchema } from '../validations/material.validation';
+import { authenticate, authorize } from '../middlewares/auth.middleware';
 
 const router = Router();
 
-router.get('/', (req, res, next) => {
+router.get('/', authenticate, authorize('ADMIN', 'USER'), (req, res, next) => {
     if (Object.keys(req.query).length > 0) {
         materialController.findMaterials(req, res, next);
     } else {
@@ -13,12 +14,12 @@ router.get('/', (req, res, next) => {
     }
 });
 
-router.get('/:id', materialController.getMaterialById);
+router.get('/:id', authenticate, authorize('ADMIN', 'USER'), materialController.getMaterialById);
 
-router.post('/', validate(createMaterialSchema), materialController.createMaterial);
+router.post('/', authenticate, authorize('ADMIN', 'USER'), validate(createMaterialSchema), materialController.createMaterial);
 
-router.put('/:id', validate(updateMaterialSchema), materialController.updateMaterial);
+router.put('/:id', authenticate, authorize('ADMIN', 'USER'), validate(updateMaterialSchema), materialController.updateMaterial);
 
-router.delete('/:id', materialController.deleteMaterial);
+router.delete('/:id', authenticate, authorize('ADMIN'), materialController.deleteMaterial);
 
 export const materialRoutes = router;
