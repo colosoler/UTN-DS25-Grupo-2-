@@ -2,15 +2,17 @@ export interface User {
     id: number;
     name: string;
     surname: string;
-    career: string;
+    careerId: number;
     email: string;
     password: string;    
 }
 
+export interface UserData extends Omit<User, 'password'> {}
+
 export interface CreateUserRequest {
     name: string;
     surname: string;
-    career: string;
+    careerId: number;
     email: string;
     password: string;
     username: string;
@@ -20,17 +22,8 @@ export interface CreateUserRequest {
 export interface UpdateUserRequest {
     name?: string;
     surname?: string;
-    career?: string;
+    careerId?: number;
     email?: string;
     password?: string;
     username?: string;
-}
-
-export interface UserResponse {
- user: User;
- message: string;
-}
-export interface UsersListResponse {
- users: User[];
- total: number;
 }

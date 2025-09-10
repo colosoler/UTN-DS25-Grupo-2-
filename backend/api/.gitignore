@@ -4,6 +4,8 @@ node_modules/
 # Compilados de TypeScript
 dist/
 
+prisma/migrations/
+
 # Logs
 logs/
 *.log

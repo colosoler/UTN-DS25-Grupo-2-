@@ -8,10 +8,13 @@ surname: z.string()
 .min(1, 'El apellido es requerido')
 .max(50, 'El apellido no puede exceder 50 caracteres')
 .trim(),
-email: z.email(),
+email: z.email()
+.toLowerCase()
+.trim(),
 password: z.string()
-.min(8, 'La contraseña debe tener al menos 8 caracteres')
-.max(100, 'La contraseña no puede exceder 100 caracteres')
+.min(8, 'Mínimo 8 caracteres')
+.regex(/[A-Z]/, 'Debe contener al menos una mayúscula')
+.regex(/[0-9]/, 'Debe contener al menos un número')
 .trim(),
 username: z.string()
 .min(3, 'El nombre de usuario es requerido')

@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -12,15 +9,17 @@ datasource db {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  email      String    @unique
-  username   String    @unique
-  name       String    @db.VarChar(50)
-  surname    String    @db.VarChar(50)
-  password   String    
-  materiales Material[] // Establece la relación con los materiales
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
+  username   String     @unique
+  name       String     @db.VarChar(50)
+  surname    String     @db.VarChar(50)
+  password   String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  careerId   Int
+  materiales Material[]
+  carreras   Carrera    @relation(fields: [careerId], references: [id])
 
   @@map("users")
 }
@@ -28,18 +27,20 @@ model User {
 model Carrera {
   id         Int              @id @default(autoincrement())
   nombre     String           @db.VarChar(100)
-  icon     String           @db.VarChar(100) @default("")
-  materias   CarreraMateria[] 
-  materiales Material[] // Establece la relación con materiales
+  icon       String           @default("") @db.VarChar(100)
+  materias   CarreraMateria[]
+  materiales Material[]
+  users      User[]
+
   @@map("carreras")
 }
 
 model Materia {
   id          Int              @id @default(autoincrement())
   nombre      String           @db.VarChar(100)
-  descripcion String           @db.Text
+  descripcion String
   carreras    CarreraMateria[]
-  materiales  Material[] // Establece la relación con materiales
+  materiales  Material[]
 
   @@map("materias")
 }
@@ -48,38 +49,33 @@ model CarreraMateria {
   carreraId Int
   materiaId Int
   anio      Int
-
   carrera   Carrera @relation(fields: [carreraId], references: [id])
   materia   Materia @relation(fields: [materiaId], references: [id])
 
-  @@id([carreraId, materiaId]) // Esto indica que es una clave compuesta
+  @@id([carreraId, materiaId])
   @@map("carrera_materia")
 }
 
 model Material {
-  id               Int      @id @default(autoincrement())
-  añoCursada       Int
+  id               Int          @id @default(autoincrement())
+  añoCursada      Int
   archivo          String
-  cantidadReportes Int      @default(0)
-  comision         String   @db.VarChar(50)
-  descripcion      String   @db.Text
-  fecha            DateTime @default(now())
-  numeroParcial    Int?     
-  titulo           String   @db.VarChar(200)
+  cantidadReportes Int          @default(0)
+  comision         String       @db.VarChar(50)
+  descripcion      String
+  fecha            DateTime     @default(now())
+  numeroParcial    Int?
+  titulo           String       @db.VarChar(200)
   tipo             TipoMaterial
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  // Foreign Keys
-  materiaId Int
-  carreraId Int
-  userId    Int
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  materiaId        Int
+  carreraId        Int
+  userId           Int
+  carrera          Carrera      @relation(fields: [carreraId], references: [id])
+  materia          Materia      @relation(fields: [materiaId], references: [id])
+  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  // Relaciones
-  materia   Materia  @relation(fields: [materiaId], references: [id])
-  carrera   Carrera  @relation(fields: [carreraId], references: [id])
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
   @@map("materials")
 }
 

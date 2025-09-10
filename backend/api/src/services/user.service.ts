@@ -1,5 +1,7 @@
 import prisma from '../config/prisma';
-import { User } from '../generated/prisma';
+import bcrypt from 'bcrypt';
+import { CreateUserRequest , UpdateUserRequest , UserData } from
+'../types/user.types' ;
 
 /*
 let users: User[] = [
@@ -12,20 +14,20 @@ let users: User[] = [
 ];
 */
 
-export async function getAllUsers(): Promise<User[]> {
+
+export async function getAllUsers(limit: number = 10): Promise<UserData[]> {
  const users = await prisma.user.findMany({
  orderBy: { id: 'asc' },
- include: { materiales: true }
+ take: limit,
  });
  return users;
 }
 
-export async function getUserById(id: number): Promise<User> {
+
+export async function getUserById(id: number): Promise<UserData> {
   const user = await prisma.user.findUnique({
     where: { id },
-    include: { materiales: true }
   });
-
   if (!user) {
     const error = new Error('User not found');
     (error as any).statusCode = 404;
@@ -34,14 +36,37 @@ export async function getUserById(id: number): Promise<User> {
   return user;
 }
 
-export async function createUser(data: {name: string, surname: string, email: string, username: string, password: string}):Promise<User> {
- return prisma.user.create({data});
+
+export async function createUser(data: CreateUserRequest):Promise<UserData> {
+ const exists = await prisma.user.findUnique({ where: { email: data.email },});
+ if (exists) {
+ const error = new Error('Email already registered') as any;
+ error.statusCode = 409;
+ throw error;
+ }
+ const hashedPassword = await bcrypt.hash(data.password, 10);
+ const user = await prisma.user.create({
+ data: {
+ ...data,
+ password: hashedPassword
+ },
+ });
+ return user;
 }
 
-export async function updateUser(id: number, data: Partial<User> ): Promise<User> {
 
+export async function updateUser(id: number, data: UpdateUserRequest ): Promise<UserData> {
  try {
-   return await prisma.user.update({ where: { id }, data });
+   const updateData: Partial<UpdateUserRequest> = {...data };
+   if (data.password) {
+    updateData.password = await bcrypt.hash(data.password, 10);
+   }else {
+    delete (updateData as any).password;
+   }
+   return await prisma.user.update({
+    where: { id },
+    data: updateData,
+   });
  } catch (e: any) {
    if (e.code === 'P2025') {
      const error = new Error('User not found' ) as any;
@@ -51,6 +76,7 @@ export async function updateUser(id: number, data: Partial<User> ): Promise<User
    throw e;
  }
 }
+
 
 export async function deleteUser(id: number): Promise<void> {
   try {
