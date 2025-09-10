@@ -11,5 +11,6 @@ export interface LoginResponse {
   data: {
     user: UserWithoutPassword;
     token: string;
-  };
+  }, 
+  success: boolean;
 }
