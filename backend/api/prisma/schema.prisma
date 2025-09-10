@@ -19,7 +19,7 @@ model User {
   updatedAt  DateTime   @updatedAt
   careerId   Int
   materiales Material[]
-  carreras   Carrera    @relation(fields: [careerId], references: [id])
+  career     Carrera    @relation(fields: [careerId], references: [id])
 
   @@map("users")
 }
