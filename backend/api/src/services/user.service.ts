@@ -15,10 +15,10 @@ let users: User[] = [
 */
 
 
-export async function getAllUsers(limit: number = 10): Promise<UserData[]> {
+export async function getAllUsers(): Promise<UserData[]> {
  const users = await prisma.user.findMany({
  orderBy: { id: 'asc' },
- take: limit,
+ include: { career: true }
  });
  return users;
 }
@@ -27,6 +27,7 @@ export async function getAllUsers(limit: number = 10): Promise<UserData[]> {
 export async function getUserById(id: number): Promise<UserData> {
   const user = await prisma.user.findUnique({
     where: { id },
+    include: { career: true}
   });
   if (!user) {
     const error = new Error('User not found');
@@ -36,7 +37,6 @@ export async function getUserById(id: number): Promise<UserData> {
   return user;
 }
 
-
 export async function createUser(data: CreateUserRequest):Promise<UserData> {
  const exists = await prisma.user.findUnique({ where: { email: data.email },});
  if (exists) {
@@ -44,11 +44,17 @@ export async function createUser(data: CreateUserRequest):Promise<UserData> {
  error.statusCode = 409;
  throw error;
  }
+const { careerId, ...userData } = data;
  const hashedPassword = await bcrypt.hash(data.password, 10);
  const user = await prisma.user.create({
  data: {
- ...data,
- password: hashedPassword
+  ...userData,
+  password: hashedPassword,
+  career: {
+    connect: {
+      id: careerId
+    }
+  }
  },
  });
  return user;
