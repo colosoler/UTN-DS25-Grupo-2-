@@ -3,7 +3,9 @@ export interface User {
     name: string;
     surname: string;
     careerId: number;
+    username: string;
     email: string;
+    role: 'USER' | 'ADMIN';
     password: string;    
 }
 
@@ -16,6 +18,7 @@ export interface CreateUserRequest {
     email: string;
     password: string;
     username: string;
+    role: 'USER' | 'ADMIN';
 }
 
 

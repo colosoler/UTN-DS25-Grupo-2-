@@ -18,6 +18,7 @@ model User {
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   careerId   Int
+  role       Role       @default(USER)
   materiales Material[]
   career     Carrera    @relation(fields: [careerId], references: [id])
 
@@ -89,4 +90,9 @@ enum TipoMaterial {
   APUNTE
   RESUMEN
   OTRO
+}
+
+enum Role {
+  USER
+  ADMIN
 }
