@@ -11,6 +11,7 @@ surname: z.string()
 email: z.email()
 .toLowerCase()
 .trim(),
+careerId: z.number(),
 password: z.string()
 .min(8, 'Mínimo 8 caracteres')
 .regex(/[A-Z]/, 'Debe contener al menos una mayúscula')

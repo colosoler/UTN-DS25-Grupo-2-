@@ -24,21 +24,28 @@ export async function getUserById(req: Request<{id: string}>, res: Response<User
 }
 
 
-export async function createUser(req: Request< {}, {}, CreateUserRequest>, res: Response<UserData>, next: NextFunction){
+export async function createUser(req: Request, res: Response, next: NextFunction){
+  console.log("Controller - req.body:", req.body);
  try {
-    const newUser = await userService.createUser(req.body);
-    res.status(201).json(newUser);
+    const user = await userService.createUser(req.body);
+    res.status(201).json({
+      success: true,
+      data: user
+    });
  } catch (error) {
  next(error);
  }
 }
 
 
-export async function updateUser(req: Request<{ id: string }, {}, UpdateUserRequest>, res: Response<UserData>, next: NextFunction) {
+export async function updateUser(req: Request, res: Response, next: NextFunction) {
  try {
     const id = parseInt(req.params.id);
-    const updatedUser = await userService.updateUser(id, req.body);
-    res.json( updatedUser);
+    const user = await userService.updateUser(id, req.body);
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
  } catch (error) {
     next(error);
  }
