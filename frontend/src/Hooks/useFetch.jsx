@@ -1,37 +1,39 @@
-import { useEffect } from "react";
-import { useState } from "react"
-
-const SERVER_URL = "http://127.0.0.1:3000/";
-
-export const useFetch = (endpoint) => {
-    const [state, setState] = useState({
-        data: null,
-        isLoading: true,
-        error: null
-    });
-    /*
-    si usamos JWToken
-    const token = sessionStorage.getItem("accessToken")
-    const options ={
-        method: 'GET',
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-        }
-    };
-    */
-    async function fetchData() {
-        try {
-            const response = await fetch(SERVER_URL + endpoint);//, options);
-            const data = await response.json();
-            setState({ data, isLoading: false, error: null });
-        } catch (error) {
-            setState({ data: null, isLoading: false, error });
-        }
-    }
-    if (!endpoint) return { data: null, isLoading: false, error: "No se proveyó un endpoint" };
-    //if (!token ) return { data: null, isLoading: false, error: "No token provided" };
-    
-    useEffect(() => { fetchData() }, [endpoint]);
-    return state;
-};
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getToken, clearToken } from '../helpers/auth';
+export function useFetch(url, options = {}, { requireAuth = false } = {}) {
+   const [data, setData] = useState(null);
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState(null);
+   const navigate = useNavigate();
+   useEffect(() => {
+       const controller = new AbortController();
+       async function fetchData() {
+           setLoading(true);
+           setError(null);
+           try {
+               const token = getToken();
+               const headers = {
+                   ...(options.headers || {}),
+                   ...(token ? { Authorization: `Bearer ${token}` } : {})
+               };
+               const res = await fetch(url, { ...options, headers, signal: controller.signal });
+               if (res.status === 401 && requireAuth) {
+                   clearToken();
+                   navigate("/");
+                   return;
+               }
+               if (!res.ok) throw new Error(res.statusText);
+               const json = await res.json();
+               setData(json);
+           } catch (err) {
+               if (err.name !== "AbortError") setError(err);
+           } finally {
+               setLoading(false);
+           }
+       }
+       fetchData();
+       return () => controller.abort();
+   }, [url]);
+   return { data, loading, error };
+}
