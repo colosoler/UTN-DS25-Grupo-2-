@@ -44,17 +44,15 @@ export async function createUser(data: CreateUserRequest):Promise<UserData> {
  error.statusCode = 409;
  throw error;
  }
-const { careerId, ...userData } = data;
  const hashedPassword = await bcrypt.hash(data.password, 10);
  const user = await prisma.user.create({
  data: {
-  ...userData,
+  ...data,
   password: hashedPassword,
-  career: {
-    connect: {
-      id: careerId
-    }
-  }
+  careerId: data.careerId,
+ },
+ include: {
+  career: true,
  },
  });
  return user;
@@ -71,7 +69,13 @@ export async function updateUser(id: number, data: UpdateUserRequest ): Promise<
    }
    return await prisma.user.update({
     where: { id },
-    data: updateData,
+    data: {
+      ...updateData,
+      careerId: data.careerId, 
+    },
+    include: {
+      career: true,
+    }
    });
  } catch (e: any) {
    if (e.code === 'P2025') {

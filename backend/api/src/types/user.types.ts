@@ -1,3 +1,5 @@
+import { Carrera } from '../generated/prisma'
+
 export interface User {
     id: number;
     name: string;
@@ -5,6 +7,8 @@ export interface User {
     careerId: number;
     email: string;
     password: string;    
+    username: string;
+    career?: Carrera;
 }
 
 export interface UserData extends Omit<User, 'password'> {}
