@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getToken, clearToken } from '../helpers/auth';
+import { getToken, clearToken } from '../Helpers/auth';
 export function useFetch(url, options = {}, { requireAuth = false } = {}) {
    const [data, setData] = useState(null);
    const [loading, setLoading] = useState(true);
