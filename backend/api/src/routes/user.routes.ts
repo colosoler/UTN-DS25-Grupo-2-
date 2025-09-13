@@ -8,19 +8,19 @@ import { createUserSchema, updateUserSchema } from '../validations/user.validati
 const router = Router();
 
 
-router.get('/', authenticate, authorize('ADMIN'), userController.getAllUsers);
+router.get('/', authenticate, authorize('ADMIN'),userController.getAllUsers);
 
 
-router.get('/:id', authenticate, authorize('ADMIN'), userController.getUserById);
+router.get('/:id', userController.getUserById);
 
 
-router.post('/', authenticate, authorize('ADMIN'), validate(createUserSchema),
+router.post('/', authenticate, authorize('ADMIN','USER'), validate(createUserSchema),
 userController.createUser);
 
 
-router.put('/:id', authenticate, authorize('ADMIN'), validate(updateUserSchema),
+router.put('/:id', authenticate, authorize('ADMIN','USER'), validate(updateUserSchema),
 userController.updateUser);
 
 
-router.delete('/:id', authenticate, authorize('ADMIN'), userController.deleteUser);
+router.delete('/:id', authenticate, authorize('ADMIN','USER'), userController.deleteUser);
 export const userRoutes = router;

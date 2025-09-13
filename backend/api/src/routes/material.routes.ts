@@ -6,7 +6,7 @@ import { authenticate, authorize } from '../middlewares/auth.middleware';
 
 const router = Router();
 
-router.get('/', authenticate, authorize('ADMIN', 'USER'), (req, res, next) => {
+router.get('/', (req, res, next) => {
     if (Object.keys(req.query).length > 0) {
         materialController.findMaterials(req, res, next);
     } else {
@@ -14,12 +14,12 @@ router.get('/', authenticate, authorize('ADMIN', 'USER'), (req, res, next) => {
     }
 });
 
-router.get('/:id', authenticate, authorize('ADMIN', 'USER'), materialController.getMaterialById);
+router.get('/:id', materialController.getMaterialById);
 
 router.post('/', authenticate, authorize('ADMIN', 'USER'), validate(createMaterialSchema), materialController.createMaterial);
 
 router.put('/:id', authenticate, authorize('ADMIN', 'USER'), validate(updateMaterialSchema), materialController.updateMaterial);
 
-router.delete('/:id', authenticate, authorize('ADMIN'), materialController.deleteMaterial);
+router.delete('/:id', authenticate, authorize('ADMIN', 'USER'), materialController.deleteMaterial);
 
 export const materialRoutes = router;

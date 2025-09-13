@@ -2,7 +2,7 @@ import { Router } from 'express';
 import * as materiaController from '../controllers/materia.controller'
 import { validate } from '../middlewares/validation.middleware'
 import { createMateriaSchema, updateMateriaSchema } from '../validations/materia.validation';
-
+import { authenticate, authorize } from '../middlewares/auth.middleware';
 
 const router = Router();
 
@@ -13,9 +13,9 @@ router.get('/', materiaController.getAllMaterias);
 router.get('/:id', materiaController.getMateriaById);
 
 // Ruta -> POST /materias
-router.post('/', validate(createMateriaSchema), materiaController.createMateria);
+router.post('/',  authenticate, authorize('ADMIN'), validate(createMateriaSchema), materiaController.createMateria);
 
 // Ruta -> PUT /materias/:id
-router.put('/:id', validate(updateMateriaSchema), materiaController.updateMateria);
+router.put('/:id',  authenticate, authorize('ADMIN'), validate(updateMateriaSchema), materiaController.updateMateria);
 
 export const materiaRoutes = router;
