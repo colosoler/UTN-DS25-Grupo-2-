@@ -10,20 +10,28 @@ export async function getAllMaterials(): Promise<Material[]> {
 }
 
 export async function findMaterials(filters: any): Promise<Material[]> {
-  if (!filters.query) return [];
+  if (!filters.query && !filters.userId) return [];
 
-  const query = filters.query as string;
+  const query = filters.query as string | undefined;
+  const userId = filters.userId as number | undefined;
 
   return prisma.material.findMany({
     where: {
-      OR: [
-        { titulo: { contains: query, mode: 'insensitive' } },
-        { descripcion: { contains: query, mode: 'insensitive' } },
-        { comision: { contains: query, mode: 'insensitive' } },
-        { materiaId: !isNaN(Number(query)) ? { equals: Number(query) } : undefined },
-        { carreraId: !isNaN(Number(query)) ? { equals: Number(query) } : undefined },
-      ].filter(Boolean) //se eliminan los undefined si no son numericos osea materiaId y carreraId
-    }
+      AND: [
+        userId ? { userId } : {},
+        query
+          ? {
+              OR: [
+                { titulo: { contains: query, mode: 'insensitive' } },
+                { descripcion: { contains: query, mode: 'insensitive' } },
+                { comision: { contains: query, mode: 'insensitive' } },
+                { materiaId: !isNaN(Number(query)) ? { equals: Number(query) } : undefined },
+                { carreraId: !isNaN(Number(query)) ? { equals: Number(query) } : undefined },
+              ].filter(Boolean),
+            }
+          : {},
+      ],
+    },
   });
 }
 
