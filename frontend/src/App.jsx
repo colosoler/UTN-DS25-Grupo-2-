@@ -1,17 +1,17 @@
 import './App.css'
 import { Routes, Route, useLocation } from 'react-router-dom'
-import { HomeApp } from './Apps/HomeApp'
-import { CarreraDetailApp } from './Apps/CarreraDetailApp'
-import { SearchResultApp} from './Apps/SearchResultApp'
+import { HomePage } from './Apps/HomePage'
+import { CarreraDetailPage } from './Apps/CarreraDetailPage'
+import { SearchResultPage} from './Apps/SearchResultPage'
 import MaterialRouteWrapper from './Apps/MaterialRouteWrapper'
 import { Navbar } from './Components/Navbar'
-import { Login } from './Apps/Login'
-import { Signup } from './Apps/Signup'
-import { CreateMaterialApp } from './Apps/CreateMaterialApp.jsx'
-import { ProfilePage } from './Apps/ProfilePage.jsx'
-import { SettingsPage } from './Apps/SettingsPage.jsx'
-import { MyPosts } from './Apps/MyPosts.jsx'
-import { EditMaterial } from './Apps/EditPost.jsx'
+import { LoginPage } from './Apps/LoginPage'
+import { SignupPage } from './Apps/SignupPage'
+import { MaterialCreatePage } from './Apps/MaterialCreatePage'
+import { ProfilePage } from './Apps/ProfilePage'
+import { SettingsPage } from './Apps/SettingsPage'
+import { MyMaterialsPage } from './Apps/MyMaterialsPage'
+import { MaterialEditPage } from './Apps/MaterialEditPage'
 import { useFetch } from './Hooks/useFetch'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -28,18 +28,18 @@ function App() {
 
       <main>
         <Routes>
-          <Route path="/" element={<Login/>} />
-          <Route path="/signup" element={<Signup/>} />
-          <Route path="/result" element={<SearchResultApp/>} />
-          <Route path="/home" element={<HomeApp/>} />
-          <Route path="/carrera/:id" element={<CarreraDetailApp/>} />
-          <Route path="/search" element={<SearchResultApp/>} />
+          <Route path="/" element={<LoginPage/>} />
+          <Route path="/signup" element={<SignupPage/>} />
+          <Route path="/result" element={<SearchResultPage/>} />
+          <Route path="/home" element={<HomePage/>} />
+          <Route path="/carrera/:id" element={<CarreraDetailPage/>} />
+          <Route path="/search" element={<SearchResultPage/>} />
           <Route path="/material/:id" element={<MaterialRouteWrapper/>} />
-          <Route path="/add" element={<CreateMaterialApp/>} />
+          <Route path="/add" element={<MaterialCreatePage/>} />
           <Route path="/profile" element={<ProfilePage/>} />
           <Route path="/settings" element={<SettingsPage/>} />
-          <Route path="/myposts" element={<MyPosts/>} />
-          <Route path="/edit/:id" element={<EditMaterial />} />
+          <Route path="/myposts" element={<MyMaterialsPage/>} />
+          <Route path="/edit/:id" element={<MaterialEditPage/>} />
 
         </Routes>   
       </main>

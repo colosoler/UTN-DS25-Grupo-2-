@@ -1,5 +1,5 @@
 import { Searchbar } from '../Components/Searchbar.jsx'
-import { Result } from './../Components/Result.jsx';
+import { Result } from '../Components/Result.jsx';
 import { useFetch } from '../Hooks/useFetch.jsx';
 import { SERVER_URL } from '../Constants.js';
 import { useSearchParams } from 'react-router-dom';
@@ -22,16 +22,16 @@ export const SearchResultApp = () => {
     return filteredResults 
   }
 
-    return (
-      <>
-        <Searchbar></Searchbar>
-        <section id='results'>
-          <div className="results-list">
-            {getFilteredResults().map(result => (
-              <Result key={result.id} result={result} shareUrl={`${window.location.origin}/material/${result.id}`} />
-            ))}
-          </div>
-        </section>
-      </>
-    )
-  }
+  return (
+    <>
+      <Searchbar></Searchbar>
+      <section id='results'>
+        <div className="results-list">
+          {getFilteredResults().map(result => (
+            <Result key={result.id} result={result} shareUrl={`${window.location.origin}/material/${result.id}`} />
+          ))}
+        </div>
+      </section>
+    </>
+  )
+}

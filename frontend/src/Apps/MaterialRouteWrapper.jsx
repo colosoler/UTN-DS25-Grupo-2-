@@ -1,4 +1,4 @@
-import { MaterialApp } from './MaterialApp';
+import { MaterialPage } from './MaterialPage';
 import { useFetch } from '../Hooks/useFetch';
 import { SERVER_URL } from '../Constants';
 import { useParams } from 'react-router-dom';
@@ -10,7 +10,7 @@ function MaterialRouteWrapper() {
   if (error) return <p>Error: {error.message}</p>;
   const result = data.find(item => item.id === Number(id));
   if (!result) return <h2>Material no encontrado</h2>;
-  return <MaterialApp result={result} />;
+  return <MaterialPage result={result} />;
 }
 
 export default MaterialRouteWrapper;
