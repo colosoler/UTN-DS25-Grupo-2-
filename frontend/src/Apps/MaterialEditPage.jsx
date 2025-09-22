@@ -13,7 +13,7 @@ const carreras = [
     icon: 'bi-gear-fill'
   }
 ]
-export const EditMaterial = () => {
+export const MaterialEditPage = () => {
   const { id } = useParams()
   const location = useLocation()
   const [formData, setFormData, handleChange] = useForm()

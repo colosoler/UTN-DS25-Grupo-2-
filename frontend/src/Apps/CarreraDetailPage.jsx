@@ -58,7 +58,7 @@ function sortCarreraMateriasByAnio(carreraMaterias) {
   }
   return anios;
 }
-export const CarreraDetailApp = () => {
+export const CarreraDetailPage = () => {
   const { id } = useParams();
   const { data: carrera, isLoading, error } = useFetch('carreras/' + id)
   if (isLoading) return <h1>Cargando...</h1>

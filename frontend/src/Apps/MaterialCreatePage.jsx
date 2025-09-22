@@ -3,7 +3,7 @@ import { SearchOptions } from '../Components/SearchOptions.jsx';
 import { useForm } from '../Hooks/useForm.jsx';
 import { useFetch } from '../Hooks/useFetch.jsx';
 
-export const CreateMaterialApp = () => {
+export const CreateMaterialPage = () => {
   const [formData,setFormData,handleChange] = useForm((name,value,newData)=>{
     if (name === 'materia' || name === 'carrera'){ 
       setFormData({...newData, [name+'Id']: value.value, [name]: value.option})

@@ -1,9 +1,9 @@
 import Information from '../Components/Information'
 import { Material } from '../Components/Material';
 import {Buttons} from '../Components/Buttons';
-import './styles/MaterialApp.css';
+import './styles/MaterialPage.css';
 
-export const MaterialApp = ({result}) => {
+export const MaterialPage = ({result}) => {
   const link = `${window.location.origin}/material/${result.id}`;
 
   return (

@@ -3,9 +3,9 @@ import { useNavigate, Link } from "react-router-dom"
 import { Container, Row, Col, Form, Button, Image } from "react-bootstrap"
 import { setToken } from "../Helpers/auth" ;
 import { Alert } from "../Components/Alert"
-import "../Apps/styles/Login.css"
+import "./styles/LoginPage.css"
 
-export const Login = () => {
+export const LoginPage = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("");

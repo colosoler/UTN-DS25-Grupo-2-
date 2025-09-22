@@ -3,9 +3,9 @@ import { Result } from '../Components/Result.jsx';
 import { useFetch } from '../Hooks/useFetch.jsx';
 import { SERVER_URL } from '../Constants.js';
 import { useSearchParams } from 'react-router-dom';
-import './styles/SearchResultApp.css';
+import './styles/SearchResultPage.css';
 
-export const SearchResultApp = () => {
+export const SearchResultPage = () => {
   const [searchParams] = useSearchParams();
   const { data, isLoading, error } = useFetch("/apuntes", SERVER_URL);
   if (isLoading) return <p>Cargando apuntes...</p>;

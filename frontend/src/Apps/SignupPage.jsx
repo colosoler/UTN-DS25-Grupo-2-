@@ -2,9 +2,9 @@ import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { Container, Row, Col, Form, Button, Image } from "react-bootstrap"
 import { Alert } from "../Components/Alert"
-import "../Apps/styles/Signup.css"
+import "./styles/SignupPage.css"
 
-export const Signup = () => {
+export const SignupPage = () => {
   const [name, setName] = useState("")
   const [surname, setSurname] = useState("")
   const [username, setUsername] = useState("")
