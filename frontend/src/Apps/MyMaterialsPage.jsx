@@ -10,10 +10,14 @@ import { Link, useNavigate } from "react-router-dom"
 import { MdEdit, MdArrowUpward, MdArrowDownward } from "react-icons/md"
 import { useFetch } from "../Hooks/useFetch"
 import { SERVER_URL } from "../Constants"
-import "./styles/MyPosts.css"
+import "../Apps/styles/MyMaterialsPage.css"
+import { getUser } from "../Helpers/auth"
 
-export const MyPosts = () => {
-  const { data, isLoading, error } = useFetch("/apuntes", SERVER_URL)
+
+export const MyMaterialsPage = () => {
+  const user = getUser();
+  const userId = user?.id;
+  const { data, loading, error } = useFetch(`/materials?userId=${userId}`)
   const navigate = useNavigate()
   const [materials, setMaterials] = useState([])
   const [searchValue, setSearchValue] = useState("")
@@ -42,7 +46,7 @@ export const MyPosts = () => {
     }
   }, [searchValue, materials])
 
-  if (isLoading) return <p>Cargando apuntes...</p>
+  if (loading) return <p>Cargando apuntes...</p>
   if (error) return <p>Error: {error.message}</p>
 
   const handleDeleteClick = (material) => {
