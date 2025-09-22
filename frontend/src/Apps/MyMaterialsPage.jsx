@@ -10,9 +10,9 @@ import { Link, useNavigate } from "react-router-dom"
 import { MdEdit, MdArrowUpward, MdArrowDownward } from "react-icons/md"
 import { useFetch } from "../Hooks/useFetch"
 import { SERVER_URL } from "../Constants"
-import "./styles/MyPosts.css"
+import "./styles/MyMaterialsPage.css"
 
-export const MyPosts = () => {
+export const MyMaterialsPage = () => {
   const { data, isLoading, error } = useFetch("/apuntes", SERVER_URL)
   const navigate = useNavigate()
   const [materials, setMaterials] = useState([])
