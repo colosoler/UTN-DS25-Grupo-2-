@@ -12,7 +12,7 @@ import { useFetch } from "../Hooks/useFetch"
 import { SERVER_URL } from "../Constants"
 import "../Apps/styles/MyMaterialsPage.css"
 import { getUser } from "../Helpers/auth"
-import { SearchBar } from "../Components/Searchbar"
+import { Searchbar } from "../Components/Searchbar"
 import { VotesDisplay } from "../Components/VotesDisplay";
 
 
@@ -139,7 +139,7 @@ export const MyMaterialsPage = () => {
       <div className="container-fluid py-3">
         <Row className="justify-content-center">
           <Col xs={12} md={8} lg={6}>
-            <SearchBar
+            <Searchbar
               value={searchValue}
               onChange={e => setSearchValue(e.target.value)}
               onClear={handleClear}
