@@ -10,10 +10,16 @@ import { Link, useNavigate } from "react-router-dom"
 import { MdEdit, MdArrowUpward, MdArrowDownward } from "react-icons/md"
 import { useFetch } from "../Hooks/useFetch"
 import { SERVER_URL } from "../Constants"
-import "./styles/MyMaterialsPage.css"
+import "../Apps/styles/MyMaterialsPage.css"
+import { getUser } from "../Helpers/auth"
+import { SearchBar } from "../Components/Searchbar"
+import { VotesDisplay } from "../Components/VotesDisplay";
+
 
 export const MyMaterialsPage = () => {
-  const { data, isLoading, error } = useFetch("/apuntes", SERVER_URL)
+  const user = getUser();
+  const userId = user?.id;
+  const { data, loading, error } = useFetch(`/materials?userId=${userId}`)
   const navigate = useNavigate()
   const [materials, setMaterials] = useState([])
   const [searchValue, setSearchValue] = useState("")
@@ -42,7 +48,7 @@ export const MyMaterialsPage = () => {
     }
   }, [searchValue, materials])
 
-  if (isLoading) return <p>Cargando apuntes...</p>
+  if (loading) return <p>Cargando apuntes...</p>
   if (error) return <p>Error: {error.message}</p>
 
   const handleDeleteClick = (material) => {
@@ -133,45 +139,12 @@ export const MyMaterialsPage = () => {
       <div className="container-fluid py-3">
         <Row className="justify-content-center">
           <Col xs={12} md={8} lg={6}>
-            <div className="input-group input-group-lg rounded-lg shadow-sm">
-              <input
-                type="text"
-                className="form-control focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-l-lg"
-                placeholder="Buscar en mis publicaciones..."
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                onKeyDown={handleKeyDown}
-              />
-              <button
-                className="btn flex items-center justify-center p-2"
-                type="button"
-                onClick={handleClear}
-                title="Borrar"
-                style={{
-                  border: "1px solid #ced4da",
-                  borderLeft: "none",
-                  borderRight: "none",
-                  backgroundColor: "#fff",
-                  color: "#6c757d",
-                }}
-              >
-                ×
-              </button>
-              <button
-                className="btn flex items-center justify-center p-2 rounded-r-lg"
-                type="button"
-                onClick={handleMenuClick}
-                title="Menú"
-                style={{
-                  border: "1px solid #ced4da",
-                  borderLeft: "none",
-                  backgroundColor: "#fff",
-                  color: "#6c757d",
-                }}
-              >
-                ≡
-              </button>
-            </div>
+            <SearchBar
+              value={searchValue}
+              onChange={e => setSearchValue(e.target.value)}
+              onClear={handleClear}
+              onKeyDown={handleKeyDown}
+            />
           </Col>
         </Row>
       </div>
@@ -225,31 +198,7 @@ export const MyMaterialsPage = () => {
                     Ver material
                   </Link>
 
-                  {/* Mostrar votos sin permitir votar */}
-                  <div className="votes-display d-flex align-items-center gap-3 mt-3 pt-3 border-top">
-                    <div className="d-flex align-items-center gap-4">
-                      {/* Upvotes (solo mostrar) */}
-                      <div className="d-flex align-items-center vote-display">
-                        <MdArrowUpward className="text-success me-1" size={20} />
-                        <span className="fw-semibold">{material.upvotes}</span>
-                      </div>
-
-                      {/* Downvotes (solo mostrar) */}
-                      <div className="d-flex align-items-center vote-display">
-                        <MdArrowDownward className="text-danger me-1" size={20} />
-                        <span className="fw-semibold">{material.downvotes}</span>
-                      </div>
-
-                      {/* Puntuación neta */}
-                      <div className="d-flex align-items-center">
-                        <i className="bi bi-trophy text-warning me-1"></i>
-                        <span className="fw-semibold text-muted">
-                          {material.upvotes - material.downvotes > 0 ? "+" : ""}
-                          {material.upvotes - material.downvotes}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <VotesDisplay upvotes={material.upvotes} downvotes={material.downvotes} />
 
                   {/* Acciones: Compartir y Eliminar */}
                   <div className="d-flex justify-content-between align-items-center mt-3">
