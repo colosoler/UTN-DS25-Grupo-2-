@@ -4,28 +4,20 @@ import { useForm } from '../Hooks/useForm.jsx';
 import { useFetch } from '../Hooks/useFetch.jsx';
 import { Form, Row, Col, Button, Modal } from 'react-bootstrap';
 import { SearchOptions } from '../Components/SearchOptions.jsx';
-const carreras = [
-  {
-    id: 1,
-    name: 'Ingeniería Mecánica',
-    icon: 'bi-gear-fill'
-  }
-]
 
-const materias = ["A1", "A2", "B1", "B2", "C1", "C2", "D1", "D2", "E1", "E2", "F1", "F2", "G1", "G2", "H1", "H2"];
+const materias = [
+  "A1","A2","B1","B2","C1","C2","D1","D2","E1","E2","F1","F2","G1","G2","H1","H2"
+];
 
 export const Searchbar = () => {
-  //Aplicar Filtros:
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-
-  const getUrl = (params) => (`/search/?${params.toString()}`);
-  const [url, setURL] = useState(getUrl(searchParams));
+  const [url, setURL] = useState(`/search/?${searchParams.toString()}`);
 
   const [formData, setFormData, handleChange] = useForm((name, value) => {
     const newParams = new URLSearchParams(searchParams.toString());
     newParams.set(name, value);
-    setURL(getUrl(newParams));
+    setURL(`/search/?${newParams.toString()}`);
   });
 
   // Abrir / Cerrar filtros
@@ -34,21 +26,28 @@ export const Searchbar = () => {
   const handleCloseModal = () => setShowModal(false);
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      navigate(url);
-    }
+    if (e.key === 'Enter') navigate(url);
   };
 
   const handleClear = () => {
-    setFormData(formData.hasOwnProperty('query') && { ...formData, query: '' });
+    setFormData({ ...formData, query: '' });
     const newParams = new URLSearchParams(searchParams.toString());
     newParams.delete('query');
-    navigate(getUrl(newParams));
+    navigate(`/search/?${newParams.toString()}`);
   };
-  const { data: carreras, isLoading, error } = useFetch('carreras/')
-  if (isLoading) return <h1>Cargando...</h1>
-  if (error) { console.log(error); return <h1>Ha Ocurrido un Error</h1> }
- 
+
+  // Fetch de carreras
+  const { data: carreras = [], loading, error } = useFetch(
+    'http://localhost:3000/carreras',
+    {},
+    { requireAuth: false }
+  );
+
+  if (loading) return <h1>Cargando...</h1>;
+  if (error) {
+    console.error(error);
+    return <h1>Ha Ocurrido un Error</h1>;
+  }
 
   return (
     <div className="container-fluid py-3 font-sans">
@@ -104,6 +103,7 @@ export const Searchbar = () => {
           </div>
         </div>
       </div>
+
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Filtros de Búsqueda</Modal.Title>
@@ -112,27 +112,37 @@ export const Searchbar = () => {
           <Form className="container bg-light p-2 rounded">
             <Row className="mb-3">
               <Col>
-                <Form.Group aria-required>
-                  <SearchOptions options={materias} onChange={handleChange} name="materia" placeholder="De que materia es?" />
+                <Form.Group>
+                  <SearchOptions
+                    options={materias}
+                    onChange={handleChange}
+                    name="materia"
+                    placeholder="De qué materia es?"
+                  />
                 </Form.Group>
               </Col>
               <Col>
-                <Form.Group aria-required>
-                  <SearchOptions options={carreras.map((e) => e.nombre)} onChange={handleChange} name="carrera" placeholder="En que carrera la cursaste?" />
+                <Form.Group>
+                  <SearchOptions
+                    options={carreras?.map((e) => e.nombre) || []}
+                    onChange={handleChange}
+                    name="carrera"
+                    placeholder="En qué carrera la cursaste?"
+                  />
                 </Form.Group>
               </Col>
             </Row>
             <Row className="mb-3">
               <Col>
-                <Form.Group >
+                <Form.Group>
                   <Form.Select onChange={handleChange} name="tipo">
                     <option>Tipo de material</option>
                     <option value="parcial">Parcial</option>
                     <option value="parcial resuelto">Parcial Resuelto</option>
-                    <option value="practica">Practica</option>
-                    <option value="practica resuelta">Practica Resuelta</option>
+                    <option value="practica">Práctica</option>
+                    <option value="practica resuelta">Práctica Resuelta</option>
                     <option value="final">Final</option>
-                    <option value="final resuelto">Final resuelto</option>
+                    <option value="final resuelto">Final Resuelto</option>
                     <option value="apunte">Apunte</option>
                     <option value="resumen">Resumen</option>
                     <option value="otro">Otro</option>
@@ -140,7 +150,7 @@ export const Searchbar = () => {
                 </Form.Group>
               </Col>
               <Col>
-                <Form.Group >
+                <Form.Group>
                   <Form.Select onChange={handleChange} name="parcial">
                     <option>Parcial con el que se relaciona</option>
                     <option value={0}>Ninguno</option>
@@ -152,8 +162,13 @@ export const Searchbar = () => {
                 </Form.Group>
               </Col>
               <Col>
-                <Form.Group >
-                  <Form.Control onChange={handleChange} type="text" placeholder="Comisión" name="comision"></Form.Control>
+                <Form.Group>
+                  <Form.Control
+                    onChange={handleChange}
+                    type="text"
+                    placeholder="Comisión"
+                    name="comision"
+                  />
                 </Form.Group>
               </Col>
             </Row>
@@ -163,12 +178,17 @@ export const Searchbar = () => {
           <Button variant="secondary" onClick={handleCloseModal}>
             Cerrar
           </Button>
-          <Button variant="primary" onClick={() => { handleCloseModal(), navigate(url) }}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              handleCloseModal();
+              navigate(url);
+            }}
+          >
             Aplicar Filtros
           </Button>
         </Modal.Footer>
       </Modal>
-
     </div>
   );
 };
