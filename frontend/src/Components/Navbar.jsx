@@ -57,7 +57,7 @@ export const Navbar = () => {
                   <img className="dropdown-icon" src="./images/user-icon2.svg" alt="profile" />
                   Ver perfil
                 </Dropdown.Item>
-                <Dropdown.Item className="dropdown-item" as={Link} to="/myposts">
+                <Dropdown.Item className="dropdown-item" as={Link} to="/mymaterials">
                   <img className="dropdown-icon" src="./images/files-icon.svg" alt="mis-publicaciones" />
                   Mis publicaciones
                 </Dropdown.Item>

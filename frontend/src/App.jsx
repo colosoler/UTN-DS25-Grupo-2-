@@ -38,7 +38,7 @@ function App() {
           <Route path="/add" element={<MaterialCreatePage/>} />
           <Route path="/profile" element={<ProfilePage/>} />
           <Route path="/settings" element={<SettingsPage/>} />
-          <Route path="/myposts" element={<MyMaterialsPage/>} />
+          <Route path="/mymaterials" element={<MyMaterialsPage/>} />
           <Route path="/edit/:id" element={<MaterialEditPage/>} />
 
         </Routes>   
