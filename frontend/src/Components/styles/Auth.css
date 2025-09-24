@@ -1,0 +1,109 @@
+@import url("../../index.css");
+
+/* Contenedor general para login y signup */
+.login-container,
+.signup-container {
+  display: flex;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 100vh !important;
+  font-family: var(--font-family) !important;
+
+  /* Fondo con imagen */
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/EdificioUTN.jpeg') !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-attachment: fixed !important;
+}
+
+/* Form general */
+.login-form,
+.signup-form {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  padding: 2rem !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  width: 320px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  color: var(--text-color) !important;
+}
+
+/* Título del formulario */
+.login-form h2,
+.signup-form h2 {
+  text-align: center !important;
+  margin-bottom: 1rem !important;
+  font-size: 1.5rem !important;
+  font-weight: var(--font-weight) !important;
+  color: var(--text-color) !important;
+}
+
+/* Inputs */
+.login-form .form-control,
+.signup-form .form-control {
+  padding: 0.6rem !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 4px !important;
+  font-size: var(--font-size) !important;
+  font-family: var(--font-family) !important;
+  color: var(--text-color) !important;
+}
+
+/* Placeholder */
+.login-form .form-control::placeholder,
+.signup-form .form-control::placeholder {
+  color: var(--secondary-text-color) !important;
+}
+
+/* Botones */
+.login-form button,
+.signup-form button {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  padding: 0.6rem !important;
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  font-size: var(--font-size) !important;
+  font-family: var(--font-family) !important;
+  transition: background-color 0.3s ease !important;
+}
+
+.login-form button:hover,
+.signup-form button:hover {
+  background-color: var(--secondary-color) !important;
+}
+
+/* Mensajes de error */
+.login-error,
+.signup-error,
+.auth-error {
+  color: red !important;
+  font-size: 0.9rem !important;
+  text-align: center !important;
+  margin: -0.5rem 0 0.5rem 0 !important;
+}
+
+/* Mensajes de éxito */
+.login-success,
+.signup-success,
+.auth-success {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 100vh !important;
+  background-color: #d4edda !important;
+  color: #155724 !important;
+  font-size: 1.5rem !important;
+  font-family: var(--font-family) !important;
+}
+
+/* Logo */
+.login-logo {
+  width: 30px;
+  height: 30px;
+  display: block;     /* hace que el margin auto funcione */
+  margin: 0 auto;
+}
