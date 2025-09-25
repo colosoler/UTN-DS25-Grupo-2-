@@ -4,6 +4,7 @@ import { Button, Form } from "react-bootstrap";
 import { Alert } from "../Components/Alert";
 import { AuthContainer } from "../Components/AuthContainer";
 import { AuthField } from "../Components/AuthField";
+import { setToken } from "../Helpers/auth";
 import "./styles/SignupPage.css";
 
 export const SignupPage = () => {
@@ -21,13 +22,11 @@ export const SignupPage = () => {
 
   const navigate = useNavigate();
 
-  // Función genérica para actualizar campos y limpiar error
   const handleChange = (field) => (e) => {
     setFormData({ ...formData, [field]: e.target.value });
     setFormErrors({ ...formErrors, [field]: "" });
   };
 
-  // Configuración de los campos de texto
   const fields = [
     { id: "formName", name: "name", placeholder: "Nombre", type: "text" },
     { id: "formSurname", name: "surname", placeholder: "Apellido", type: "text" },
@@ -36,27 +35,46 @@ export const SignupPage = () => {
     { id: "formPassword", name: "password", placeholder: "Contraseña", type: "password" },
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const errors = {};
 
-    // Validación genérica: si el input está vacío, muestra "Ingresá un [placeholder]"
     fields.forEach(({ name, placeholder }) => {
       if (!formData[name]) errors[name] = `Ingresá tu ${placeholder.toLowerCase()}`;
     });
 
-    // Validación del select
     if (!formData.career) errors.career = "Seleccioná tu carrera";
 
     setFormErrors(errors);
 
-    // Si hay errores, no continuar
     if (Object.keys(errors).length > 0) return;
 
-    // Simulamos éxito
-    setShowSuccessToast(true);
-    setTimeout(() => navigate("/home"), 1000);
+    try {
+      const res = await fetch("http://localhost:3000/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          careerId: parseInt(formData.career, 10),
+        }),
+      });
+
+      if (!res.ok) throw new Error("Error en el registro");
+
+      const newUser = await res.json();
+      if (newUser.token) {
+        setToken(newUser.token);
+      }
+
+      setShowSuccessToast(true);
+      setTimeout(() => navigate("/home"), 1000);
+    } catch (err) {
+      console.error("Error al registrar:", err);
+      setFormErrors({ general: "No se pudo registrar el usuario" });
+    }
   };
 
   const handleToastClose = () => setShowSuccessToast(false);
@@ -65,7 +83,6 @@ export const SignupPage = () => {
     <AuthContainer type="signup" onSubmit={handleSubmit}>
       <h2>Crear Cuenta</h2>
 
-      {/* Inputs */}
       {fields.map(({ id, name, placeholder, type }) => (
         <AuthField
           key={id}
@@ -78,22 +95,21 @@ export const SignupPage = () => {
         />
       ))}
 
-      {/* Select de carrera */}
       <Form.Group controlId="formCareer" className="mb-3">
         <Form.Select
           value={formData.career}
           onChange={handleChange("career")}
-          isInvalid={!!formErrors.career} // marca el select como inválido
+          isInvalid={!!formErrors.career}
         >
           <option value="" disabled>
             Seleccioná tu carrera
           </option>
-          <option value="civil">Ingeniería Civil</option>
-          <option value="electrica">Ingeniería Eléctrica</option>
-          <option value="industrial">Ingeniería Industrial</option>
-          <option value="mecanica">Ingeniería Mecánica</option>
-          <option value="quimica">Ingeniería Química</option>
-          <option value="sistemas">Ingeniería en Sistemas</option>
+          <option value="22">Ingeniería Civil</option>
+          <option value="25">Ingeniería Eléctrica</option>
+          <option value="24">Ingeniería Industrial</option>
+          <option value="20">Ingeniería Mecánica</option>
+          <option value="23">Ingeniería Química</option>
+          <option value="21">Ingeniería en Sistemas</option>
         </Form.Select>
         {formErrors.career && (
           <div style={{ color: "red", marginTop: "5px", textAlign: "center" }}>
@@ -101,6 +117,12 @@ export const SignupPage = () => {
           </div>
         )}
       </Form.Group>
+
+      {formErrors.general && (
+        <div style={{ color: "red", marginTop: "10px", textAlign: "center" }}>
+          {formErrors.general}
+        </div>
+      )}
 
       <Button type="submit" className="w-100">
         Registrarme

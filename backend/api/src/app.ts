@@ -6,6 +6,8 @@ import { materiaRoutes } from './routes/materia.route'
 import { handleError } from './middlewares/error.middleware';
 import { logRequest } from './middlewares/logger.middleware';
 import { carreraRoutes } from './routes/carrera.route';
+import { signupRoutes } from './routes/signup.routes';
+
 require('dotenv').config()
 
 const app = express();
@@ -25,6 +27,7 @@ var corsOptions = {
 app.use(cors(corsOptions));
 
 app.use('/auth', authRoutes);
+app.use('/signup', signupRoutes);
 app.use('/users', userRoutes);
 app.use('/materials', materialRoutes);
 app.use('/materias', materiaRoutes);

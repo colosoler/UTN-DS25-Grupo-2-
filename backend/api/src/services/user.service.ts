@@ -3,18 +3,6 @@ import bcrypt from 'bcrypt';
 import { CreateUserRequest , UpdateUserRequest , UserData } from
 '../types/user.types' ;
 
-/*
-let users: User[] = [
-  { id: 1, name: 'Santiago', surname: 'Andrada', career: 'Ingeniería en Sistemas', email: 'santiagoandrada@gmail.com', password: '1234' },
-  { id: 2, name: 'Franco', surname: 'Arce', career: 'Ingeniería Mecánica', email: 'arcefranco@gmail.com', password: '1234' },
-  { id: 3, name: 'Dante', surname: 'Barbé', career: 'Ingeniería en Sistemas', email: 'barbedante@gmail.com', password: '1234' },
-  { id: 4, name: 'Nicolas', surname: 'Diez', career: 'Ingeniería Civil', email: 'dieznicolas@gmail.com', password: '1234' },
-  { id: 5, name: 'Ramiro', surname: 'Gil', career: 'Ingeniería Eléctrica', email: 'gilramiro@gmail.com', password: '1234' },
-  { id: 6, name: 'Tomas', surname: 'Soler', career: 'Ingeniería Química', email: 'solertomas@gmail.com', password: '1234' }
-];
-*/
-
-
 export async function getAllUsers(): Promise<UserData[]> {
  const users = await prisma.user.findMany({
  orderBy: { id: 'asc' },
@@ -22,7 +10,6 @@ export async function getAllUsers(): Promise<UserData[]> {
  });
  return users;
 }
-
 
 export async function getUserById(id: number): Promise<UserData> {
   const user = await prisma.user.findUnique({
