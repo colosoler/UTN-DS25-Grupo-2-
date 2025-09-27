@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react"
 import { DeleteConfirmModal } from "../Components/DeleteConfirmModal"
 import { Share } from "../Components/Share"
@@ -9,7 +8,6 @@ import Card from "react-bootstrap/Card"
 import { Link, useNavigate } from "react-router-dom"
 import { MdEdit, MdArrowUpward, MdArrowDownward } from "react-icons/md"
 import { useFetch } from "../Hooks/useFetch"
-import { SERVER_URL } from "../Constants"
 import "../Apps/styles/MyMaterialsPage.css"
 import { getUser } from "../Helpers/auth"
 import { Searchbar } from "../Components/Searchbar"
@@ -19,73 +17,74 @@ import { VotesDisplay } from "../Components/VotesDisplay";
 export const MyMaterialsPage = () => {
   const user = getUser();
   const userId = user?.id;
-  const { data, loading, error } = useFetch(`/materials?userId=${userId}`)
-  const navigate = useNavigate()
-  const [materials, setMaterials] = useState([])
-  const [searchValue, setSearchValue] = useState("")
-  const [filteredMaterials, setFilteredMaterials] = useState([])
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [materialToDelete, setMaterialToDelete] = useState(null)
-  const [showForm, setShowForm] = useState(false)
+  const { data, loading, error } = useFetch(`http://localhost:3000/materials`);
+  const navigate = useNavigate();
+  const [materials, setMaterials] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+  const [filteredMaterials, setFilteredMaterials] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [materialToDelete, setMaterialToDelete] = useState(null);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    if (data) {
-      setMaterials(data)
-      setFilteredMaterials(data)
+    // Accede a data.data si existe
+    if (data && data.data) {
+      setMaterials(data.data);
+      setFilteredMaterials(data.data);
+    } else if (Array.isArray(data)) {
+      setMaterials(data);
+      setFilteredMaterials(data);
     }
-  }, [data])
+  }, [data]);
 
   useEffect(() => {
     if (searchValue) {
       const filtered = materials.filter(
         (material) =>
-          material.title.toLowerCase().includes(searchValue.toLowerCase()) ||
-          material.description.toLowerCase().includes(searchValue.toLowerCase()),
-      )
-      setFilteredMaterials(filtered)
+          material.title?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          material.description?.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      setFilteredMaterials(filtered);
     } else {
-      setFilteredMaterials(materials)
+      setFilteredMaterials(materials);
     }
-  }, [searchValue, materials])
+  }, [searchValue, materials]);
 
-  if (loading) return <p>Cargando apuntes...</p>
-  if (error) return <p>Error: {error.message}</p>
+  if (loading) return <p>Cargando apuntes...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
   const handleDeleteClick = (material) => {
-    setMaterialToDelete(material)
-    setShowDeleteModal(true)
-  }
+    setMaterialToDelete(material);
+    setShowDeleteModal(true);
+  };
 
   const handleEdit = (material) => {
-    console.log("Editar material:", material.id)
-    
     navigate(`/edit/${material.id}`, {
       state: {
         materialData: material,
       },
-    })
-  }
+    });
+  };
 
   const confirmDelete = () => {
-    setMaterials((prev) => prev.filter((m) => m.id !== materialToDelete.id))
-    setShowDeleteModal(false)
-    setMaterialToDelete(null)
-  }
+    setMaterials((prev) => prev.filter((m) => m.id !== materialToDelete.id));
+    setShowDeleteModal(false);
+    setMaterialToDelete(null);
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      console.log("Búsqueda:", searchValue)
+      // Puedes agregar lógica de búsqueda aquí si lo deseas
     }
-  }
+  };
 
   const handleClear = () => {
-    setSearchValue("")
-  }
+    setSearchValue("");
+  };
 
   const handleMenuClick = () => {
-    setShowForm(!showForm)
-    console.log("Menu clicked, form visibility toggled:", !showForm)
-  }
+    setShowForm(!showForm);
+  };
 
   return (
     <Container className="my-4">
@@ -110,7 +109,7 @@ export const MyMaterialsPage = () => {
           <Card className="stats-card text-center">
             <Card.Body>
               <MdArrowUpward className="text-success fs-3" />
-              <h4 className="mt-2 mb-0">{materials.reduce((acc, m) => acc + m.upvotes, 0)}</h4>
+              <h4 className="mt-2 mb-0">{materials.reduce((acc, m) => acc + (m.upvotes || 0), 0)}</h4>
               <small className="text-muted">Upvotes totales</small>
             </Card.Body>
           </Card>
@@ -119,7 +118,7 @@ export const MyMaterialsPage = () => {
           <Card className="stats-card text-center">
             <Card.Body>
               <MdArrowDownward className="text-danger fs-3" />
-              <h4 className="mt-2 mb-0">{materials.reduce((acc, m) => acc + m.downvotes, 0)}</h4>
+              <h4 className="mt-2 mb-0">{materials.reduce((acc, m) => acc + (m.downvotes || 0), 0)}</h4>
               <small className="text-muted">Downvotes totales</small>
             </Card.Body>
           </Card>
@@ -128,7 +127,7 @@ export const MyMaterialsPage = () => {
           <Card className="stats-card text-center">
             <Card.Body>
               <i className="bi bi-trophy text-warning fs-3"></i>
-              <h4 className="mt-2 mb-0">{materials.reduce((acc, m) => acc + (m.upvotes - m.downvotes), 0)}</h4>
+              <h4 className="mt-2 mb-0">{materials.reduce((acc, m) => acc + ((m.upvotes || 0) - (m.downvotes || 0)), 0)}</h4>
               <small className="text-muted">Puntuación neta</small>
             </Card.Body>
           </Card>
@@ -138,7 +137,7 @@ export const MyMaterialsPage = () => {
       {/* Barra de búsqueda */}
       <div className="container-fluid py-3">
         <Row className="justify-content-center">
-          <Col xs={12} md={8} lg={6}>
+          <Col xs={12} md={15} lg={12}>
             <Searchbar
               value={searchValue}
               onChange={e => setSearchValue(e.target.value)}
@@ -163,7 +162,10 @@ export const MyMaterialsPage = () => {
                   {searchValue ? "Intenta ajustar tu búsqueda" : "Comienza subiendo tu primer material de estudio"}
                 </p>
                 {!searchValue && (
-                  <button className="btn btn-primary">
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => navigate("/add")}
+                  >
                     <i className="bi bi-plus-lg me-2"></i>
                     Subir material
                   </button>
@@ -180,7 +182,7 @@ export const MyMaterialsPage = () => {
                   {/* Header con botón de editar */}
                   <div className="d-flex justify-content-between align-items-start mb-2">
                     <div className="flex-grow-1">
-                      <Card.Title>{material.title}</Card.Title>
+                      <Card.Title>{material.titulo}</Card.Title>
                       <Card.Subtitle className="mb-2 text-muted">@{material.user}</Card.Subtitle>
                     </div>
                     <button
@@ -192,13 +194,13 @@ export const MyMaterialsPage = () => {
                     </button>
                   </div>
 
-                  <Card.Text>{material.description}</Card.Text>
+                  <Card.Text>{material.descripcion}</Card.Text>
 
                   <Link to={`/material/${material.id}`} className="text-primary fw-semibold">
                     Ver material
                   </Link>
 
-                  <VotesDisplay upvotes={material.upvotes} downvotes={material.downvotes} />
+                  <VotesDisplay upvotes={material.upvotes || 0} downvotes={material.downvotes || 0} />
 
                   {/* Acciones: Compartir y Eliminar */}
                   <div className="d-flex justify-content-between align-items-center mt-3">
