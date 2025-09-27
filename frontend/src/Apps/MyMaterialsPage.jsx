@@ -74,7 +74,7 @@ export const MyMaterialsPage = () => {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      // Puedes agregar lógica de búsqueda aquí si lo deseas
+      
     }
   };
 

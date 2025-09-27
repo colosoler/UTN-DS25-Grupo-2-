@@ -21,6 +21,7 @@ model User {
   role       Role       @default(USER)
   materiales Material[]
   career     Carrera    @relation(fields: [careerId], references: [id])
+  materialVotes Calificaicion[]
 
   @@map("users")
 }
@@ -76,6 +77,7 @@ model Material {
   carrera          Carrera      @relation(fields: [carreraId], references: [id])
   materia          Materia      @relation(fields: [materiaId], references: [id])
   user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  materialVotes    Calificaicion[]
 
   @@map("materials")
 }
@@ -95,4 +97,18 @@ enum TipoMaterial {
 enum Role {
   USER
   ADMIN
+}
+
+model Calificaicion {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  materialId Int
+  value      Int      
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id])
+  material   Material @relation(fields: [materialId], references: [id])
+
+  @@unique([userId, materialId]) 
+  @@map("material_votes")
 }
