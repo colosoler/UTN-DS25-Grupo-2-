@@ -103,7 +103,7 @@ model Calificaicion {
   id         Int      @id @default(autoincrement())
   userId     Int
   materialId Int
-  value      Int      
+  value      Boolean      
   createdAt  DateTime @default(now())
 
   user       User     @relation(fields: [userId], references: [id])
