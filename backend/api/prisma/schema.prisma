@@ -74,6 +74,8 @@ model Material {
   materiaId        Int
   carreraId        Int
   userId           Int
+  upvotes Int @default(0)
+  downvotes Int @default(0)
   carrera          Carrera      @relation(fields: [carreraId], references: [id])
   materia          Materia      @relation(fields: [materiaId], references: [id])
   user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)

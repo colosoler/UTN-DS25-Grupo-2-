@@ -8,8 +8,7 @@ export interface User {
     username: string;
     email: string;
     role: 'USER' | 'ADMIN';
-    password: string;    
-    username: string;
+    password: string;
     career?: Carrera;
 }
 
