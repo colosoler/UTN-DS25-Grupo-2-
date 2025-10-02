@@ -7,8 +7,8 @@ import './styles/SearchResultPage.css';
 
 export const SearchResultPage = () => {
   const [searchParams] = useSearchParams();
-  const { data, isLoading, error } = useFetch("/apuntes", SERVER_URL);
-  if (isLoading) return <p>Cargando apuntes...</p>;
+  const { data, loading, error } = useFetch("/apuntes", SERVER_URL);
+  if (loading) return <p>Cargando apuntes...</p>;
   if (error) return <p>Error: {error.message}</p>;
   
   const getFilteredResults = () => {

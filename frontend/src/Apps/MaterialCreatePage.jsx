@@ -9,13 +9,13 @@ export const MaterialCreatePage = () => {
       setFormData({...newData, [name+'Id']: value.value, [name]: value.option})
     }
   })
-  const { data: materias, isLoading:mIsLoading, error:mError }=useFetch('materias/')
+  const { data: materias, loading:mLoading, error:mError }=useFetch('localhost:3000/materias/')
   const carrerasUrl = formData.materiaId
     ? `carreras/?materia=${formData.materiaId}`
     : 'carreras/';
-  const { data:carreras, isLoading: cIsLoading, error:cError }=useFetch(carrerasUrl);
+  const { data:carreras, loading: cLoading, error:cError }=useFetch('localhost:3000/'+carrerasUrl);
 
-  if (mIsLoading || cIsLoading) return <h1>Cargando...</h1>
+  if (mLoading || cLoading) return <h1>Cargando...</h1>
   if (mError || cError) {return <h1>Ha Ocurrido un Error</h1>}
   return (
     <>
