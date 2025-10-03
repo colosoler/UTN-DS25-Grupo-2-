@@ -1,46 +1,76 @@
 import { useEffect, useState } from 'react';
-import { Form, ListGroup} from 'react-bootstrap';
+import { Form, ListGroup } from 'react-bootstrap';
 
-
-export const SearchOptions = ({options, onChange, name, placeholder}) => {
-    const [filtered, setFiltered] = useState(options);
-    useEffect(() => {
-        setFiltered(options);
-    }, [options]);
+export const SearchOptions = ({ options, onChange, name, placeholder }) => {
+    const [inputValue, setInputValue] = useState('');
+    const [filtered, setFiltered] = useState([]);
     const [showList, setShowList] = useState(false);
-    const [option, setOption] = useState({value: -1, option: ''});
 
-    const handleChangeOptions = (e) =>{
-        onChange(e);
-        const newOption= e.target.value?.option || e.target.value
-        setOption({value: e?.value || -1, option:newOption});
-        const filtered = options.filter(o => o.option.toLowerCase().includes(newOption.toLowerCase()));
-        setFiltered(filtered);
+    const handleChangeOptions = (e) => {
+        // Obtengo el valor del input
+        const newValue = e.target.value;
+        setInputValue(newValue);
+
+        // Filtro las opciones que coinciden con el valor del input 
+        if (newValue.trim() !== '') {
+            const matches = options.filter(o =>
+                o.option.toLowerCase().includes(newValue.toLowerCase())
+            );
+            // Si hay matches, los muestro
+            setFiltered(matches);
+            setShowList(true);
+        } else {
+            // Si el input está vacío, limpio el filtro y oculto la lista
+            setFiltered([]);
+            setShowList(false);
+        }
+
+        onChange(e); // Envío al padre
     };
+
+    // Manejo la selección de una opción
+    const handleSelect = (elem) => {
+        setInputValue(elem.option);
+        onChange({ target: { name, value: elem } });
+        setShowList(false);
+    };
+
     return (
-        <>  
+        <div style={{ position: 'relative' }}>
             <Form.Control
                 type="text"
                 placeholder={placeholder}
                 name={name}
-                value={option.option}
+                value={inputValue}
                 onChange={handleChangeOptions}
-                onFocus={() => setShowList(true)}
-                onBlur={() => setTimeout(() =>setShowList(false), 100)}
+                onFocus={() => {
+                    if (filtered.length > 0) setShowList(true);
+                }}
+                onBlur={() => setTimeout(() => setShowList(false), 100)}
                 autoComplete="off"
             />
-            {showList && (
-                <ListGroup>
-                    {filtered.map((elem) => (
+            {showList && filtered.length > 0 && (
+                <ListGroup
+                    // Estilos para que la lista aparezca por encima del formulario
+                    style={{
+                        position: 'absolute',
+                        zIndex: 1000,
+                        width: '100%',
+                        maxHeight: '200px',
+                        overflowY: 'auto',
+                    }}
+                >
+                    {filtered.map(elem => (
                         <ListGroup.Item
                             key={elem.value}
-                            onMouseDown={() => {setOption(elem); handleChangeOptions({target:{name,value:elem}});}}
-                            style={{ cursor: 'pointer' }}>
+                            onMouseDown={() => handleSelect(elem)}
+                            style={{ cursor: 'pointer' }}
+                        >
                             {elem.option}
                         </ListGroup.Item>
                     ))}
                 </ListGroup>
             )}
-        </>
-    )
-}
+        </div>
+    );
+};
