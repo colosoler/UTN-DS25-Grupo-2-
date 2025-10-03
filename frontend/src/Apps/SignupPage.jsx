@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
 import { Alert } from "../Components/Alert";
 import { AuthContainer } from "../Components/AuthContainer";
 import { AuthField } from "../Components/AuthField";
 import { setToken } from "../Helpers/auth";
+import { SearchOptions } from "../Components/SearchOptions";
 import "./styles/SignupPage.css";
 
 export const SignupPage = () => {
@@ -19,12 +20,31 @@ export const SignupPage = () => {
 
   const [formErrors, setFormErrors] = useState({});
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [careers, setCareers] = useState([]);
 
   const navigate = useNavigate();
 
+  // Obtengo las carreras
+  useEffect(() => {
+    fetch("http://localhost:3000/carreras")
+      .then((res) => res.json())
+      .then((data) => {
+        const formatted = data.map((c) => ({
+          value: c.id,
+          option: c.nombre,
+        }));
+        setCareers(formatted);
+      })
+      .catch((err) => console.error("Error al cargar carreras:", err));
+  }, []);
+
+  // Maneja cambios en los campos de texto
   const handleChange = (field) => (e) => {
     setFormData({ ...formData, [field]: e.target.value });
-    setFormErrors({ ...formErrors, [field]: "" });
+    // Limpiamos el error del campo si existía
+    if (formErrors[field]) {
+      setFormErrors({ ...formErrors, [field]: "" });
+    }
   };
 
   const fields = [
@@ -39,11 +59,9 @@ export const SignupPage = () => {
     e.preventDefault();
 
     const errors = {};
-
     fields.forEach(({ name, placeholder }) => {
       if (!formData[name]) errors[name] = `Ingresá tu ${placeholder.toLowerCase()}`;
     });
-
     if (!formData.career) errors.career = "Seleccioná tu carrera";
 
     setFormErrors(errors);
@@ -96,21 +114,18 @@ export const SignupPage = () => {
       ))}
 
       <Form.Group controlId="formCareer" className="mb-3">
-        <Form.Select
-          value={formData.career}
-          onChange={handleChange("career")}
-          isInvalid={!!formErrors.career}
-        >
-          <option value="" disabled>
-            Seleccioná tu carrera
-          </option>
-          <option value="22">Ingeniería Civil</option>
-          <option value="25">Ingeniería Eléctrica</option>
-          <option value="24">Ingeniería Industrial</option>
-          <option value="20">Ingeniería Mecánica</option>
-          <option value="23">Ingeniería Química</option>
-          <option value="21">Ingeniería en Sistemas</option>
-        </Form.Select>
+        <SearchOptions
+          options={careers}
+          placeholder="Seleccioná tu carrera"
+          name="career"
+          onChange={(e) => {
+            // Actualizamos el valor de career y limpiamos error si existía
+            setFormData({ ...formData, career: e.target.value.value });
+            if (formErrors.career) {
+              setFormErrors({ ...formErrors, career: "" });
+            }
+          }}
+        />
         {formErrors.career && (
           <div style={{ color: "red", marginTop: "5px", textAlign: "center" }}>
             {formErrors.career}
