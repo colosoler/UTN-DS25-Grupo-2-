@@ -2,22 +2,24 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { setToken } from "../Helpers/auth";
 import { loginSchema } from "../Validations/loginSchema";
 import { AuthContainer } from "../Components/AuthContainer";
 import { AuthField } from "../Components/AuthField";
 import { Alert } from "../Components/Alert";
 import { Button } from "react-bootstrap";
+import { useAuth } from "../Contexts/AuthContext";
 import "./styles/LoginPage.css";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   const {
     register,
     handleSubmit,
     setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(loginSchema),
@@ -25,27 +27,17 @@ export const LoginPage = () => {
   });
 
   const onSubmit = async (data) => {
-    try {
-      const res = await fetch("http://localhost:3000/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      if (!res.ok) throw new Error("Correo o contraseña inválidos");
-
-      const { data: responseData } = await res.json();
-      setToken(responseData.token);
+    const result = await login(data);
+    if (result.success){
       setShowSuccessToast(true);
-
       setTimeout(() => navigate("/home"), 2500);
-    } catch (err) {
+    }else {
       setError("root", {
         type: "manual",
         message: "Correo o contraseña inválidos",
       });
     }
-  };
+  }
 
   const handleToastClose = () => setShowSuccessToast(false);
 
@@ -57,7 +49,11 @@ export const LoginPage = () => {
         id="formEmail"
         type="email"
         placeholder="Correo electrónico"
-        registerField={register("email")}
+        registerField={{
+          ...register("email", {
+            onChange: () => clearErrors("root"),
+        }),
+      }}
         error={errors.email?.message}
       />
 
@@ -65,7 +61,11 @@ export const LoginPage = () => {
         id="formPassword"
         type="password"
         placeholder="Contraseña"
-        registerField={register("password")}
+        registerField={{
+          ...register("password", {
+            onChange: () => clearErrors("root"),
+        }),
+      }}
         error={errors.password?.message}
       />
 

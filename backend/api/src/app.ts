@@ -7,7 +7,7 @@ import { handleError } from './middlewares/error.middleware';
 import { logRequest } from './middlewares/logger.middleware';
 import { carreraRoutes } from './routes/carrera.route';
 import { signupRoutes } from './routes/signup.routes';
-import { calificacionRoutes } from './routes/calificacion.routes';
+//import { calificacionRoutes } from './routes/calificacion.routes';
 
 require('dotenv').config()
 
@@ -33,7 +33,7 @@ app.use('/users', userRoutes);
 app.use('/materials', materialRoutes);
 app.use('/materias', materiaRoutes);
 app.use('/carreras', carreraRoutes)
-app.use('/materials/:id/calificaciones', calificacionRoutes)
+//app.use('/materials/:id/calificaciones', calificacionRoutes)
 
 
 app.use(handleError);
