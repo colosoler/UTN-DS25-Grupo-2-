@@ -12,6 +12,7 @@ import { ProfilePage } from './Apps/ProfilePage'
 import { SettingsPage } from './Apps/SettingsPage'
 import { MyMaterialsPage } from './Apps/MyMaterialsPage'
 import { MaterialEditPage } from './Apps/MaterialEditPage'
+import { AuthProvider } from './Contexts/AuthContext'
 import { useFetch } from './Hooks/useFetch'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -25,7 +26,7 @@ function App() {
     <>
 
       {!hideNavbar && <Navbar />}
-
+      <AuthProvider>
       <main>
         <Routes>
           <Route path="/" element={<LoginPage/>} />
@@ -43,6 +44,7 @@ function App() {
 
         </Routes>   
       </main>
+      </AuthProvider>
     </>
   )
 }
