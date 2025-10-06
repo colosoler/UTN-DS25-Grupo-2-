@@ -13,6 +13,7 @@ import { SettingsPage } from './Apps/SettingsPage'
 import { MyMaterialsPage } from './Apps/MyMaterialsPage'
 import { MaterialEditPage } from './Apps/MaterialEditPage'
 import { AuthProvider } from './Contexts/AuthContext'
+import { PrivateRoute } from './Components/PrivateRoute'
 import { useFetch } from './Hooks/useFetch'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -24,11 +25,11 @@ function App() {
   const hideNavbar = location.pathname === '/' || location.pathname === '/signup';
   return (
     <>
-
-      {!hideNavbar && <Navbar />}
       <AuthProvider>
+      {!hideNavbar && <Navbar />}
       <main>
         <Routes>
+          {/*Rutas públicas*/}
           <Route path="/" element={<LoginPage/>} />
           <Route path="/signup" element={<SignupPage/>} />
           <Route path="/result" element={<SearchResultPage/>} />
@@ -36,12 +37,35 @@ function App() {
           <Route path="/carrera/:id" element={<CarreraDetailPage/>} />
           <Route path="/search" element={<SearchResultPage/>} />
           <Route path="/material/:id" element={<MaterialRouteWrapper/>} />
-          <Route path="/add" element={<MaterialCreatePage/>} />
-          <Route path="/profile" element={<ProfilePage/>} />
-          <Route path="/settings" element={<SettingsPage/>} />
-          <Route path="/mymaterials" element={<MyMaterialsPage/>} />
-          <Route path="/edit/:id" element={<MaterialEditPage/>} />
 
+          {/*Rutas protegidas (Usuarios logueados)*/}
+          <Route path="/add" element={
+            <PrivateRoute>
+              <MaterialCreatePage/>
+            </PrivateRoute>
+          } />
+          <Route path="/profile" element={
+            <PrivateRoute>
+              <ProfilePage/>
+            </PrivateRoute>
+          } />
+          <Route path="/settings" element={
+            <PrivateRoute>
+              <SettingsPage/>
+            </PrivateRoute>
+          } />
+          <Route path="/mymaterials" element={
+            <PrivateRoute>
+              <MyMaterialsPage/>
+            </PrivateRoute>
+          } />
+          <Route path="/edit/:id" element={
+            <PrivateRoute>
+              <MaterialEditPage/>
+            </PrivateRoute>
+          } />
+
+          <Route path="/unauthorized" element={<h2>Página no encontrada</h2>} />
         </Routes>   
       </main>
       </AuthProvider>
