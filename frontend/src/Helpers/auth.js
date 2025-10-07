@@ -14,7 +14,13 @@ export function setUser(user) {
 
 export function getUser() {
   const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
+  // Evita parsear "undefined" o valores vacíos
+  if (!user || user === "undefined") return null;
+  try {
+    return JSON.parse(user);
+  } catch {
+    return null;
+  }
 }
 
 export function clearUser() {

@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import { getToken, setToken, clearToken, getUser, parseJWT, isTokenExpired } from '../Helpers/auth';
+import { getToken, setToken, clearToken, getUser, setUser as setLocalUser, parseJWT, isTokenExpired } from '../Helpers/auth';
 
 const AuthContext = createContext();
 
@@ -33,6 +33,7 @@ export function AuthProvider({children}) {
 
             const user = parseJWT(responseData.token)
             setUser(user);
+            setLocalUser(user);
             return { success: true};
         } catch (error){
             return { success: false, error: error.message };
@@ -58,6 +59,7 @@ export function AuthProvider({children}) {
             const userData = parseJWT(result.data.token);
             setToken(result.data.token);
             setUser(userData);
+            setLocalUser(userData);
             return { success: true, user: userData, token: result.data.token };
         }
 

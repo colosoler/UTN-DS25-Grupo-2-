@@ -17,7 +17,8 @@ import { VotesDisplay } from "../Components/VotesDisplay";
 export const MyMaterialsPage = () => {
   const user = getUser();
   const userId = user?.id;
-  const { data, loading, error } = useFetch(`http://localhost:3000/materials`);
+  
+  const { data, loading, error } = useFetch(`http://localhost:3000/materials?userId=${userId}`);
   const navigate = useNavigate();
   const [materials, setMaterials] = useState([]);
   const [searchValue, setSearchValue] = useState("");
@@ -183,7 +184,7 @@ export const MyMaterialsPage = () => {
                   <div className="d-flex justify-content-between align-items-start mb-2">
                     <div className="flex-grow-1">
                       <Card.Title>{material.titulo}</Card.Title>
-                      <Card.Subtitle className="mb-2 text-muted">@{material.user}</Card.Subtitle>
+                      
                     </div>
                     <button
                       className="btn btn-link p-1 text-muted edit-btn"

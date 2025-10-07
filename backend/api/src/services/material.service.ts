@@ -13,7 +13,7 @@ export async function findMaterials(filters: any): Promise<Material[]> {
   if (!filters.query && !filters.userId) return [];
 
   const query = filters.query as string | undefined;
-  const userId = filters.userId as number | undefined;
+  const userId = filters.userId ? Number(filters.userId) : undefined;
 
   return prisma.material.findMany({
     where: {
