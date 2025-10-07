@@ -3,15 +3,15 @@ import prisma from '../config/prisma';
 import { Calificacion} from '../generated/prisma';
 
 export async function getAllCalificaciones(): Promise<Calificacion[]> {
-    return prisma.calificacion.findMany({
-        include: { 
-            user: true,   
-            material: true   
-        },
-        orderBy: { 
-            createdAt: 'desc' 
-        }
-    });
+	return prisma.calificacion.findMany({
+		include: { 
+			user: true, 	
+			material: true 	
+		},
+		orderBy: { 
+			createdAt: 'desc' 
+		}
+	});
 }
 
 export async function getCalificacionById(id: number): Promise<Calificacion> {
@@ -24,6 +24,20 @@ export async function getCalificacionById(id: number): Promise<Calificacion> {
 	});
 	if (!calificacion) {
 		const error = new Error('Calificación no encontrada') as any;
+		error.statusCode = 404;
+		throw error;
+	}
+	return calificacion;
+}
+
+// get calificación de un usuario para un material específico
+export async function getCalificacionByMaterialAndUser(materialId: number, userId: number): Promise<Calificacion> {
+	const calificacion = await prisma.calificacion.findUnique({ 
+		where: { userId_materialId: { userId, materialId } }, 
+		include: { user: true, material: true } 
+	});
+	if (!calificacion) {
+		const error = new Error('Calificación no encontrada para este material y usuario') as any;
 		error.statusCode = 404;
 		throw error;
 	}
@@ -48,14 +62,37 @@ export async function findCalificaciones(filters: any): Promise<Calificacion[]> 
 	});
 }
 
+//crea calificación usando materialID y userID
+export async function createCalificacionByMaterialAndUser(materialId: number, userId: number, data: UpdateCalificacionRequest): Promise<Calificacion> {
+	const materialExists = await prisma.material.findUnique({ where: { id: materialId } });
+	if (!materialExists) {
+		const error = new Error('El material con ID ' + materialId + ' no existe') as any;
+		error.statusCode = 404;
+		throw error;
+	}
+	const userExists = await prisma.user.findUnique({ where: { id: userId } });
+	if (!userExists) {
+		const error = new Error('El usuario con ID ' + userId + ' no existe') as any;
+		error.statusCode = 404;
+		throw error;
+	}
+	return prisma.calificacion.create({ 
+		data: { ...data, materialId, userId }, 
+		include: { 
+			user: true, 
+			material: true 
+		} 
+	});
+}
+
 export async function createCalificacion(data: CreateCalificacionRequest): Promise<Calificacion> {
-    const materialExists = await prisma.material.findUnique({ where: { id: data.materialId } });
+	const materialExists = await prisma.material.findUnique({ where: { id: data.materialId } });
 	if (!materialExists) {
 		const error = new Error('El material con ID ' + data.materialId + ' no existe') as any;
 		error.statusCode = 404;
 		throw error;
 	}
-    const userExists = await prisma.user.findUnique({ where: { id: data.userId } });
+	const userExists = await prisma.user.findUnique({ where: { id: data.userId } });
 	if (!userExists) {
 		const error = new Error('El usuario con ID ' + data.userId + ' no existe') as any;
 		error.statusCode = 404;
@@ -63,11 +100,29 @@ export async function createCalificacion(data: CreateCalificacionRequest): Promi
 	}
 	return prisma.calificacion.create({ 
 		data, 
-        include: { 
+		include: { 
 			user: true, 
 			material: true 
 		} 
 	});
+}
+
+//actualiza calificación usando materialID y userID
+export async function updateCalificacionByMaterialAndUser(materialId: number, userId: number, data: UpdateCalificacionRequest): Promise<Calificacion> {
+	try {
+		return await prisma.calificacion.update({
+			where: { userId_materialId: { userId, materialId } },
+			data,
+			include: { user: true, material: true } 
+		});
+	} catch (e: any) {
+		if (e.code === 'P2025') {
+			const error = new Error('Calificación no encontrada para este material y usuario') as any;
+			error.statusCode = 404;
+			throw error;
+		}
+		throw e;
+	}
 }
 
 export async function updateCalificacion(id: number, data: UpdateCalificacionRequest): Promise<Calificacion> {
@@ -91,7 +146,7 @@ export async function updateCalificacion(id: number, data: UpdateCalificacionReq
 		return await prisma.calificacion.update({ 
 			where: { id }, 
 			data, 
-            include: { 
+			include: { 
 				user: true, 
 				material: true 
 			} 
@@ -99,6 +154,20 @@ export async function updateCalificacion(id: number, data: UpdateCalificacionReq
 	} catch (e: any) {
 		if (e.code === 'P2025') {
 			const error = new Error('Calificación no encontrada') as any;
+			error.statusCode = 404;
+			throw error;
+		}
+		throw e;
+	}
+}
+
+//elimina calificación usando materialID y userID
+export async function deleteCalificacionByMaterialAndUser(materialId: number, userId: number): Promise<void> {
+	try {
+		await prisma.calificacion.delete({ where: { userId_materialId: { userId, materialId } } });
+	} catch (e: any) {
+		if (e.code === 'P2025') {
+			const error = new Error('Calificación no encontrada para este material y usuario') as any;
 			error.statusCode = 404;
 			throw error;
 		}
