@@ -9,12 +9,14 @@ import { AuthContainer } from "../Components/AuthContainer";
 import { AuthField } from "../Components/AuthField";
 import { SearchOptions } from "../Components/SearchOptions";
 import { Alert } from "../Components/Alert";
+import { useAuth } from "../Contexts/AuthContext";
 import "./styles/SignupPage.css";
 
 export const SignupPage = () => {
   const navigate = useNavigate();
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [careers, setCareers] = useState([]);
+  const { signup } = useAuth();
 
   const { register, handleSubmit, setValue, setError, clearErrors,formState: { errors, isSubmitting }} = useForm({
   resolver: yupResolver(signupSchema),
@@ -34,28 +36,14 @@ export const SignupPage = () => {
   }, []);
 
   const onSubmit = async (data) => {
-    try {
-      const res = await fetch("http://localhost:3000/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...data,
-          careerId: parseInt(data.career, 10),
-        }),
-      });
-
-      if (!res.ok) throw new Error("Error en el registro");
-
-      const newUser = await res.json();
-      if (newUser.token) setToken(newUser.token);
-
-      setShowSuccessToast(true);
-      setTimeout(() => navigate("/home"), 1000);
-    } catch (err) {
-      console.error("Error al registrar:", err);
-      setError("root", { type: "manual", message: "No se pudo registrar el usuario" });
+    const result = await signup(data);
+    if (result.success) {
+        setShowSuccessToast(true);
+        setTimeout(() => navigate("/home"), 2500);
+    } else {
+        setError("root", { type: "manual", message: result.error });
     }
-  };
+};
 
   const handleToastClose = () => setShowSuccessToast(false);
 

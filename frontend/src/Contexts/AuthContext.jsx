@@ -39,6 +39,36 @@ export function AuthProvider({children}) {
         }
     };
 
+    const signup = async (data) => {
+    try {
+        const res = await fetch("http://localhost:3000/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                ...data,
+                careerId: parseInt(data.career, 10),
+            }),
+        });
+
+        if (!res.ok) throw new Error("Error en el registro");
+
+        const result = await res.json();
+
+        if (result.success && result.data?.token) {
+            const userData = parseJWT(result.data.token);
+            setToken(result.data.token);
+            setUser(userData);
+            return { success: true, user: userData, token: result.data.token };
+        }
+
+        return { success: false, error: "No se recibió token" };
+    } catch (err) {
+        return { success: false, error: err.message };
+    }
+};
+
+
+
     const logout = () => {
         clearToken();
         setUser(null);
@@ -57,6 +87,7 @@ export function AuthProvider({children}) {
         user,
         login,
         logout,
+        signup,
         loading,
         isAuthenticated: !!user,
         isAdmin: user?.role === 'ADMIN',
