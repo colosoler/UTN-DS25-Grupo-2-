@@ -152,3 +152,19 @@ export async function incrementReportCount(id: number): Promise<Material> {
     throw e;
   }
 }
+
+export async function incrementVote(materialId: number, value: boolean): Promise<void> {
+  const campo = value ? 'upvotes' : 'downvotes';
+  await prisma.material.update({
+    where: { id: materialId },
+    data: { [campo]: {increment: 1}},
+  });
+};
+
+export async function decrementVote(materialId: number, value: boolean): Promise<void> {
+  const campo = value ? 'upvotes' : 'downvotes';
+  await prisma.material.update({
+    where: { id: materialId },
+    data: { [campo]: {decrement: 1}},
+  });
+};

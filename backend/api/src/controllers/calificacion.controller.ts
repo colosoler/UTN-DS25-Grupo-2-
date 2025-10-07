@@ -2,14 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { CalificacionesListResponse, CalificacionResponse, CreateCalificacionRequest, UpdateCalificacionRequest } from '../types/calificacion.types'; 
 import * as calificacionService from '../services/calificacion.service';
 
-/*recuperar userID con auth
-interface AuthRequest extends Request {
-	user?: {
-		id: number;
-	};
-}
-*/
-
 export async function getAllCalificaciones(req: Request, res: Response<CalificacionesListResponse>, next: NextFunction) {
 	try {
 		const calificaciones = await calificacionService.getAllCalificaciones();
@@ -38,7 +30,7 @@ export async function findCalificaciones(req: Request<{ materialId?: string }, {
 }
 
 //usa materialId (parametro) y espera userId implicito (GET singular)
-export async function getCalificacionByMaterialAndUser(req: AuthRequest<{ materialId: string }>, res: Response<CalificacionResponse>, next: NextFunction) {
+export async function getCalificacionByMaterialAndUser(req: Request<{ materialId: string }>, res: Response<CalificacionResponse>, next: NextFunction) {
 	try {
 		const userId = req.user!.id; 
 		const { materialId } = req.params;
@@ -60,11 +52,14 @@ export async function getCalificacionById(req: Request<{ id: string }>, res: Res
 }
 
 //usa materialId de params y espera userId implicito
-export async function createCalificacionByMaterialAndUser(req: AuthRequest<{ materialId: string }, {}, UpdateCalificacionRequest>, res: Response<CalificacionResponse>, next: NextFunction) {
+export async function createCalificacionByMaterialAndUser(req: Request<{ materialId: string }, {}, CreateCalificacionRequest>, res: Response<CalificacionResponse>, next: NextFunction) {
 	try {
 		const userId = req.user!.id; 
 		const { materialId } = req.params;
-		const calificacion = await calificacionService.createCalificacionByMaterialAndUser(parseInt(materialId), userId, req.body);
+		const calificacion = await calificacionService.createCalificacionByMaterialAndUser({ materialId: parseInt(materialId), 
+		userId,
+		value: req.body.value
+		});
 		res.status(201).json({ calificacion: calificacion, message: 'Calificación created successfully' });
 	} catch (error) { 
 		next(error); 
@@ -81,7 +76,7 @@ export async function createCalificacion(req: Request<{}, {}, CreateCalificacion
 }
 
 //usa materialId de params y espera userId implicito
-export async function updateCalificacionByMaterialAndUser(req: AuthRequest<{ materialId: string }, {}, UpdateCalificacionRequest>, res: Response<CalificacionResponse>, next: NextFunction) {
+export async function updateCalificacionByMaterialAndUser(req: Request<{ materialId: string }, {}, UpdateCalificacionRequest>, res: Response<CalificacionResponse>, next: NextFunction) {
 	try {
 		const userId = req.user!.id; 
 		const { materialId } = req.params;
@@ -103,7 +98,7 @@ export async function updateCalificacion(req: Request<{ id: string }, {}, Update
 }
 
 //usa materialId de params y espera userId implicito
-export async function deleteCalificacionByMaterialAndUser(req: AuthRequest<{ materialId: string }>, res: Response, next: NextFunction) {
+export async function deleteCalificacionByMaterialAndUser(req: Request<{ materialId: string }>, res: Response, next: NextFunction) {
 	try {
 		const userId = req.user!.id; 
 		const { materialId } = req.params;

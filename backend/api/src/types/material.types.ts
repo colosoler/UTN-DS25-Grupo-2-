@@ -12,6 +12,8 @@ export interface Material {
     carreraId: number;
     tipo: string;
     userId: number;
+    upvotes: number;
+    downvotes: number;
 }
 
 // id, cantidadReportes, fecha no son necesarios.
