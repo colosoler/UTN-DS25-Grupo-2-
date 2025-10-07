@@ -2,6 +2,14 @@ import { Request, Response, NextFunction } from 'express';
 import { CalificacionesListResponse, CalificacionResponse, CreateCalificacionRequest, UpdateCalificacionRequest } from '../types/calificacion.types'; 
 import * as calificacionService from '../services/calificacion.service';
 
+/*recuperar userID con auth
+interface AuthRequest extends Request {
+	user?: {
+		id: number;
+	};
+}
+*/
+
 export async function getAllCalificaciones(req: Request, res: Response<CalificacionesListResponse>, next: NextFunction) {
 	try {
 		const calificaciones = await calificacionService.getAllCalificaciones();
@@ -11,17 +19,33 @@ export async function getAllCalificaciones(req: Request, res: Response<Calificac
 			message: 'Calificaciones retrieved successfully' 
 		});
 	} catch (error) { 
-        next(error); 
+		next(error); 
 	}
 }
 
-export async function findCalificaciones(req: Request,res: Response<CalificacionesListResponse>, next: NextFunction) {
+export async function findCalificaciones(req: Request<{ materialId?: string }, {}, {}, any>,res: Response<CalificacionesListResponse>, next: NextFunction) {
 	try {
-		const filters = req.query;
+		const { materialId } = req.params;
+		const filters = { 
+			...req.query, 
+			materialId: materialId ? parseInt(materialId) : undefined 
+		};
 		const calificaciones = await calificacionService.findCalificaciones(filters);
 		res.json({ calificaciones, total: calificaciones.length, message: 'Calificaciones retrieved successfully' });
 	} catch (error) {
 		next(error);
+	}
+}
+
+//usa materialId (parametro) y espera userId implicito (GET singular)
+export async function getCalificacionByMaterialAndUser(req: AuthRequest<{ materialId: string }>, res: Response<CalificacionResponse>, next: NextFunction) {
+	try {
+		const userId = req.user!.id; 
+		const { materialId } = req.params;
+		const calificacion = await calificacionService.getCalificacionByMaterialAndUser(parseInt(materialId), userId);
+		res.json({ calificacion, message: 'Calificación retrieved successfully' });
+	} catch (error) { 
+		next(error); 
 	}
 }
 
@@ -30,6 +54,18 @@ export async function getCalificacionById(req: Request<{ id: string }>, res: Res
 		const { id } = req.params;
 		const calificacion = await calificacionService.getCalificacionById(parseInt(id));
 		res.json({ calificacion, message: 'Calificación retrieved successfully' });
+	} catch (error) { 
+		next(error); 
+	}
+}
+
+//usa materialId de params y espera userId implicito
+export async function createCalificacionByMaterialAndUser(req: AuthRequest<{ materialId: string }, {}, UpdateCalificacionRequest>, res: Response<CalificacionResponse>, next: NextFunction) {
+	try {
+		const userId = req.user!.id; 
+		const { materialId } = req.params;
+		const calificacion = await calificacionService.createCalificacionByMaterialAndUser(parseInt(materialId), userId, req.body);
+		res.status(201).json({ calificacion: calificacion, message: 'Calificación created successfully' });
 	} catch (error) { 
 		next(error); 
 	}
@@ -44,11 +80,35 @@ export async function createCalificacion(req: Request<{}, {}, CreateCalificacion
 	}
 }
 
+//usa materialId de params y espera userId implicito
+export async function updateCalificacionByMaterialAndUser(req: AuthRequest<{ materialId: string }, {}, UpdateCalificacionRequest>, res: Response<CalificacionResponse>, next: NextFunction) {
+	try {
+		const userId = req.user!.id; 
+		const { materialId } = req.params;
+		const updatedCalificacion = await calificacionService.updateCalificacionByMaterialAndUser(parseInt(materialId), userId, req.body);
+		res.json({ calificacion: updatedCalificacion, message: 'Calificación updated successfully' });
+	} catch (error) { 
+		next(error); 
+	}
+}
+
 export async function updateCalificacion(req: Request<{ id: string }, {}, UpdateCalificacionRequest>, res: Response<CalificacionResponse>, next: NextFunction) {
 	try {
 		const { id } = req.params;
 		const updatedCalificacion = await calificacionService.updateCalificacion(parseInt(id), req.body);
-	    res.json({ calificacion: updatedCalificacion, message: 'Calificación updated successfully' });
+		res.json({ calificacion: updatedCalificacion, message: 'Calificación updated successfully' });
+	} catch (error) { 
+		next(error); 
+	}
+}
+
+//usa materialId de params y espera userId implicito
+export async function deleteCalificacionByMaterialAndUser(req: AuthRequest<{ materialId: string }>, res: Response, next: NextFunction) {
+	try {
+		const userId = req.user!.id; 
+		const { materialId } = req.params;
+		await calificacionService.deleteCalificacionByMaterialAndUser(parseInt(materialId), userId);
+		res.json({ success:true, message: 'Calificación deleted successfully' }); 
 	} catch (error) { 
 		next(error); 
 	}
