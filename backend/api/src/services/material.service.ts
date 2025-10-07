@@ -1,7 +1,7 @@
 import { CreateMaterialRequest, UpdateMaterialRequest } from '../types/material.types';
 import prisma from '../config/prisma';
 import { Material } from '../generated/prisma';
-
+import { Prisma } from '../generated/prisma';
 export async function getAllMaterials(): Promise<Material[]> {
   const materials = await prisma.material.findMany({
     orderBy: { createdAt: 'desc' }
@@ -22,9 +22,9 @@ export async function findMaterials(filters: any): Promise<Material[]> {
         query
           ? {
               OR: [
-                { titulo: { contains: query, mode: 'insensitive' } },
-                { descripcion: { contains: query, mode: 'insensitive' } },
-                { comision: { contains: query, mode: 'insensitive' } },
+                { titulo: { contains: query, mode: Prisma.QueryMode.insensitive } },
+                { descripcion: { contains: query, mode: Prisma.QueryMode.insensitive } },
+                { comision: { contains: query, mode: Prisma.QueryMode.insensitive } },
                 { materiaId: !isNaN(Number(query)) ? { equals: Number(query) } : undefined },
                 { carreraId: !isNaN(Number(query)) ? { equals: Number(query) } : undefined },
               ].filter(Boolean),
@@ -61,7 +61,7 @@ export async function createMaterial(data: CreateMaterialRequest): Promise<Mater
   const created = await prisma.material.create({
     data: {
       añoCursada: data.añoCursada,
-      archivo: data.archivos,
+      archivo: data.archivo,
       comision: data.comision,
       descripcion: data.descripcion,
       numeroParcial: data.numeroParcial,
@@ -95,7 +95,7 @@ export async function updateMaterial(id: number, updateData: UpdateMaterialReque
       where: { id },
       data: {
         ...(updateData.añoCursada !== undefined ? { añoCursada: updateData.añoCursada } : {}),
-        ...(updateData.archivos !== undefined ? { archivos: updateData.archivos } : {}),
+        ...(updateData.archivo !== undefined ? { archivos: updateData.archivo } : {}),
         ...(updateData.comision !== undefined ? { comision: updateData.comision } : {}),
         ...(updateData.descripcion !== undefined ? { descripcion: updateData.descripcion } : {}),
         ...(updateData.numeroParcial !== undefined ? { numeroParcial: updateData.numeroParcial } : {}),
