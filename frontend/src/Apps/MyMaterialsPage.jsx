@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { MdEdit, MdArrowUpward, MdArrowDownward } from "react-icons/md"
 import { useFetch } from "../Hooks/useFetch"
 import "../Apps/styles/MyMaterialsPage.css"
-import { getUser } from "../Helpers/auth"
+import { getToken, getUser } from "../Helpers/auth"
 import { Searchbar } from "../Components/Searchbar"
 import { VotesDisplay } from "../Components/VotesDisplay";
 
@@ -67,8 +67,18 @@ export const MyMaterialsPage = () => {
     });
   };
 
-  const confirmDelete = () => {
-    setMaterials((prev) => prev.filter((m) => m.id !== materialToDelete.id));
+  const confirmDelete = async () => {
+    try {
+      await fetch(`http://localhost:3000/materials/${materialToDelete.id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${getToken()}` // si usas autenticación
+        }
+      });
+      setMaterials((prev) => prev.filter((m) => m.id !== materialToDelete.id));
+    } catch (err) {
+      alert("Error al eliminar el material");
+    }
     setShowDeleteModal(false);
     setMaterialToDelete(null);
   };
