@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { Carrera } from '../generated/prisma';
+import { Carrera } from '@prisma/client';
 import { CreateCarreraRequest} from '../types/carrera.types';
 import * as carreraservice from '../services/carrera.service'
 

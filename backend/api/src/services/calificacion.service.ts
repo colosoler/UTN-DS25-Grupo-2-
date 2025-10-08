@@ -1,6 +1,6 @@
 import { CreateCalificacionRequest, UpdateCalificacionRequest } from '../types/calificacion.types';
 import prisma from '../config/prisma';
-import { Calificacion} from '../generated/prisma';
+import { Calificacion} from '@prisma/client';
 import { incrementVote, decrementVote } from './material.service';
 
 export async function getAllCalificaciones(): Promise<Calificacion[]> {

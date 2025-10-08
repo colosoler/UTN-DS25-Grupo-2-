@@ -1,7 +1,7 @@
 import { CreateMaterialRequest, UpdateMaterialRequest } from '../types/material.types';
 import prisma from '../config/prisma';
-import { Material } from '../generated/prisma';
-import { Prisma } from '../generated/prisma';
+import { Material } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 export async function getAllMaterials(): Promise<Material[]> {
   const materials = await prisma.material.findMany({
     orderBy: { createdAt: 'desc' }

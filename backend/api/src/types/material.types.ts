@@ -1,4 +1,4 @@
-import { TipoMaterial } from "../generated/prisma";
+import { TipoMaterial } from "@prisma/client";
 
 export interface Material {
     id: number;

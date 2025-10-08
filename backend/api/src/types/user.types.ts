@@ -1,4 +1,4 @@
-import { Carrera } from '../generated/prisma'
+import { Carrera } from '@prisma/client'
 
 export interface User {
     id: number;
