@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -9,18 +8,18 @@ datasource db {
 }
 
 model User {
-  id         Int        @id @default(autoincrement())
-  email      String     @unique
-  username   String     @unique
-  name       String     @db.VarChar(50)
-  surname    String     @db.VarChar(50)
-  password   String
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  careerId   Int
-  role       Role       @default(USER)
-  materiales Material[]
-  career     Carrera    @relation(fields: [careerId], references: [id])
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  username      String         @unique
+  name          String         @db.VarChar(50)
+  surname       String         @db.VarChar(50)
+  password      String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  careerId      Int
+  role          Role           @default(USER)
+  materiales    Material[]
+  career        Carrera        @relation(fields: [careerId], references: [id])
   materialVotes Calificacion[]
 
   @@map("users")
@@ -59,26 +58,26 @@ model CarreraMateria {
 }
 
 model Material {
-  id               Int          @id @default(autoincrement())
+  id               Int            @id @default(autoincrement())
   añoCursada      Int
   archivo          String
-  cantidadReportes Int          @default(0)
-  comision         String       @db.VarChar(50)
+  cantidadReportes Int            @default(0)
+  comision         String         @db.VarChar(50)
   descripcion      String
-  fecha            DateTime     @default(now())
+  fecha            DateTime       @default(now())
   numeroParcial    Int?
-  titulo           String       @db.VarChar(200)
+  titulo           String         @db.VarChar(200)
   tipo             TipoMaterial
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
   materiaId        Int
   carreraId        Int
   userId           Int
-  upvotes Int @default(0)
-  downvotes Int @default(0)
-  carrera          Carrera      @relation(fields: [carreraId], references: [id])
-  materia          Materia      @relation(fields: [materiaId], references: [id])
-  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  upvotes          Int            @default(0)
+  downvotes        Int            @default(0)
+  carrera          Carrera        @relation(fields: [carreraId], references: [id])
+  materia          Materia        @relation(fields: [materiaId], references: [id])
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   materialVotes    Calificacion[]
 
   @@map("materials")
@@ -105,12 +104,12 @@ model Calificacion {
   id         Int      @id @default(autoincrement())
   userId     Int
   materialId Int
-  value      Boolean      
+  value      Boolean
   createdAt  DateTime @default(now())
 
-  user       User     @relation(fields: [userId], references: [id])
-  material   Material @relation(fields: [materialId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+  material Material @relation(fields: [materialId], references: [id])
 
-  @@unique([userId, materialId]) 
+  @@unique([userId, materialId])
   @@map("material_votes")
 }
