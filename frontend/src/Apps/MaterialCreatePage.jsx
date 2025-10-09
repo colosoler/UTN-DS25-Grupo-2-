@@ -9,11 +9,12 @@ export const MaterialCreatePage = () => {
       setFormData({...newData, [name+'Id']: value.value, [name]: value.option})
     }
   })
-  const { data: materias, loading:mLoading, error:mError }=useFetch('http://localhost:3000/materias/')
+  const API_URL = import.meta.env.VITE_API_URL;
+  const { data: materias, loading:mLoading, error:mError }=useFetch(`${API_URL}/materias/`)
   const carrerasUrl = formData.materiaId
     ? `carreras/?materia=${formData.materiaId}`
     : 'carreras/';
-  const { data:carreras, loading: cLoading, error:cError }=useFetch('http://localhost:3000/'+carrerasUrl);
+  const { data:carreras, loading: cLoading, error:cError }=useFetch(`${API_URL}/`+carrerasUrl);
 
   if (mLoading || cLoading) return <h1>Cargando...</h1>
   if (mError || cError) {return <h1>Ha Ocurrido un Error</h1>}

@@ -15,8 +15,9 @@ export const Searchbar = () => {
       setFormData({ ...newData, [name + 'Id']: value.value, [name]: value.option })
     } //esta funcion es para que al seleccionar en el serachOptions me guarde el id y el nombre
   });
-  const fetchedMaterias = useFetch("http://localhost:3000/materias/");
-  const fetchedCarreras = useFetch("http://localhost:3000/carreras/");
+  const API_URL = import.meta.env.VITE_API_URL;
+  const fetchedMaterias = useFetch(`${API_URL}/materias/`);
+  const fetchedCarreras = useFetch(`${API_URL}/carreras/`);
 
   //seteo el formData con los query params que vengan en la url
   useEffect(() => {

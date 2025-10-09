@@ -26,7 +26,8 @@ export const SignupPage = () => {
 
   // Obtengo las carreras
   useEffect(() => {
-    fetch("http://localhost:3000/carreras")
+    const API_URL = import.meta.env.VITE_API_URL;
+    fetch(`${API_URL}/carreras`)
       .then(res => res.json())
       .then(data => {
         const formatted = data.map(c => ({ value: c.id, option: c.nombre }));

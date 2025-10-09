@@ -6,6 +6,7 @@ const AuthContext = createContext();
 export function AuthProvider({children}) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const API_URL = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
         const token = getToken();
@@ -20,7 +21,7 @@ export function AuthProvider({children}) {
 
     const login = async (data) => {
         try {
-            const res = await fetch("http://localhost:3000/auth/login", {
+            const res = await fetch(`${API_URL}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
@@ -42,7 +43,7 @@ export function AuthProvider({children}) {
 
     const signup = async (data) => {
     try {
-        const res = await fetch("http://localhost:3000/signup", {
+        const res = await fetch(`${API_URL}/signup`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

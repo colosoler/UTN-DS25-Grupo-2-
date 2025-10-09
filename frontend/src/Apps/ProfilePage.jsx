@@ -10,8 +10,8 @@ export const ProfilePage = () => {
 
   useEffect(() => {
     if (!user) return;
-
-    const UserData = fetch(`http://localhost:3000/users/${user.id}`, {
+    const API_URL = import.meta.env.VITE_API_URL;
+    const UserData = fetch(`${API_URL}/users/${user.id}`, {
       headers: { "Authorization": `Bearer ${getToken()}` },
     })
       .then(res => res.json())
