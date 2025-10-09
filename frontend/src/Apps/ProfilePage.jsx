@@ -5,21 +5,22 @@ import './styles/ProfilePage.css';
 
 export const ProfilePage = () => {
   const navigate = useNavigate();
-  const [UserData, setUserData] = useState(null);
+  const [userData, setUserData] = useState(null);
   const user = getUser();
-
+	const API_URL = import.meta.env.VITE_API_URL;
+  
   useEffect(() => {
     if (!user) return;
-    const API_URL = import.meta.env.VITE_API_URL;
-    const UserData = fetch(`${API_URL}/users/${user.id}`, {
+
+    fetch(`${API_URL}/users/${user.id}`, {
       headers: { "Authorization": `Bearer ${getToken()}` },
     })
       .then(res => res.json())
       .then(data => setUserData(data))
       .catch(err => console.error(err));
-  }, [user]);
+  }, []); 
 
-  if (!UserData) return <p>Cargando...</p>;
+  if (!userData) return <p>Cargando...</p>;
 
   return (
     <div className="profile-container">
@@ -29,12 +30,12 @@ export const ProfilePage = () => {
         </div>
 
         <div className="profile-info">
-          <h1 className="profile-name">{UserData.name} {UserData.surname}</h1>
-          <p className="profile-username">@{UserData.username}</p>
-          <p className="profile-career">Estudiante de {UserData.career.nombre}</p>
+          <h1 className="profile-name">{userData.name} {userData.surname}</h1>
+          <p className="profile-username">@{userData.username}</p>
+          <p className="profile-career">Estudiante de {userData.career.nombre}</p>
           <p className="profile-date">
             <img src="../images/calendar.png" alt="" />
-            Se unió en {new Date(UserData.createdAt).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })}
+            Se unió en {new Date(userData.createdAt).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })}
           </p>
 
           <div className="stats-container">
@@ -51,4 +52,4 @@ export const ProfilePage = () => {
       </div>
     </div>
   );
-}
+};

@@ -8,7 +8,6 @@ export async function login(data: LoginRequest): Promise<LoginResponse['data']> 
     const user = await prisma.user.findUnique({
         where: { email: data.email }
     });
-    console.log('Usuario encontrado:', user);
     if (!user) {
         const error = new Error('Las credenciales ingresadas no son válidas') as any;
         error.statusCode = 401;
