@@ -32,7 +32,7 @@ export async function getCarreraById(req: Request, res: Response<Carrera>, next:
 }
 
 export async function createCarrera(
-  req: Request<CreateCarreraRequest>,
+  req: Request<{}, {},CreateCarreraRequest>,
   res: Response<Carrera>,
   next: NextFunction
 ) {
