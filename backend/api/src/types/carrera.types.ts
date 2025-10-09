@@ -1,4 +1,4 @@
-import { Carrera, CarreraMateria, Materia } from '../generated/prisma';
+import { CarreraMateria } from '@prisma/client';
 
 export interface CreateCarreraRequest {
     nombre: string;

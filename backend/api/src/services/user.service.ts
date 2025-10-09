@@ -14,7 +14,17 @@ export async function getAllUsers(): Promise<UserData[]> {
 export async function getUserById(id: number): Promise<UserData> {
   const user = await prisma.user.findUnique({
     where: { id },
-    include: { career: true}
+    select: {
+      id: true,
+      name: true,
+      surname: true,
+      username: true,
+      email: true,
+      careerId: true,
+      career: true,
+      createdAt: true,
+      updatedAt: true,
+    }
   });
   if (!user) {
     const error = new Error('User not found');

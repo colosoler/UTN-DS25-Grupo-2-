@@ -11,7 +11,7 @@ const router = Router();
 router.get('/', authenticate, authorize('ADMIN'),userController.getAllUsers);
 
 
-router.get('/:id', userController.getUserById);
+router.get('/:id', authenticate, userController.getUserById);
 
 
 router.post('/', authenticate, authorize('ADMIN','USER'), validate(createUserSchema),

@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { MdEdit, MdArrowUpward, MdArrowDownward } from "react-icons/md"
 import { useFetch } from "../Hooks/useFetch"
 import "../Apps/styles/MyMaterialsPage.css"
-import { getUser } from "../Helpers/auth"
+import { getToken, getUser } from "../Helpers/auth"
 import { Searchbar } from "../Components/Searchbar"
 import { VotesDisplay } from "../Components/VotesDisplay";
 
@@ -17,7 +17,8 @@ import { VotesDisplay } from "../Components/VotesDisplay";
 export const MyMaterialsPage = () => {
   const user = getUser();
   const userId = user?.id;
-  const { data, loading, error } = useFetch(`http://localhost:3000/materials`);
+  
+  const { data, loading, error } = useFetch(`http://localhost:3000/materials?userId=${userId}`);
   const navigate = useNavigate();
   const [materials, setMaterials] = useState([]);
   const [searchValue, setSearchValue] = useState("");
@@ -66,8 +67,18 @@ export const MyMaterialsPage = () => {
     });
   };
 
-  const confirmDelete = () => {
-    setMaterials((prev) => prev.filter((m) => m.id !== materialToDelete.id));
+  const confirmDelete = async () => {
+    try {
+      await fetch(`http://localhost:3000/materials/${materialToDelete.id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${getToken()}` // si usas autenticación
+        }
+      });
+      setMaterials((prev) => prev.filter((m) => m.id !== materialToDelete.id));
+    } catch (err) {
+      alert("Error al eliminar el material");
+    }
     setShowDeleteModal(false);
     setMaterialToDelete(null);
   };
@@ -183,7 +194,7 @@ export const MyMaterialsPage = () => {
                   <div className="d-flex justify-content-between align-items-start mb-2">
                     <div className="flex-grow-1">
                       <Card.Title>{material.titulo}</Card.Title>
-                      <Card.Subtitle className="mb-2 text-muted">@{material.user}</Card.Subtitle>
+                      
                     </div>
                     <button
                       className="btn btn-link p-1 text-muted edit-btn"

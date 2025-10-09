@@ -4,10 +4,13 @@ import { Dropdown, Container } from 'react-bootstrap';
 import { useState } from 'react';
 import { DeleteConfirmAccount } from '../Components/DeleteConfirmAccount';
 import { Alert } from '../Components/Alert';
+import { useAuth } from '../Contexts/AuthContext';
 
 export const Navbar = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showLogoutToast, setShowLogoutToast] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
+
   const navigate = useNavigate();
 
   const handleOpenLogoutModal = () => setShowLogoutModal(true);
@@ -16,7 +19,7 @@ export const Navbar = () => {
   const handleConfirmLogout = () => {
     setShowLogoutModal(false);
     setShowLogoutToast(true);
-
+    logout();
     setTimeout(() => {
       navigate('/');
       setShowLogoutToast(false);
@@ -31,21 +34,22 @@ export const Navbar = () => {
     <>
       <nav className="navbar">
         <Container fluid className="d-flex justify-content-between align-items-center">
-          {/* Logo + título a la izquierda */}
+
           <Link to="/home" className="navbar-logo">
             <img src="/images/UTNotas.png" alt="UTNotas Logo" className="logo-img" />
             <span><strong>UTN</strong>otas</span>
           </Link>
 
           <div className="navbar-icons">
-            {/* "d-none d-md-block" hace que en pantallas mas chiquitas se vaya el home */}
             <Link to="/home" className="d-none d-md-block">
               <img src="./images/hogar.png" alt="Inicio" />
             </Link>
 
+            {isAuthenticated && (
             <Link to="/add">
               <img src="./images/plus-pequeno.png" alt="Agregar contenido" />
             </Link>
+            )}
 
             <Dropdown align="end">
               <Dropdown.Toggle as="div" className="avatar-toggle">
@@ -53,24 +57,39 @@ export const Navbar = () => {
               </Dropdown.Toggle>
 
               <Dropdown.Menu className="dropdown-menu">
-                <Dropdown.Item className="dropdown-item" as={Link} to="/profile">
-                  <img className="dropdown-icon" src="./images/user-icon2.svg" alt="profile" />
-                  Ver perfil
+                { isAuthenticated && (
+                  <>
+                    <Dropdown.Item className="dropdown-item" as={Link} to="/profile">
+                      <img className="dropdown-icon" src="./images/user-icon2.svg" alt="profile" />
+                        Ver perfil
+                    </Dropdown.Item>
+
+                    <Dropdown.Item className="dropdown-item" as={Link} to="/mymaterials">
+                      <img className="dropdown-icon" src="./images/files-icon.svg" alt="mis-publicaciones" />
+                        Mis publicaciones
+                    </Dropdown.Item>
+                    <Dropdown.Item className="dropdown-item" as={Link} to="/settings">
+                      <img className="dropdown-icon" src="./images/settings-icon.svg" alt="configurar" />
+                        Configurar perfil
+                    </Dropdown.Item>
+                  </>
+                )}
+                {!isAuthenticated && (
+                <Dropdown.Item className="dropdown-item" as={Link} to="/signup">
+                  <img className="dropdown-icon" src="./images/user-icon2.svg" alt="signup" />
+                  Crear cuenta
                 </Dropdown.Item>
-                <Dropdown.Item className="dropdown-item" as={Link} to="/mymaterials">
-                  <img className="dropdown-icon" src="./images/files-icon.svg" alt="mis-publicaciones" />
-                  Mis publicaciones
-                </Dropdown.Item>
-                <Dropdown.Item className="dropdown-item" as={Link} to="/settings">
-                  <img className="dropdown-icon" src="./images/settings-icon.svg" alt="configurar" />
-                  Configurar perfil
-                </Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item className="dropdown-item" onClick={handleOpenLogoutModal}>
-                  <img className="dropdown-icon" src="./images/logout-icon.svg" alt="logout" />
-                  Cerrar Sesión
-                </Dropdown.Item>
-              </Dropdown.Menu>
+                )}
+                { isAuthenticated && (
+                  <>
+                    <Dropdown.Divider />
+                    <Dropdown.Item className="dropdown-item" onClick={handleOpenLogoutModal}>
+                      <img className="dropdown-icon" src="./images/logout-icon.svg" alt="logout" />
+                        Cerrar Sesión
+                    </Dropdown.Item>
+                  </>
+                )}
+                </Dropdown.Menu>
             </Dropdown>
           </div>
         </Container>

@@ -1,4 +1,4 @@
-import { Carrera } from '../generated/prisma'
+import { Carrera } from '@prisma/client'
 
 export interface User {
     id: number;
@@ -12,7 +12,7 @@ export interface User {
     career?: Carrera;
 }
 
-export interface UserData extends Omit<User, 'password'> {}
+export interface UserData extends Omit<User, 'password' | 'role'> {}
 
 export interface CreateUserRequest {
     name: string;

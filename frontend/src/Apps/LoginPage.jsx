@@ -1,89 +1,81 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Button } from "react-bootstrap";
-import { setToken } from "../Helpers/auth";
-import { Alert } from "../Components/Alert";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { loginSchema } from "../Validations/loginSchema";
 import { AuthContainer } from "../Components/AuthContainer";
 import { AuthField } from "../Components/AuthField";
+import { Alert } from "../Components/Alert";
+import { Button } from "react-bootstrap";
+import { useAuth } from "../Contexts/AuthContext";
 import "./styles/LoginPage.css";
 
 export const LoginPage = () => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [formErrors, setFormErrors] = useState({ email: "", password: "", auth: "" });
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
-  const [validated, setValidated] = useState(false);
-
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
-  const handleChange = (field) => (e) => {
-    setFormData({ ...formData, [field]: e.target.value });
-    setFormErrors({ ...formErrors, [field]: "", auth: "" });
-  };
+  const {
+    register,
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: yupResolver(loginSchema),
+    mode: "onChange", // validación en tiempo real
+  });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setFormErrors({ email: "", password: "", auth: "" });
-
-    const errors = {};
-    if (!formData.email) errors.email = "Ingresá un correo válido";
-    if (!formData.password) errors.password = "Ingresá una contraseña";
-
-    setValidated(true);
-    if (Object.keys(errors).length) {
-      setFormErrors((prev) => ({ ...prev, ...errors }));
-      return;
-    }
-
-    try {
-      const res = await fetch("http://localhost:3000/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      if (!res.ok) throw new Error("Correo o contraseña inválidos");
-
-      const { data } = await res.json();
-      setToken(data.token);
+  const onSubmit = async (data) => {
+    const result = await login(data);
+    if (result.success){
       setShowSuccessToast(true);
-
       setTimeout(() => navigate("/home"), 2500);
-    } catch {
-      setFormErrors((prev) => ({ ...prev, auth: "Correo o contraseña inválidos" }));
+    }else {
+      setError("root", {
+        type: "manual",
+        message: "Correo o contraseña inválidos",
+      });
     }
-  };
+  }
 
   const handleToastClose = () => setShowSuccessToast(false);
 
-  const fields = [
-    { id: "formEmail", type: "email", placeholder: "Correo electrónico", name: "email" },
-    { id: "formPassword", type: "password", placeholder: "Contraseña", name: "password" },
-  ];
-
   return (
-    <AuthContainer type="login" onSubmit={handleSubmit} validated={validated}>
+    <AuthContainer type="login" onSubmit={handleSubmit(onSubmit)} validated={false}>
       <h2>Iniciar Sesión</h2>
 
-      {fields.map(({ id, type, placeholder, name }) => (
-        <AuthField
-          key={id}
-          id={id}
-          type={type}
-          placeholder={placeholder}
-          value={formData[name]}
-          onChange={handleChange(name)}
-          error={formErrors[name]}
-        />
-      ))}
+      <AuthField
+        id="formEmail"
+        type="email"
+        placeholder="Correo electrónico"
+        registerField={{
+          ...register("email", {
+            onChange: () => clearErrors("root"),
+        }),
+      }}
+        error={errors.email?.message}
+      />
+
+      <AuthField
+        id="formPassword"
+        type="password"
+        placeholder="Contraseña"
+        registerField={{
+          ...register("password", {
+            onChange: () => clearErrors("root"),
+        }),
+      }}
+        error={errors.password?.message}
+      />
 
       {/* Error general de autenticación */}
-      {formErrors.auth && (
-        <div style={{ color: "red", textAlign: "center" }}>
-          {formErrors.auth}
-        </div>
+      {errors.root && (
+        <div style={{ color: "red", textAlign: "center" }}>{errors.root.message}</div>
       )}
 
-      <Button type="submit" className="w-100">
-        Ingresar
+      <Button type="submit" className="w-100" disabled={isSubmitting}>
+        {isSubmitting ? "Ingresando..." : "Ingresar"}
       </Button>
 
       <p className="login-register-link">

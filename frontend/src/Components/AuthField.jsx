@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 import EyeOpen from "/images/ojo.png";
 import EyeClosed from "/images/cerrar-ojo.png";
 
-export const AuthField = ({ id, type, placeholder, value, onChange, error }) => {
+export const AuthField = ({ id, type, placeholder, error, registerField }) => {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
 
@@ -13,9 +13,9 @@ export const AuthField = ({ id, type, placeholder, value, onChange, error }) => 
         <Form.Control
           type={isPassword ? (showPassword ? "text" : "password") : type}
           placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          style={{ paddingRight: isPassword ? "40px" : undefined }} // espacio para el ojo
+          {...registerField}           // react-hook-form controla value y onChange
+          className={error ? "input-error" : ""} // aplica borde rojo si hay error
+          style={{ paddingRight: isPassword ? "40px" : undefined }}
         />
 
         {isPassword && (
@@ -36,11 +36,7 @@ export const AuthField = ({ id, type, placeholder, value, onChange, error }) => 
         )}
       </div>
 
-      {error && (
-        <div style={{ color: "red", marginTop: "5px", textAlign: "center" }}>
-          {error}
-        </div>
-      )}
+      {error && <div className="field-error">{error}</div>}
     </Form.Group>
   );
 };
