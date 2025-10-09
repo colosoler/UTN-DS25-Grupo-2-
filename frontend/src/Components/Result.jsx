@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card';
 import {Buttons} from './Buttons';
 import {Link} from 'react-router-dom';
 
-export const Result = ({result, shareUrl}) => {
+export const Result = ({result}) => {
   return (
     <Card>
       <Card.Body>
@@ -11,7 +11,7 @@ export const Result = ({result, shareUrl}) => {
         <Card.Subtitle className="mb-2 text-muted">@{result.user}</Card.Subtitle>
         <Card.Text>{result.description}</Card.Text>
         <Link to={`/material/${result.id}`}>Ver material</Link>
-        <Buttons key={result.upvotes + result.downvotes} result={result} shareUrl={shareUrl}></Buttons>
+        <Buttons result={result}></Buttons>
       </Card.Body>
     </Card>
   );

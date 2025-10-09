@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Form, ListGroup } from 'react-bootstrap';
 
-export const SearchOptions = ({ options, onChange, name, placeholder }) => {
-    const [inputValue, setInputValue] = useState('');
+export const SearchOptions = ({ options, onChange, name, value='', placeholder }) => {
+    const [inputValue, setInputValue] = useState(value);
     const [filtered, setFiltered] = useState([]);
     const [showList, setShowList] = useState(false);
 

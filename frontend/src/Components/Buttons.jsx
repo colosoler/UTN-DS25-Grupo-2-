@@ -4,7 +4,7 @@ import { Vote } from './Vote';
 import { Share } from './Share';
 import { OptionsDropdown } from './OptionsDropdown';
 
-export const Buttons = ({ result, shareUrl }) => {
+export const Buttons = ({ result }) => {
     return (
         <>
             <article className="buttons">
@@ -12,7 +12,7 @@ export const Buttons = ({ result, shareUrl }) => {
                 <div id="report">
                     <ReportModel />
                 </div>
-                <Share shareUrl={shareUrl} />
+                <Share shareUrl={`${window.location.origin}/material/${result.id}`}/>
                 <div id="options">
                     <OptionsDropdown result={result} />
                 </div>
