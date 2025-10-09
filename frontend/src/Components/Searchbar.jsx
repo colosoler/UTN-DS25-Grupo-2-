@@ -3,27 +3,35 @@ import { FiltersModal } from "./FiltersModal.jsx";
 import { useForm } from "../Hooks/useForm.jsx";
 import { useFetch } from "../Hooks/useFetch";
 import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import "./styles/Searchbar.css"
 
 
 export const Searchbar = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [formData, setFormData, handleChange] = useForm((name, value, newData) => {
     if (name === "materia" || name === "carrera") {
       setFormData({ ...newData, [name + 'Id']: value.value, [name]: value.option })
     } //esta funcion es para que al seleccionar en el serachOptions me guarde el id y el nombre
   });
   const fetchedMaterias = useFetch("http://localhost:3000/materias/");
-  //defino formato para evitar undfineds
+  const fetchedCarreras = useFetch("http://localhost:3000/carreras/");
+
+  //seteo el formData con los query params que vengan en la url
   useEffect(() => {
-    setFormData({
+    const defaultForm = {
       query: "",
       materia: "",
       materiaId: null,
       carrera: "",
       carreraId: null,
       tipo: ""
-    })
+    }
+    searchParams.forEach((value, key) => {
+      defaultForm[key] = key.includes("Id") ? parseInt(value) : value;
+    });
+    setFormData(defaultForm);
   }, [])
 
   const handleClear = () => {

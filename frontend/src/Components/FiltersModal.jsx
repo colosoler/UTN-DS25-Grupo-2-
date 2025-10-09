@@ -1,11 +1,21 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { SearchOptions } from "./SearchOptions";
+
+
+
 export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
-  const [ formData, setFormData, handleChange, handleSubmit ] = useForm;
+  const [formData, setFormData, handleChange, handleSubmit] = useForm;
   //lo resuelvo de esta forma pq sino se cargaba el componente desde SearchBar antes que el fetch
-   const { data: materias=[], loading, error} = fetchedData.fetchedMaterias || {};
-  
-  
+  const { data: materias = [], loading, error } = fetchedData.fetchedMaterias || {};
+
+  const getMateriaValue = () => {
+    return formData.materia
+      ? formData.materia
+      : formData.materiaId
+        ? fetchedData.fetchedMaterias.data.materias.find(m => m.id === formData.materiaId)?.nombre
+        : ""
+  }
+
   if (loading) return <h1> Cargando... </h1>
   if (error) return <h1> Ha ocurrido un error </h1>
   return (
@@ -35,13 +45,13 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
         */}
 
         {/* Materia */}
-        <div className="mb-3 pb-3 border-bottom"> 
-        <SearchOptions 
+        <div className="mb-3 pb-3 border-bottom">
+          <SearchOptions
             placeholder="Escribí la materia"
             name="materia"
-            value={formData.materia}
+            value={getMateriaValue}
             onChange={handleChange}
-            options = {materias?materias.materias.map(m => ({value:m.id, option:m.nombre})):[]}
+            options={materias ? materias.materias.map(m => ({ value: m.id, option: m.nombre })) : []}
           />
         </div>
         {/*Tipo de material */}
@@ -64,7 +74,7 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
       </Modal.Body>
 
       <Modal.Footer>
-        <Button variant="primary" onClick={(e) => {handleSubmit(e); onHide();}}>
+        <Button variant="primary" onClick={(e) => { handleSubmit(e); onHide(); }}>
           Aplicar
         </Button>
       </Modal.Footer>
