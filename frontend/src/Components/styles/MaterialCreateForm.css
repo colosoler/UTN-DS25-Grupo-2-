@@ -1,0 +1,63 @@
+.material-form-container {
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.material-form-container h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.material-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.material-form-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #555;
+  text-align: center;
+}
+
+.material-form-control {
+  border-radius: 10px;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+}
+
+.material-form-select {
+  border-radius: 10px;
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+}
+
+.material-form-row {
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.material-submit-btn {
+  display: block;
+  margin: 2rem auto 0;
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+.material-form-select-parcial {
+  margin: 12px;
+}
+
+.material-submit-btn:hover {
+  background-color: #0056b3;
+}

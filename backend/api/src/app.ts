@@ -31,7 +31,7 @@ app.use('/auth', authRoutes);
 app.use('/signup', signupRoutes);
 app.use('/users', userRoutes);
 app.use('/materials', materialRoutes);
-app.use('/materials', calificacionRoutes);
+app.use('/calificaciones', calificacionRoutes);
 app.use('/materias', materiaRoutes);
 app.use('/carreras', carreraRoutes)
 
