@@ -1,7 +1,6 @@
 import { CreateCalificacionRequest, UpdateCalificacionRequest } from '../types/calificacion.types';
 import prisma from '../config/prisma';
 import { Calificacion} from '@prisma/client';
-import { incrementVote, decrementVote } from './material.service';
 
 export async function getAllCalificaciones(): Promise<Calificacion[]> {
 	return prisma.calificacion.findMany({
@@ -188,19 +187,3 @@ export async function deleteCalificacion(id: number): Promise<void> {
 		throw e;
 	}
 }
-
-export async function toggleCalificacion(userId: number, materialId: number, value: boolean) {
-  	const existing = await getCalificacionByMaterialAndUser(materialId, userId);
-
-  	if (!existing) {
-		await createCalificacionByMaterialAndUser({ materialId, userId, value });
-		await incrementVote(materialId, value);
-  	}else if (existing.value != value) {
-		await updateCalificacionByMaterialAndUser(materialId, userId, {value: value});
-		await incrementVote(materialId, value);
-		await decrementVote(materialId, !value);
-	}else {
-		await deleteCalificacionByMaterialAndUser(materialId, userId);
-		await decrementVote(materialId, value);
-	};
-};

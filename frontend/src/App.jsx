@@ -3,7 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import { HomePage } from './Apps/HomePage'
 import { CarreraDetailPage } from './Apps/CarreraDetailPage'
 import { SearchResultPage} from './Apps/SearchResultPage'
-import MaterialRouteWrapper from './Apps/MaterialRouteWrapper'
+import { MaterialPage} from './Apps/MaterialPage'
 import { Navbar } from './Components/Navbar'
 import { LoginPage } from './Apps/LoginPage'
 import { SignupPage } from './Apps/SignupPage'
@@ -36,7 +36,7 @@ function App() {
           <Route path="/home" element={<HomePage/>} />
           <Route path="/carrera/:id" element={<CarreraDetailPage/>} />
           <Route path="/search" element={<SearchResultPage/>} />
-          <Route path="/material/:id" element={<MaterialRouteWrapper/>} />
+          <Route path="/material/:id" element={<MaterialPage/>} />
 
           {/*Rutas protegidas (Usuarios logueados)*/}
           <Route path="/add" element={

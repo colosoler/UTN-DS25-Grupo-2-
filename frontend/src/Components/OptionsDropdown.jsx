@@ -2,17 +2,62 @@ import { useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { MdMoreHoriz } from 'react-icons/md';
 import { DeleteConfirmModal } from './DeleteConfirmModal';
+import { getToken } from '../Helpers/auth';
+import { Alert } from './Alert';
+import { useNavigate } from 'react-router-dom';
 import './styles/OptionsDropdown.css';
 
-export const OptionsDropdown = ({ result }) => {
+export const OptionsDropdown = ({ material }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState({ show: false, message: '', variant: 'success'});
+
+  const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleDeleteClick = () => {
     setShowDeleteModal(true);
   };
 
-  const handleDeleteConfirm = () => {
-    setShowDeleteModal(false);
+  const handleDeleteConfirm = async () => {
+    try {
+      setLoading(true);
+
+      const res = await fetch(`${API_URL}/materials/${material.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`,
+        },
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || 'Error al eliminar el material');
+      }
+      
+      setAlert({
+        show: true,
+        message: 'Material eliminado correctamente.',
+        variant: 'success',
+      })
+
+      setShowDeleteModal(false);
+
+      setTimeout(() => {
+        navigate('/home');
+      }, 1500);
+      
+    } catch (error) {
+      console.log('Error eliminando material: ', error);
+      setAlert({
+        show: true,
+        message: 'Ocurrió un error al eliminar el material.',
+        variant: 'danger',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDeleteCancel = () => {
@@ -34,7 +79,6 @@ export const OptionsDropdown = ({ result }) => {
           <Dropdown.Item onClick={handleDeleteClick} className="text-danger">
             Eliminar
           </Dropdown.Item>
-          {/* Con mas Dropdown.Item podemos agregar mas opciones cuando queramos */}
         </Dropdown.Menu>
       </Dropdown>
 
@@ -42,7 +86,14 @@ export const OptionsDropdown = ({ result }) => {
         show={showDeleteModal}
         onHide={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
-        materialTitle={result.title}
+        materialTitle={material.title}
+      />
+
+      <Alert
+        show={alert.show}
+        message={alert.message}
+        variant={alert.variant}
+        onClose={() => setAlert({ ...alert, show: false})}
       />
     </>
   );
