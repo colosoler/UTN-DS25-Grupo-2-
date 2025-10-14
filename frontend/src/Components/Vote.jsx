@@ -1,47 +1,113 @@
 import { MdArrowUpward, MdArrowDownward } from 'react-icons/md';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAuth } from '../Contexts/AuthContext';
+import { useFetch } from '../Hooks/useFetch'
 import './styles/Vote.css';
-export const Vote = ({ result }) => {
-    const [upvoted, setUpvoted] = useState(false);
-    const [upvotes, setUpvotes] = useState(result.upvotes);
-    const [downvoted, setDownvoted] = useState(false);
-    const [downvotes, setDownvotes] = useState(result.downvotes);
+import { getToken } from '../Helpers/auth';
+import { get } from 'react-hook-form';
 
-    const handleUpvote = () => {
-        if (upvoted) {
-          setUpvoted(false);
-          setUpvotes(upvotes - 1);
-        } else {
-            setUpvoted(true);
-            setUpvotes(upvotes + 1);
-          if (downvoted) {
-            setDownvoted(false);
-            setDownvotes(downvotes - 1);
-          }
-        }
-      };
+export const Vote = ({ material }) => {
 
-    const handleDownvote = () => {
-      if (downvoted) {
-        setDownvoted(false);
-        setDownvotes(downvotes - 1);
-      } else {
-        setDownvoted(true);
-        setDownvotes(downvotes + 1);
-        if (upvoted) {
-          setUpvoted(false);
-          setUpvotes(upvotes - 1);
-        }
+    const API_URL = import.meta.env.VITE_API_URL;
+    const { data: calificacion, loading } = useFetch(`${API_URL}/calificaciones/${material.id}/calificacion`, {}, { requireAuth: true });
+
+    console.log(getToken())
+    
+    const { user } = useAuth()
+    const [vote, setVote] = useState(null);
+    const [upvotes, setUpvotes] = useState(material.upvotes);
+    const [downvotes, setDownvotes] = useState(material.downvotes);
+    
+    const upvoted = vote === true;
+    const downvoted = vote === false;
+
+    useEffect(() => {
+      if (!loading && calificacion) {
+        const value =
+          calificacion.value ??
+          calificacion.calificacion?.value ??
+          calificacion.data?.value ??
+          null;
+        setVote(value !== null ? Boolean(value) : null);
       }
-    };
+    }, [loading, calificacion]);
 
+
+    
+    const handleVote = async (type) => {
+      if (!user) return;
+
+      const isUpvote = type === 'upvote';
+      let newVote = isUpvote ? true: false;
+      const sameVote = vote === newVote
+      
+      let newUpvotes = upvotes;
+      let newDownvotes = downvotes;
+      
+      try {
+        if (sameVote) {
+          await fetch(`${API_URL}/calificaciones/${material.id}/calificacion`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${getToken()}`},
+          });
+
+          if (isUpvote) newUpvotes--;
+          else newDownvotes--;
+          console.log('Eliminando calificacion.')
+          setVote(null);
+        } else if (vote === null) {
+          await fetch(`${API_URL}/calificaciones/${material.id}/calificacion`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${getToken()}`,
+            },
+            body: JSON.stringify({
+              materialId: material.id,
+              userId: user.id,
+              value: newVote
+            }),
+          });
+
+          if (isUpvote) newUpvotes++;
+          else newDownvotes++;
+          console.log('Creando calificacion')
+          setVote(newVote);
+        }
+        else {
+          await fetch(`${API_URL}/calificaciones/${material.id}/calificacion`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${getToken()}`,
+            },
+            body: JSON.stringify({ value: newVote }),
+          });
+
+          if (isUpvote) {
+            newUpvotes++;
+            newDownvotes--;
+          } else {
+            newDownvotes++;
+            newUpvotes--;
+          }
+          console.log('Actualizando calificacion')
+          setVote(newVote);
+        }
+        setUpvotes(newUpvotes);
+        setDownvotes(newDownvotes);
+
+      } catch (error) {
+        console.error('Error actualizando votos: ', error);
+      };
+    };
     return (
         <>
           <div className='vote'>
             <div
                 id='upvote'
                 className={`upvote ${upvoted ? 'active' : ''}`}
-                onClick={handleUpvote}
+                onClick={() => handleVote('upvote')}
             >
                 <MdArrowUpward />
                 <p>{upvotes}</p>
@@ -49,7 +115,7 @@ export const Vote = ({ result }) => {
             <div
               id='downvote'
               className={`downvote ${downvoted ? 'active' : ''}`}
-              onClick={handleDownvote}
+              onClick={() => handleVote('downvote')}
             >
                 <MdArrowDownward />
                 <p>{downvotes}</p>

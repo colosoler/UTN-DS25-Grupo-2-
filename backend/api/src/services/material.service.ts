@@ -95,7 +95,7 @@ export async function updateMaterial(id: number, updateData: UpdateMaterialReque
       where: { id },
       data: {
         ...(updateData.añoCursada !== undefined ? { añoCursada: updateData.añoCursada } : {}),
-        ...(updateData.archivo !== undefined ? { archivos: updateData.archivo } : {}),
+        ...(updateData.archivo !== undefined ? { archivo: updateData.archivo } : {}),
         ...(updateData.comision !== undefined ? { comision: updateData.comision } : {}),
         ...(updateData.descripcion !== undefined ? { descripcion: updateData.descripcion } : {}),
         ...(updateData.numeroParcial !== undefined ? { numeroParcial: updateData.numeroParcial } : {}),
@@ -103,7 +103,9 @@ export async function updateMaterial(id: number, updateData: UpdateMaterialReque
         ...(updateData.materiaId !== undefined ? { materiaId: updateData.materiaId } : {}),
         ...(updateData.carreraId !== undefined ? { carreraId: updateData.carreraId } : {}),
         ...(updateData.tipo !== undefined ? { tipo: updateData.tipo } : {}),
-        ...(updateData.userId !== undefined ? { userId: updateData.userId } : {})
+        ...(updateData.userId !== undefined ? { userId: updateData.userId } : {}),
+        ...(updateData.upvotes !== undefined ? { upvotes: updateData.upvotes } : {}),
+        ...(updateData.downvotes !== undefined ? { downvotes: updateData.downvotes } : {})
       }
     });
     return updated;
