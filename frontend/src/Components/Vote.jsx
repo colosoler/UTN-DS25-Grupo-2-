@@ -10,8 +10,6 @@ export const Vote = ({ material }) => {
 
     const API_URL = import.meta.env.VITE_API_URL;
     const { data: calificacion, loading } = useFetch(`${API_URL}/calificaciones/${material.id}/calificacion`, {}, { requireAuth: true });
-
-    console.log(getToken())
     
     const { user } = useAuth()
     const [vote, setVote] = useState(null);
@@ -53,7 +51,6 @@ export const Vote = ({ material }) => {
 
           if (isUpvote) newUpvotes--;
           else newDownvotes--;
-          console.log('Eliminando calificacion.')
           setVote(null);
         } else if (vote === null) {
           await fetch(`${API_URL}/calificaciones/${material.id}/calificacion`, {
@@ -71,7 +68,6 @@ export const Vote = ({ material }) => {
 
           if (isUpvote) newUpvotes++;
           else newDownvotes++;
-          console.log('Creando calificacion')
           setVote(newVote);
         }
         else {
@@ -91,7 +87,6 @@ export const Vote = ({ material }) => {
             newDownvotes++;
             newUpvotes--;
           }
-          console.log('Actualizando calificacion')
           setVote(newVote);
         }
         setUpvotes(newUpvotes);

@@ -15,7 +15,6 @@ function Information({ material }) {
     {},
     { requireAuth: false}
   );
-  console.log('Materia: ', materia)
   if (!materia) return null;
 
   return (
