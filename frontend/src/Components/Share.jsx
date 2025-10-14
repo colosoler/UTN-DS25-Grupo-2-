@@ -3,28 +3,20 @@ import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
 import { MdShare } from 'react-icons/md';
 
-export const Share = ({shareUrl}) => {
+export const Share = ({ shareUrl }) => {
   const [show, setShow] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const copyLink = () => {
-    const url = window.location.href;
-    console.log("Copiando link:", shareUrl);
-    navigator.clipboard.writeText(shareUrl)
-      .then(() => {
-        setIsError(false);
-        setShow(true);
-        autoClose();
-      })
-      .catch(() => {
-        setIsError(true);
-        setShow(true);
-        autoClose();
-      });
-  };
-
-  const autoClose = () => {
-    setTimeout(() => setShow(false), 3000);
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setIsError(false);
+    } catch {
+      setIsError(false);
+    } finally {
+      setShow(true);
+      setTimeout(() => setShow(false), 2500);
+    }
   };
 
   return (
@@ -38,7 +30,7 @@ export const Share = ({shareUrl}) => {
         className="p-3"
         style={{position: 'fixed', marginBottom: '20px'}}
       >
-        <Toast show={show} onClose={() => setShow(false)} bg={isError ? 'danger' : 'success'} delay={1500} autohide>
+        <Toast show={show} bg={isError ? 'danger' : 'success'} delay={1500} autohide>
           <Toast.Body className="text-white text-center">
             {isError ? 'Error al copiar el link' : '¡Link copiado al portapapeles!'}
           </Toast.Body>

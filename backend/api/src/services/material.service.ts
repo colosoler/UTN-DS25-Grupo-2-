@@ -120,7 +120,9 @@ export async function updateMaterial(id: number, updateData: UpdateMaterialReque
         ...(updateData.materiaId !== undefined ? { materiaId: updateData.materiaId } : {}),
         ...(updateData.carreraId !== undefined ? { carreraId: updateData.carreraId } : {}),
         ...(updateData.tipo !== undefined ? { tipo: updateData.tipo } : {}),
-        ...(updateData.userId !== undefined ? { userId: updateData.userId } : {})
+        ...(updateData.userId !== undefined ? { userId: updateData.userId } : {}),
+        ...(updateData.upvotes !== undefined ? { upvotes: updateData.upvotes } : {}),
+        ...(updateData.downvotes !== undefined ? { downvotes: updateData.downvotes } : {})
       }
     });
     return updated;
@@ -148,40 +150,3 @@ export async function deleteMaterial(id: number): Promise<void> {
     throw e;
   }
 }
-
-export async function incrementReportCount(id: number): Promise<Material> {
-  try {
-    const updated = await prisma.material.update({
-      where: { id },
-      data: {
-        cantidadReportes: {
-          increment: 1
-        }
-      }
-    });
-    return updated;
-  } catch (e: any) {
-    if (e.code === 'P2025') {
-      const error = new Error('Material not found');
-      (error as any).statusCode = 404;
-      throw error;
-    }
-    throw e;
-  }
-}
-
-export async function incrementVote(materialId: number, value: boolean): Promise<void> {
-  const campo = value ? 'upvotes' : 'downvotes';
-  await prisma.material.update({
-    where: { id: materialId },
-    data: { [campo]: {increment: 1}},
-  });
-};
-
-export async function decrementVote(materialId: number, value: boolean): Promise<void> {
-  const campo = value ? 'upvotes' : 'downvotes';
-  await prisma.material.update({
-    where: { id: materialId },
-    data: { [campo]: {decrement: 1}},
-  });
-};

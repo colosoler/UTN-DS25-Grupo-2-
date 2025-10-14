@@ -61,7 +61,7 @@ export const MaterialCreateForm = ({
         <Form.Group className="material-form-group">
           <Form.Label className="material-form-label">Subí el archivo que quieras publicar</Form.Label>
           <Form.Control
-            type="text"
+            type="file"
             name="archivo"
             placeholder="Ingresa la dirección del archivo"
             value={formData.archivo || ''}

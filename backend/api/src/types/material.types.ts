@@ -43,6 +43,8 @@ export interface UpdateMaterialRequest {
     carreraId?: number;
     tipo?: TipoMaterial;
     userId?: number;
+    upvotes?: number;
+    downvotes?: number;
 }
 
 export interface MaterialResponse {

@@ -4,19 +4,21 @@ import { Vote } from './Vote';
 import { Share } from './Share';
 import { OptionsDropdown } from './OptionsDropdown';
 
-export const Buttons = ({ result }) => {
-    return (
-        <>
-            <article className="buttons">
-                <Vote result={result} />
-                <div id="report">
-                    <ReportModel />
-                </div>
-                <Share shareUrl={`${window.location.origin}/material/${result.id}`}/>
-                <div id="options">
-                    <OptionsDropdown result={result} />
-                </div>
-            </article>
-        </>
-    );
+    export const Buttons = ({ material, user }) => {
+        return (
+            <>
+                <article className="buttons">
+                    <Vote material={material} />
+                    <div id="report">
+                        <ReportModel />
+                    </div>
+                    <Share shareUrl={`${window.location.origin}/material/${material.id}`}/>
+                    {(user.id === material.userId) && (
+                        <div id="options">
+                            <OptionsDropdown material={material} />
+                        </div>
+                    )}
+                </article>
+            </>
+        );
 };

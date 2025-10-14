@@ -108,7 +108,7 @@ model Calificacion {
   createdAt  DateTime @default(now())
 
   user     User     @relation(fields: [userId], references: [id])
-  material Material @relation(fields: [materialId], references: [id])
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
 
   @@unique([userId, materialId])
   @@map("material_votes")
