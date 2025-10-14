@@ -16,9 +16,12 @@ function sortCarreraMateriasByAnio(carreraMaterias) {
   }
   return anios;
 }
+
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const CarreraDetailPage = () => {
   const { id } = useParams();
-  const { data: carrera, loading, error } = useFetch('http://localhost:3000/carreras/' + id)
+  const { data: carrera, loading, error } = useFetch(`${API_URL}/carreras/${id}`)
   if (loading) return <h1>Cargando...</h1>
   if (error) { console.log(error); return <h1>Ha Ocurrido un Error</h1> }
   return (

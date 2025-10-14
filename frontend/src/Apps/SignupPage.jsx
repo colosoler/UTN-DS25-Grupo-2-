@@ -1,146 +1,92 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
-import { Alert } from "../Components/Alert";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { setToken } from "../Helpers/auth";
+import { signupSchema } from "../Validations/signupSchema";
 import { AuthContainer } from "../Components/AuthContainer";
 import { AuthField } from "../Components/AuthField";
-import { setToken } from "../Helpers/auth";
 import { SearchOptions } from "../Components/SearchOptions";
+import { Alert } from "../Components/Alert";
+import { useAuth } from "../Contexts/AuthContext";
 import "./styles/SignupPage.css";
 
 export const SignupPage = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    surname: "",
-    username: "",
-    email: "",
-    password: "",
-    career: ""
-  });
-
-  const [formErrors, setFormErrors] = useState({});
+  const navigate = useNavigate();
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [careers, setCareers] = useState([]);
+  const { signup } = useAuth();
 
-  const navigate = useNavigate();
+  const { register, handleSubmit, setValue, setError, clearErrors,formState: { errors, isSubmitting }} = useForm({
+  resolver: yupResolver(signupSchema),
+  mode: "onChange",
+});
+
 
   // Obtengo las carreras
   useEffect(() => {
-    fetch("http://localhost:3000/carreras")
-      .then((res) => res.json())
-      .then((data) => {
-        const formatted = data.map((c) => ({
-          value: c.id,
-          option: c.nombre,
-        }));
+    const API_URL = import.meta.env.VITE_API_URL;
+    fetch(`${API_URL}/carreras`)
+      .then(res => res.json())
+      .then(data => {
+        const formatted = data.map(c => ({ value: c.id, option: c.nombre }));
         setCareers(formatted);
       })
-      .catch((err) => console.error("Error al cargar carreras:", err));
+      .catch(err => console.error("Error al cargar carreras:", err));
   }, []);
 
-  // Maneja cambios en los campos de texto
-  const handleChange = (field) => (e) => {
-    setFormData({ ...formData, [field]: e.target.value });
-    // Limpiamos el error del campo si existía
-    if (formErrors[field]) {
-      setFormErrors({ ...formErrors, [field]: "" });
+  const onSubmit = async (data) => {
+    const result = await signup(data);
+    if (result.success) {
+        setShowSuccessToast(true);
+        setTimeout(() => navigate("/home"), 2500);
+    } else {
+        setError("root", { type: "manual", message: result.error });
     }
-  };
-
-  const fields = [
-    { id: "formName", name: "name", placeholder: "Nombre", type: "text" },
-    { id: "formSurname", name: "surname", placeholder: "Apellido", type: "text" },
-    { id: "formUsername", name: "username", placeholder: "Usuario", type: "text" },
-    { id: "formEmail", name: "email", placeholder: "Correo electrónico", type: "email" },
-    { id: "formPassword", name: "password", placeholder: "Contraseña", type: "password" },
-  ];
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const errors = {};
-    fields.forEach(({ name, placeholder }) => {
-      if (!formData[name]) errors[name] = `Ingresá tu ${placeholder.toLowerCase()}`;
-    });
-    if (!formData.career) errors.career = "Seleccioná tu carrera";
-
-    setFormErrors(errors);
-
-    if (Object.keys(errors).length > 0) return;
-
-    try {
-      const res = await fetch("http://localhost:3000/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          careerId: parseInt(formData.career, 10),
-        }),
-      });
-
-      if (!res.ok) throw new Error("Error en el registro");
-
-      const newUser = await res.json();
-      if (newUser.token) {
-        setToken(newUser.token);
-      }
-
-      setShowSuccessToast(true);
-      setTimeout(() => navigate("/home"), 1000);
-    } catch (err) {
-      console.error("Error al registrar:", err);
-      setFormErrors({ general: "No se pudo registrar el usuario" });
-    }
-  };
+};
 
   const handleToastClose = () => setShowSuccessToast(false);
 
   return (
-    <AuthContainer type="signup" onSubmit={handleSubmit}>
+    <AuthContainer type="signup" onSubmit={handleSubmit(onSubmit)}>
       <h2>Crear Cuenta</h2>
 
-      {fields.map(({ id, name, placeholder, type }) => (
-        <AuthField
-          key={id}
-          id={id}
-          type={type}
-          placeholder={placeholder}
-          value={formData[name]}
-          onChange={handleChange(name)}
-          error={formErrors[name]}
-        />
-      ))}
+      {/* Campos de texto */}
+      <AuthField id="formName" type="text" placeholder="Nombre" registerField={register("name")} error={errors.name?.message} />
+      <AuthField id="formSurname" type="text" placeholder="Apellido" registerField={register("surname")} error={errors.surname?.message} />
+      <AuthField id="formUsername" type="text" placeholder="Usuario" registerField={register("username")} error={errors.username?.message} />
+      <AuthField id="formEmail" type="email" placeholder="Correo electrónico" registerField={register("email")} error={errors.email?.message} />
+      <AuthField id="formPassword" type="password" placeholder="Contraseña" registerField={register("password")} error={errors.password?.message} />
 
+      {/* Select carrera */}
       <Form.Group controlId="formCareer" className="mb-3">
         <SearchOptions
           options={careers}
           placeholder="Seleccioná tu carrera"
           name="career"
           onChange={(e) => {
-            // Actualizamos el valor de career y limpiamos error si existía
-            setFormData({ ...formData, career: e.target.value.value });
-            if (formErrors.career) {
-              setFormErrors({ ...formErrors, career: "" });
-            }
-          }}
+            let value;
+
+            // si viene del select, viene con option y value
+            if (e.target?.value?.option) {
+              value = e.target.value.value; // guardamos solo el id
+            } else {
+              value = e.target.value; // valor que escribe el usuario
+          }
+
+          setValue("career", value, { shouldValidate: true });
+          clearErrors("career"); // elimina el error al seleccionar
+        }}
         />
-        {formErrors.career && (
-          <div style={{ color: "red", marginTop: "5px", textAlign: "center" }}>
-            {formErrors.career}
-          </div>
-        )}
+        {errors.career && <div className="field-error">{errors.career.message}</div>}
       </Form.Group>
 
-      {formErrors.general && (
-        <div style={{ color: "red", marginTop: "10px", textAlign: "center" }}>
-          {formErrors.general}
-        </div>
-      )}
+      {/* Error general */}
+      {errors.root && <div className="field-error">{errors.root.message}</div>}
 
-      <Button type="submit" className="w-100">
-        Registrarme
+      <Button type="submit" className="w-100" disabled={isSubmitting}>
+        {isSubmitting ? "Registrando..." : "Registrarme"}
       </Button>
 
       <p className="signup-register-link">

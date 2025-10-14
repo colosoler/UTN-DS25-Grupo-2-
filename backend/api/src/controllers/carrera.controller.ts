@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { Carrera } from '../generated/prisma';
+import { Carrera } from '@prisma/client';
 import { CreateCarreraRequest} from '../types/carrera.types';
 import * as carreraservice from '../services/carrera.service'
 
@@ -32,7 +32,7 @@ export async function getCarreraById(req: Request, res: Response<Carrera>, next:
 }
 
 export async function createCarrera(
-  req: Request<CreateCarreraRequest>,
+  req: Request<{}, {},CreateCarreraRequest>,
   res: Response<Carrera>,
   next: NextFunction
 ) {

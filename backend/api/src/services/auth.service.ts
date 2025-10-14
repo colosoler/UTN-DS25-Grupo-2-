@@ -8,7 +8,6 @@ export async function login(data: LoginRequest): Promise<LoginResponse['data']> 
     const user = await prisma.user.findUnique({
         where: { email: data.email }
     });
-   
     if (!user) {
         const error = new Error('Las credenciales ingresadas no son válidas') as any;
         error.statusCode = 401;
@@ -33,6 +32,7 @@ export async function login(data: LoginRequest): Promise<LoginResponse['data']> 
     const tokenPayload = {
         id: user.id,
         email: user.email,
+        role: user.role
     };
    
     const signOptions: jwt.SignOptions = {

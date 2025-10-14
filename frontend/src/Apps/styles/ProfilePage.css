@@ -13,12 +13,13 @@
   border-radius: 24px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   min-width: 90%;
-  min-height: 60vh;
-  padding: 80px 40px 40px 40px;
+  min-height: 65vh !important;
+  padding: 80px 40px 100px 40px !important;
   position: relative;
   overflow: visible;
   margin-top: 60px;
 }
+
 
 .profile-image-container {
   position: absolute;
@@ -42,11 +43,30 @@
   margin-top: 20px;
 }
 
+.edit-button {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  background: none;
+  margin-left: 0.5em;
+  margin-bottom: 0.5em;
+}
+
 .profile-name {
   font-size: 32px;
   font-weight: 600;
   color: #333;
   margin: 0 0 8px 0;
+}
+
+.name-container {
+  justify-content: center;
+  display: flex;
+  align-items: center;
 }
 
 .profile-username {
@@ -59,7 +79,21 @@
 .profile-career {
   color: #666;
   font-size: 16px;
-  margin: 0 0 32px 0;
+  margin: 0 0 15px 0;
+}
+
+.profile-date{
+  color: #666;
+  font-size: 13px;
+  margin: 0 0 10px 0;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+.profile-date img {
+  margin-right: 0.5em;
+
 }
 
 .stats-container {

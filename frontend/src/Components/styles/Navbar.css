@@ -61,3 +61,8 @@
 .avatar-toggle::after {
   display: none !important;
 }
+
+.dropdown-item img {
+  filter: grayscale(100%) brightness(60%) !important;
+  margin-right: 0.5em;
+}

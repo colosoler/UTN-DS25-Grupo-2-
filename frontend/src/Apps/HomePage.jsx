@@ -4,7 +4,8 @@ import { useFetch } from '../Hooks/useFetch.jsx';
 import './styles/HomePage.css';
 
 export const HomePage = () => {
-  const { data: carreras, loading, error } = useFetch('http://localhost:3000/carreras', {}, { requireAuth: false });
+  const API_URL = import.meta.env.VITE_API_URL;
+  const { data: carreras, loading, error } = useFetch(`${API_URL}/carreras`, {}, { requireAuth: false });
 
   if (loading) return <h1>Cargando...</h1>;
   if (error) {

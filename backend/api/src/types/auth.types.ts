@@ -1,4 +1,5 @@
 import { User } from './user.types';
+import { Request } from "express";
 
 export interface LoginRequest {
   email: string;
@@ -13,4 +14,15 @@ export interface LoginResponse {
     token: string;
   }, 
   success: boolean;
+}
+
+export interface AuthenticatedUser {
+  id: number;
+  role: 'USER' | 'ADMIN'; 
+  email: string;
+  
+}
+
+export interface AuthenticatedRequest extends Request {
+  user?: AuthenticatedUser;
 }

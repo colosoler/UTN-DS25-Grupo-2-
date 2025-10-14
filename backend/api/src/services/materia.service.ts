@@ -1,6 +1,6 @@
 import { CreateMateriaRequest, UpdateMateriaRequest } from '../types/materia.types';
 import prisma from '../config/prisma';
-import { Materia } from '../generated/prisma';
+import { Materia } from '@prisma/client';
 
 // Retorna TODAS las materias (ordenadas en forma ascendente por nombre)
 export async function getAllMaterias(): Promise<Materia[]> {

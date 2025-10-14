@@ -1,4 +1,4 @@
-import  { Carrera}  from '../generated/prisma';
+import  { Carrera}  from '@prisma/client';
 import { CreateCarreraRequest } from '../types/carrera.types';
 import prisma from '../config/prisma';
 

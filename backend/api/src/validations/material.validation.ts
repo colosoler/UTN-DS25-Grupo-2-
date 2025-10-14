@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { TipoMaterial } from '../generated/prisma';
+import { TipoMaterial } from '@prisma/client';
 
 export const createMaterialSchema = z.object({
 

@@ -31,9 +31,9 @@ app.use('/auth', authRoutes);
 app.use('/signup', signupRoutes);
 app.use('/users', userRoutes);
 app.use('/materials', materialRoutes);
+app.use('/calificaciones', calificacionRoutes);
 app.use('/materias', materiaRoutes);
 app.use('/carreras', carreraRoutes)
-app.use('/materials/:id/calificaciones', calificacionRoutes)
 
 
 app.use(handleError);
