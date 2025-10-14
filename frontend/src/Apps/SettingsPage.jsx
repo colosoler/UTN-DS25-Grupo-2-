@@ -141,15 +141,11 @@ export const SettingsPage = () => {
     if (!res.ok) {
       throw new Error("Error al eliminar la cuenta");
     }
-
-    // Si todo sale bien:
     clearToken(); // Borra token y datos del usuario del storage
 
     setShowDeleteModal(false);
     setSuccessMessage("Cuenta eliminada correctamente");
     setShowSuccessToast(true);
-
-    // Esperar un momento antes de redirigir
     setTimeout(() => {
       setShowSuccessToast(false);
       navigate("/");
