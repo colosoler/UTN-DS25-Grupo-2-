@@ -35,6 +35,7 @@ export async function signup(data: SignUpRequest): Promise<SignUpResponse['data'
   const tokenPayload = {
     id: user.id,
     email: user.email,
+    role: user.role
   };
 
   const signOptions: jwt.SignOptions = {
