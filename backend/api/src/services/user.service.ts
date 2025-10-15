@@ -2,6 +2,7 @@ import prisma from '../config/prisma';
 import bcrypt from 'bcrypt';
 import { CreateUserRequest , UpdateUserRequest , UserData } from
 '../types/user.types' ;
+import cloudinary from '../config/cloudinary';
 
 export async function getAllUsers(): Promise<UserData[]> {
  const users = await prisma.user.findMany({
@@ -24,6 +25,7 @@ export async function getUserById(id: number): Promise<UserData> {
       career: true,
       createdAt: true,
       updatedAt: true,
+      profilePicture: true,
     }
   });
   if (!user) {
@@ -99,3 +101,36 @@ export async function deleteUser(id: number): Promise<void> {
     throw e;
   }
 }
+
+export async function updateUserProfilePicture(id: number, imageUrl: string) {
+  return prisma.user.update({
+    where: { id },
+    data: { profilePicture: imageUrl },
+  });
+}
+
+export async function deleteUserProfilePicture(id: number) {
+  // Primero obtenemos la URL actual
+  const user = await prisma.user.findUnique({ where: { id } });
+  if (!user) throw new Error('User not found');
+
+  // Si la URL existe y es de Cloudinary, borramos la imagen
+  if (user.profilePicture) {
+    try {
+      const publicIdMatch = user.profilePicture.match(/\/([^\/]+)\.[a-zA-Z]+$/);
+      if (publicIdMatch) {
+        const publicId = publicIdMatch[1];
+        await cloudinary.uploader.destroy(publicId);
+      }
+    } catch (error) {
+      console.error('Error al borrar la imagen de Cloudinary', error);
+    }
+  }
+
+  // Finalmente, eliminamos la URL de la DB
+  return prisma.user.update({
+    where: { id },
+    data: { profilePicture: null },
+  });
+}
+

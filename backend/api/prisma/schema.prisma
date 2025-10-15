@@ -19,6 +19,7 @@ model User {
   careerId      Int
   role          Role           @default(USER)
   materiales    Material[]
+  profilePicture String?       @db.VarChar(1000)
   career        Carrera        @relation(fields: [careerId], references: [id])
   materialVotes Calificacion[]
 

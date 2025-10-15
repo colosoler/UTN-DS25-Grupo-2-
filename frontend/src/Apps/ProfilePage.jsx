@@ -19,16 +19,15 @@ export const ProfilePage = () => {
       .then(data => setUserData(data))
       .catch(err => console.error(err));
   }, []); 
-
+  console.log(userData);
   if (!userData) return <p>Cargando...</p>;
 
   return (
     <div className="profile-container">
       <div className="profile-card">
         <div className="profile-image-container">
-          <img src="/images/profile-user-icon.png" alt="Profile" className="profile-image" />
+          <img src={userData.profilePicture || "../images/profile-user-icon.png" } alt="Profile" className="profile-image" />
         </div>
-
         <div className="profile-info">
           <h1 className="profile-name">{userData.name} {userData.surname}</h1>
           <p className="profile-username">@{userData.username}</p>
