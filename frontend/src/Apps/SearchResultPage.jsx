@@ -8,7 +8,7 @@ import './styles/SearchResultPage.css';
 export const SearchResultPage = () => {
   const [searchParams] = useSearchParams();
   const API_URL = import.meta.env.VITE_API_URL;
-  const { data, loading, error } = useFetch(`${API_URL}/materials/` + searchParams.toString());
+  const { data, loading, error } = useFetch(`${API_URL}/materials/?` + searchParams.toString());
   if (loading) return <p>Cargando apuntes...</p>;
   if (error) return <p>Error: {error.message}</p>;
   
