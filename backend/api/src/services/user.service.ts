@@ -127,7 +127,7 @@ export async function deleteUserProfilePicture(id: number) {
     }
   }
 
-  // Finalmente, eliminamos la URL de la DB
+  // Borramos la URL de la DB
   return prisma.user.update({
     where: { id },
     data: { profilePicture: null },

@@ -70,13 +70,12 @@ export async function updateProfilePicture(
 ) {
   try {
     const { id } = req.params;
-    const file = req.file as any; // multer agrega 'file' a req
+    const file = req.file as any; 
 
     if (!file || !file.path) {
       return res.status(400).json({ success: false, message: 'No se envió ninguna imagen' });
     }
 
-    // Llamada al service
     console.log("req.file:", req.file);
     const updatedUser = await userService.updateUserProfilePicture(Number(id), file.path);
 
