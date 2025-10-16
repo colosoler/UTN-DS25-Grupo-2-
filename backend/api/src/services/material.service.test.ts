@@ -1,4 +1,4 @@
-import { createMaterial } from '../services/material.service';
+import { createMaterial, deleteMaterial } from '../services/material.service';
 import prisma from '../config/prisma';
 import { CreateMaterialRequest } from '../types/material.types';
 import { TipoMaterial, Material } from '@prisma/client';
@@ -9,6 +9,7 @@ jest.mock('../config/prisma', () => ({
 	},
 	material: {
 		create: jest.fn(),
+		delete: jest.fn(),
 	}
 }));
 
@@ -73,5 +74,39 @@ describe('MaterialService - createMaterial', () => {
 		await expect(actAndAssert).rejects.toThrow('User not found');
 		await expect(actAndAssert).rejects.toHaveProperty('statusCode', 400);
 		expect(prisma.material.create).not.toHaveBeenCalled();
+	});
+});
+
+describe('MaterialService - deleteMaterial', () => {
+	
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
+
+	test('debe eliminar un material cuando existe', async () => {
+		const materialId = 1;
+		(prisma.material.delete as jest.Mock).mockResolvedValue(mockCreatedMaterial);
+
+		await deleteMaterial(materialId);
+
+		expect(prisma.material.delete).toHaveBeenCalledWith({
+			where: { id: materialId }
+		});
+	});
+
+	test('debe lanzar error 404 cuando el material no existe', async () => {
+		const materialId = 999;
+		const prismaError = new Error('Record not found');
+		(prismaError as any).code = 'P2025';
+		
+		(prisma.material.delete as jest.Mock).mockRejectedValue(prismaError);
+
+		const actAndAssert = deleteMaterial(materialId);
+		
+		await expect(actAndAssert).rejects.toThrow('Material not found');
+		await expect(actAndAssert).rejects.toHaveProperty('statusCode', 404);
+		expect(prisma.material.delete).toHaveBeenCalledWith({
+			where: { id: materialId }
+		});
 	});
 });
