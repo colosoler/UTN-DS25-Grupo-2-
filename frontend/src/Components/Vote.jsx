@@ -1,101 +1,81 @@
 import { MdArrowUpward, MdArrowDownward } from 'react-icons/md';
-import { useEffect, useState } from 'react';
 import { useAuth } from '../Contexts/AuthContext';
-import { useFetch } from '../Hooks/useFetch'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Alert } from './Alert';
+import { fetchMaterialVotes, mutateVote } from '../Services/voteService';
+import { useState } from 'react';
 import './styles/Vote.css';
-import { getToken } from '../Helpers/auth';
-import { get } from 'react-hook-form';
 
 export const Vote = ({ material }) => {
 
-    const API_URL = import.meta.env.VITE_API_URL;
-    const { data: calificacion, loading } = useFetch(`${API_URL}/calificaciones/${material.id}/calificacion`, {}, { requireAuth: true });
-    
-    const { user } = useAuth()
-    const [vote, setVote] = useState(null);
-    const [upvotes, setUpvotes] = useState(material.upvotes);
-    const [downvotes, setDownvotes] = useState(material.downvotes);
-    
-    const upvoted = vote === true;
-    const downvoted = vote === false;
+    const { user } = useAuth();
+    const materialId = material.id;
+    const userId = user?.id;
+    const queryClient = useQueryClient();
+    const queryKey = ['materialVotes', materialId];
 
-    useEffect(() => {
-      if (!loading && calificacion) {
-        const value =
-          calificacion.value ??
-          calificacion.calificacion?.value ??
-          calificacion.data?.value ??
-          null;
-        setVote(value !== null ? Boolean(value) : null);
-      }
-    }, [loading, calificacion]);
+    const [showAlert, setShowAlert] = useState(false);
 
+    const { data, isLoading } = useQuery({
+      queryKey: queryKey,
+      queryFn: () => fetchMaterialVotes(materialId),
+    });
 
-    
-    const handleVote = async (type) => {
-      if (!user) return;
+    const currentVote = data?.value !== undefined ? data.value : null;
 
-      const isUpvote = type === 'upvote';
-      let newVote = isUpvote ? true: false;
-      const sameVote = vote === newVote
-      
-      let newUpvotes = upvotes;
-      let newDownvotes = downvotes;
-      
-      try {
-        if (sameVote) {
-          await fetch(`${API_URL}/calificaciones/${material.id}/calificacion`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${getToken()}`},
-          });
+    const upvoted = currentVote === true;
+    const downvoted = currentVote === false;
+    const voteMutation = useMutation({
+      mutationFn: (newVote) => mutateVote({ materialId, newVote, currentVote, userId}),
+      onMutate: async (newVote) => {
+        await queryClient.cancelQueries({ queryKey: queryKey });
+        const previousData = queryClient.getQueryData(queryKey);
 
-          if (isUpvote) newUpvotes--;
-          else newDownvotes--;
-          setVote(null);
-        } else if (vote === null) {
-          await fetch(`${API_URL}/calificaciones/${material.id}/calificacion`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${getToken()}`,
-            },
-            body: JSON.stringify({
-              materialId: material.id,
-              userId: user.id,
-              value: newVote
-            }),
-          });
+        queryClient.setQueryData(queryKey, (old) => {
+          if (!old) return old;
 
-          if (isUpvote) newUpvotes++;
-          else newDownvotes++;
-          setVote(newVote);
-        }
-        else {
-          await fetch(`${API_URL}/calificaciones/${material.id}/calificacion`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${getToken()}`,
-            },
-            body: JSON.stringify({ value: newVote }),
-          });
+          let newUpvotes = old.upvotes;
+          let newDownvotes = old.downvotes;
+          let finalVote;
 
-          if (isUpvote) {
-            newUpvotes++;
-            newDownvotes--;
+          if (newVote === currentVote) {
+            finalVote = null;
+            if (newVote === true) newUpvotes--; else newDownvotes--;
+          } else if (currentVote === null) {
+            finalVote = newVote;
+            if (newVote === true) newUpvotes++; else newDownvotes--;
           } else {
-            newDownvotes++;
-            newUpvotes--;
-          }
-          setVote(newVote);
-        }
-        setUpvotes(newUpvotes);
-        setDownvotes(newDownvotes);
+            finalVote = newVote;
+            if (currentVote === true) { newUpvotes--;} 
+            else { newDownvotes--;}
 
-      } catch (error) {
-        console.error('Error actualizando votos: ', error);
-      };
-    };
+            if (newVote === true){
+              newUpvotes++;
+            }else {
+              newDownvotes++;
+            }
+          }
+          return { ...old, upvotes: newUpvotes, downvotes: newDownvotes, value: finalVote };
+        });
+        return { previousData };
+
+      },
+      onError: (err, newVote, context) => {
+        console.error('Error al mutar, revirtiendo estado: ', err);
+        queryClient.setQueryData(queryKey, context.previousData);
+        setShowAlert(true);
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries({ queryKey: queryKey });
+      },
+  });
+
+  const handleVote = (type) => {
+    if (!user || voteMutation.isPending) return;
+    voteMutation.mutate(type === 'upvote');
+  }
+
+  const handleCloseAlert = () => setShowAlert(false);
     return (
         <>
           <div className='vote'>
@@ -105,7 +85,7 @@ export const Vote = ({ material }) => {
                 onClick={() => handleVote('upvote')}
             >
                 <MdArrowUpward />
-                <p>{upvotes}</p>
+                <p>{data?.upvotes ?? 0}</p>
             </div>
             <div
               id='downvote'
@@ -113,9 +93,15 @@ export const Vote = ({ material }) => {
               onClick={() => handleVote('downvote')}
             >
                 <MdArrowDownward />
-                <p>{downvotes}</p>
+                <p>{data?.downvotes ?? 0}</p>
             </div>
           </div>
+
+          <Alert 
+                show={showAlert}
+                message={"Hubo un error al registrar tu voto. Inténtalo de nuevo."}
+                onClose={handleCloseAlert}
+            />
         </>
     );
 };

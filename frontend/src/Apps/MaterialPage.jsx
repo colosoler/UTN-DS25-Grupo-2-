@@ -5,6 +5,7 @@ import { useFetch } from '../Hooks/useFetch';
 import './styles/MaterialPage.css';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../Contexts/AuthContext';
+import { getToken } from '../Helpers/auth';
 
 
 export const MaterialPage = () => {
@@ -12,7 +13,7 @@ export const MaterialPage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const { id } = useParams();
   const { user } = useAuth();
-
+  console.log(getToken())
   const { data: material, loading, error } = useFetch(`${API_URL}/materials/${id}`,
     {},
     { requireAuth: false}
