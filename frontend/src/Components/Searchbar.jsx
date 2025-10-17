@@ -11,13 +11,26 @@ export const Searchbar = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [formData, setFormData, handleChange] = useForm((name, value, newData) => {
-    if (name === "materia" || name === "carrera") {
+    
+    if (name === "materia" ){
+      setFormData({ ...newData, [name + 'Id']: value.value, [name]: value.option })      
+    } else if (name === "carrera"){
+      value = JSON.parse(value);
       setFormData({ ...newData, [name + 'Id']: value.value, [name]: value.option })
-    } //esta funcion es para que al seleccionar en el serachOptions me guarde el id y el nombre
+    } else if (name === "includeCarrera"){
+      setFormData({ ...newData, [name]: !formData.includeCarrera })
+    }
   });
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
+  const carrerasUrl = formData.materiaId
+      ? `carreras/?materia=${formData.materiaId}`
+      : 'carreras/';
+  
   const API_URL = import.meta.env.VITE_API_URL;
   const fetchedMaterias = useFetch(`${API_URL}/materias/`);
-  const fetchedCarreras = useFetch(`${API_URL}/carreras/`);
+  const fetchedCarreras = useFetch(`${API_URL}/${carrerasUrl}`);
 
   //seteo el formData con los query params que vengan en la url
   useEffect(() => {
@@ -27,13 +40,17 @@ export const Searchbar = () => {
       materiaId: null,
       carrera: "",
       carreraId: null,
-      tipo: ""
+      tipo: "",
+      includeCarrera: false,
+      parcial: null,
+      anio: null,
+      comision: ""
     }
     searchParams.forEach((value, key) => {
-      defaultForm[key] = key.includes("Id") ? parseInt(value) : value;
+      defaultForm[key] = key.includes("Id") || key.includes("anio") ? parseInt(value) : value;
     });
     setFormData(defaultForm);
-  }, [])
+  }, []);
 
   const handleClear = () => {
     const { query, ...rest } = formData;
@@ -43,8 +60,13 @@ export const Searchbar = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value && key !== 'materia') params.set(key, value);
+    let filtros = formData;
+    //materia y carrera no se envian (sino materiaId y carreraId) 
+    filtros.materia = "";
+    filtros.carrera = "";
+    filtros.includeCarrera = null
+    Object.entries(filtros).forEach(([key, value]) => {
+      if (value) params.set(key, value);
     });
 
     navigate(`/search/?${params.toString()}`);
@@ -78,7 +100,7 @@ export const Searchbar = () => {
       <FiltersModal show={showModal}
         onHide={() => setShowModal(false)}
         useForm={[formData, setFormData, handleChange, handleSubmit]}
-        fetchedData={{ fetchedMaterias }} />
+        fetchedData={{ fetchedMaterias, fetchedCarreras }} />
 
     </>
   )
