@@ -9,6 +9,7 @@ export interface User {
     email: string;
     role: 'USER' | 'ADMIN';
     password: string;
+    profilePicture?: string | null;
     career?: Carrera;
 }
 
@@ -32,4 +33,5 @@ export interface UpdateUserRequest {
     email?: string;
     password?: string;
     username?: string;
+    profilePicture?: string | null;
 }

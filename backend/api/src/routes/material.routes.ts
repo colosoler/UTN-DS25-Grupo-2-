@@ -3,6 +3,7 @@ import * as materialController from '../controllers/material.controller';
 import { validate } from '../middlewares/validation.middleware';
 import { createMaterialSchema, updateMaterialSchema } from '../validations/material.validation';
 import { authenticate, authorize } from '../middlewares/auth.middleware';
+import { fileUpload } from '../middlewares/upload.middleware';
 
 const router = Router();
 
@@ -16,7 +17,23 @@ router.get('/', (req, res, next) => {
 
 router.get('/:id', materialController.getMaterialById);
 
-router.post('/', authenticate, authorize('ADMIN', 'USER'), validate(createMaterialSchema), materialController.createMaterial);
+// Subida de archivos
+router.post(
+  '/upload',
+  authenticate,
+  authorize('ADMIN', 'USER'),
+  fileUpload.single('archivo'),
+  materialController.uploadMaterialFile
+);
+
+// Crear material
+router.post(
+  '/',
+  authenticate,
+  authorize('ADMIN', 'USER'),
+  validate(createMaterialSchema),
+  materialController.createMaterial
+);
 
 router.put('/:id', authenticate, authorize('ADMIN', 'USER'), validate(updateMaterialSchema), materialController.updateMaterial);
 

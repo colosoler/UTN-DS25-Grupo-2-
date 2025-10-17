@@ -9,6 +9,7 @@ import { Alert } from "../Components/Alert";
 import { AuthField } from "../Components/AuthField";
 import { getUser, getToken, clearToken } from "../Helpers/auth";
 import { useFetch } from "../Hooks/useFetch";
+import { validateProfilePicture } from "../Validations/fileValidation";
 import "./styles/SettingsPage.css";
 
 export const SettingsPage = () => {
@@ -25,27 +26,20 @@ export const SettingsPage = () => {
   const [selectedCareer, setSelectedCareer] = useState("");
   const [userData, setUserData] = useState(null);
 
-  // Traer carreras con useFetch
-  const { data: careers, loading: careersLoading, error: careersError } = useFetch(
-    `${API_URL}/carreras`,
-    {},
-    { requireAuth: true }
-  );
-
-  // Traer datos del usuario con useFetch
-  const { data: fetchedUserData, loading: userLoading, error: userError } = useFetch(
+  // Traer carreras y datos del usuario
+  const { data: careers } = useFetch(`${API_URL}/carreras`, {}, { requireAuth: true });
+  const { data: fetchedUserData } = useFetch(
     user?.id ? `${API_URL}/users/${user.id}` : null,
     {},
     { requireAuth: true }
   );
 
-  // Setear datos del usuario en el form
-  const {
-    register, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting },} = useForm({
+  const { register, handleSubmit, setValue, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({
     resolver: yupResolver(settingsSchema),
     mode: "onChange",
   });
 
+  // Inicializar datos del usuario
   useEffect(() => {
     if (!fetchedUserData) return;
 
@@ -56,45 +50,80 @@ export const SettingsPage = () => {
     setValue("email", fetchedUserData.email || "");
     setValue("career", fetchedUserData.career?.id || "");
     setSelectedCareer(fetchedUserData.career?.id ? String(fetchedUserData.career.id) : "");
-    setProfilePic(fetchedUserData.profilePic || null);
-    setOriginalProfilePic(fetchedUserData.profilePic || null);
+
+    const profilePicUrl = fetchedUserData.profilePicture || null;
+    setProfilePic(profilePicUrl);
+    setOriginalProfilePic(profilePicUrl);
   }, [fetchedUserData, setValue]);
 
-  // Funciones de foto de perfil
+  // ---------- FOTO DE PERFIL ----------
   const handleChangePhotoClick = () => fileInputRef.current?.click();
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) setProfilePic(URL.createObjectURL(file));
-  };
-  const handleDeletePhoto = () => setProfilePic(null);
 
-  // Guardar cambios
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0] || null;
+    const { valid, message } = validateProfilePicture(file);
+
+    if (!valid) {
+      setError("root", { type: "manual", message });
+      return;
+    }
+
+    clearErrors("root");
+    setProfilePic(file);
+  };
+
+  const handleDeletePhoto = () => {
+    setProfilePic(null);
+  };
+
+  // Subir o eliminar foto al guardar cambios
+  const uploadProfilePicture = async () => {
+    // Subir nueva foto
+    if (profilePic instanceof File) {
+      const formData = new FormData();
+      formData.append("image", profilePic);
+
+      const res = await fetch(`${API_URL}/users/${user.id}/profile-picture`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${getToken()}` },
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Error al subir la foto de perfil");
+    }
+
+    // Eliminar foto existente
+    if (profilePic === null && originalProfilePic) {
+      const res = await fetch(`${API_URL}/users/${user.id}/profile-picture`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+
+      if (!res.ok) throw new Error("Error al eliminar la foto de perfil");
+    }
+  };
+
+  // ---------- GUARDAR CAMBIOS ----------
   const onSubmit = async (data) => {
-    console.log(data);
     if (!userData) return;
 
     const updatedData = {};
-
     Object.keys(data).forEach((key) => {
       if (key === "career") {
         const oldCareerId = userData.career?.id ?? null;
         const newCareerId = Number(data.career);
-        if (newCareerId && newCareerId !== oldCareerId) {
-          updatedData.careerId = newCareerId;
-        }
-      } else if (key === "password") {
-        if (data.password && data.password.trim() !== "") {
-          updatedData.password = data.password;
-        }
+        if (newCareerId && newCareerId !== oldCareerId) updatedData.careerId = newCareerId;
+      } else if (key === "password" && data.password?.trim() !== "") {
+        updatedData.password = data.password;
       } else {
         const oldValue = userData[key] ?? "";
-        if (data[key] !== oldValue && data[key] !== "") {
-          updatedData[key] = data[key];
-        }
+        if (data[key] !== oldValue && data[key] !== "") updatedData[key] = data[key];
       }
     });
 
-    if (Object.keys(updatedData).length === 0) {
+    const hasPhotoChange = (profilePic instanceof File) || (profilePic === null && originalProfilePic);
+
+    if (Object.keys(updatedData).length === 0 && !hasPhotoChange) {
       setSuccessMessage("No hubo cambios para guardar");
       setShowSuccessToast(true);
       setTimeout(() => setShowSuccessToast(false), 1500);
@@ -102,73 +131,75 @@ export const SettingsPage = () => {
     }
 
     try {
-      const res = await fetch(`${API_URL}/users/${user.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${getToken()}`,
-        },
-        body: JSON.stringify(updatedData),
-      });
+      // Actualizar datos normales
+      if (Object.keys(updatedData).length > 0) {
+        const res = await fetch(`${API_URL}/users/${user.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+          body: JSON.stringify(updatedData),
+        });
 
-      if (!res.ok) throw new Error("Error al actualizar el perfil");
+        if (!res.ok) throw new Error("Error al actualizar el perfil");
+      }
 
-      setSuccessMessage("Perfil actualizado correctamente");
+      // Subir o eliminar foto
+      await uploadProfilePicture();
+
+      // Mensaje según acción
+      let message = "Perfil actualizado correctamente";
+      if (profilePic === null && originalProfilePic) message = "Foto de perfil eliminada correctamente";
+
+      setSuccessMessage(message);
       setShowSuccessToast(true);
+
       setTimeout(() => {
         setShowSuccessToast(false);
         navigate("/profile");
       }, 1500);
     } catch (error) {
       console.error(error);
-      setError("root", {
-        type: "manual",
-        message: "Error al actualizar el perfil.",
-      });
+      setError("root", { type: "manual", message: "Error al actualizar el perfil." });
     }
   };
 
-  // Eliminar cuenta
+  // ---------- ELIMINAR CUENTA ----------
   const handleConfirmDelete = async () => {
-  try {
-    const res = await fetch(`${API_URL}/users/${user.id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    });
+    try {
+      const res = await fetch(`${API_URL}/users/${user.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
 
-    if (!res.ok) {
-      throw new Error("Error al eliminar la cuenta");
+      if (!res.ok) throw new Error("Error al eliminar la cuenta");
+
+      clearToken();
+      setShowDeleteModal(false);
+      setSuccessMessage("Cuenta eliminada correctamente");
+      setShowSuccessToast(true);
+      setTimeout(() => {
+        setShowSuccessToast(false);
+        navigate("/");
+      }, 1500);
+    } catch (error) {
+      console.error(error);
+      setError("root", { type: "manual", message: "Ocurrió un error al eliminar la cuenta." });
     }
-    clearToken(); // Borra token y datos del usuario del storage
-
-    setShowDeleteModal(false);
-    setSuccessMessage("Cuenta eliminada correctamente");
-    setShowSuccessToast(true);
-    setTimeout(() => {
-      setShowSuccessToast(false);
-      navigate("/");
-    }, 1500);
-  } catch (error) {
-    console.error("Error al eliminar cuenta:", error);
-    setError("root", {
-      type: "manual",
-      message: "Ocurrió un error al eliminar la cuenta.",
-    });
-  }
-};
-
-  const handleToastClose = () => setShowSuccessToast(false);
+  };
 
   return (
     <div className="profile-settings-container">
-      {/* Foto de perfil */}
       <Form.Group className="mb-4">
         <Form.Label className="profile-photo-label">Foto de Perfil</Form.Label>
         <div className="profile-photo-section">
           {profilePic ? (
-            <img src={profilePic} alt="Foto de perfil" className="profile-photo" />
+            <img
+              src={profilePic instanceof File ? URL.createObjectURL(profilePic) : profilePic}
+              alt="Foto de perfil"
+              className="profile-photo"
+            />
           ) : (
             <div className="profile-photo-placeholder">?</div>
           )}
@@ -182,9 +213,9 @@ export const SettingsPage = () => {
           </div>
         </div>
         <input type="file" accept="image/*" ref={fileInputRef} style={{ display: "none" }} onChange={handleFileChange} />
+        {errors.root && <div className="field-error">{errors.root.message}</div>}
       </Form.Group>
 
-      {/* Formulario */}
       <Form onSubmit={handleSubmit(onSubmit)} className="profile-settings-form">
         <h2>Configuración de Perfil</h2>
 
@@ -194,7 +225,6 @@ export const SettingsPage = () => {
         <AuthField id="formEmail" type="email" placeholder="Correo electrónico" registerField={register("email")} error={errors.email?.message} />
         <AuthField id="formPassword" type="password" placeholder="Nueva contraseña (opcional)" registerField={register("password")} error={errors.password?.message} />
 
-        {/* Carrera */}
         <Form.Group controlId="formCareer" className="mb-3">
           <Form.Select
             {...register("career")}
@@ -207,20 +237,15 @@ export const SettingsPage = () => {
           >
             <option disabled value="">Seleccioná tu carrera</option>
             {careers?.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.nombre}
-              </option>
+              <option key={c.id} value={c.id}>{c.nombre}</option>
             ))}
           </Form.Select>
           {errors.career && <div className="field-error">{errors.career.message}</div>}
         </Form.Group>
 
-        {errors.root && <div className="field-error">{errors.root.message}</div>}
-
         <Button type="submit" className="w-100 mb-2" disabled={isSubmitting}>
           {isSubmitting ? "Guardando cambios..." : "Guardar cambios"}
         </Button>
-
         <Button type="button" className="w-100" variant="danger" onClick={() => setShowDeleteModal(true)}>
           Eliminar cuenta
         </Button>
@@ -235,7 +260,7 @@ export const SettingsPage = () => {
         buttonTitle="Eliminar cuenta"
       />
 
-      <Alert show={showSuccessToast} message={successMessage} onClose={handleToastClose} variant="success" />
+      <Alert show={showSuccessToast} message={successMessage} onClose={() => setShowSuccessToast(false)} variant="success" />
     </div>
   );
 };

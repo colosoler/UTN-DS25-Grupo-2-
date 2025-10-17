@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import * as materialService from '../services/material.service';
 import { AuthenticatedRequest } from "../types/auth.types";
+import {  CreateMaterialRequest } from '../types/material.types';
+import { v2 as cloudinary } from 'cloudinary';
 
 export async function getAllMaterials(req: Request, res: Response, next: NextFunction) {
     try {
@@ -25,20 +27,74 @@ export async function getMaterialById(req: Request, res: Response, next: NextFun
     try {
         const id = parseInt(req.params.id);
         const material = await materialService.getMaterialById(id);
-        res.json({ success: true, data: material });
+
+        if (!material) return res.status(404).json({ success: false, message: 'Material no encontrado' });
+
+        // Devuelve la URL pública directamente
+        res.json({
+            success: true,
+            data: material
+        });
     } catch (error) {
         next(error);
     }
 }
 
-export async function createMaterial( req: Request, res: Response, next: NextFunction){
-    try {
-        const newMaterial = await materialService.createMaterial(req.body);
-        res.status(201).json({ success: true, message: 'Material created succesfully', data: newMaterial });
-    } catch (error) {
-        next(error);
+
+// controllers/material.controller.ts
+// SUBIDA DE ARCHIVO PDF
+export async function uploadMaterialFile(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    if (!req.file || !req.file.path) {
+      return res.status(400).json({ success: false, message: 'No se envió ningún archivo.' });
     }
+
+    const fileUrl = req.file.path;
+
+    res.status(200).json({
+      success: true,
+      url: fileUrl,
+      message: 'Archivo subido correctamente',
+    });
+  } catch (err) {
+    next(err);
+  }
 }
+
+// =====================
+// Crear material
+// =====================
+export async function createMaterial(req: Request, res: Response, next: NextFunction) {
+  try {
+    const data = req.body as CreateMaterialRequest;
+
+    // Convertir IDs a number
+    const payload = {
+      ...data,
+      materiaId: Number(data.materiaId),
+      carreraId: Number(data.carreraId),
+      userId: Number(data.userId),
+      añoCursada: Number(data.añoCursada),
+      numeroParcial: data.numeroParcial ? Number(data.numeroParcial) : 0,
+    };
+
+    const newMaterial = await materialService.createMaterial(payload);
+
+    res.status(201).json({
+      success: true,
+      data: newMaterial,
+      message: 'Material creado correctamente',
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
 
 export async function deleteMaterial(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     console.log('Entrando a deleteMaterial');
@@ -71,6 +127,7 @@ export async function deleteMaterial(req: AuthenticatedRequest, res: Response, n
         next(error);
     }
 }
+
 export async function updateMaterial(req: Request<{ id: string }>, res: Response, next: NextFunction) {
     try {
         const id = parseInt(req.params.id);

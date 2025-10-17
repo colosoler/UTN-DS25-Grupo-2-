@@ -9,45 +9,85 @@ export async function getAllMaterials(): Promise<Material[]> {
   return materials;
 }
 
-export async function findMaterials(filters: any): Promise<Material[]> {
+  export async function findMaterials(filters: any): Promise<Material[]> {
 	const query = filters.query as string | undefined;
 
 	//separa filters en 2 partes: query (campos de texto) y directFilters (ids, para filtrarlos directamente)
 	const { query: _, ...directFilters } = filters;
 
-  //crea objeto con campos de directFilters asegurandose de q sean numeros (convirtiendolos de ser necesario)
+	//crea objeto con campos de directFilters asegurandose de q sean numeros (convirtiendolos de ser necesario)
 	const numericDirectFilters: Record<string, number> = {};
+	
+	//crea objeto con campos string pero q deben filtrarse como filtros directos (comision y tipo)
+	const textDirectFilters: Record<string, string> = {};
+
 	for (const key in directFilters) {
 		const value = directFilters[key];
-		if (!isNaN(Number(value)) && value !== '' && value !== null && value !== undefined) {
-			numericDirectFilters[key] = Number(value);
+		if (
+			!isNaN(Number(value)) &&
+			value !== '' &&
+			value !== null &&
+			value !== undefined
+		) {
+			numericDirectFilters[key] = Number(value); 	
+		} else if (
+			value !== '' &&
+			value !== null &&
+			value !== undefined
+		) {
+			textDirectFilters[key] = value;
 		}
 	}
 
-  //formatea numericDirectFilters para hacer la consulta a la BD
-	const directFilterArray = Object.keys(numericDirectFilters).map(key => ({
-		[key]: numericDirectFilters[key] //[{ userId: 5 }, { materiaId: 10 }
-	}));
+	//construccion de arreglo de filtros para comparar en orden
+	const maybeMateriaId = ('materiaId' in numericDirectFilters) ? { materiaId: numericDirectFilters['materiaId'] } : undefined;
+	const maybeCarreraId = ('carreraId' in numericDirectFilters) ? { carreraId: numericDirectFilters['carreraId'] } : undefined;
+	const maybeTipo = ('tipo' in textDirectFilters) ? { tipo: textDirectFilters['tipo'] } : undefined;
+	const maybeAnoCursada = ('añoCursada' in numericDirectFilters) ? { añoCursada: numericDirectFilters['añoCursada'] } : undefined;
+	const maybeComision = ('comision' in textDirectFilters) ? { comision: textDirectFilters['comision'] } : undefined;
+	const maybeNumeroParcial = ('numeroParcial' in numericDirectFilters) ? { numeroParcial: numericDirectFilters['numeroParcial'] } : undefined;
+	const maybeUserId = ('userId' in numericDirectFilters) ? { userId: numericDirectFilters['userId'] } : undefined;
 
-	//filtro para query (campos de texto)
-	const textSearchFilter = query
+	//array AND en el orden exacto
+	const orderedDirectFilters = [
+		maybeMateriaId,
+		maybeCarreraId,
+		maybeTipo,
+		maybeAnoCursada,
+		maybeComision,
+		maybeNumeroParcial,
+		maybeUserId
+	].filter(f => f !== undefined) as Record<string, any>[];
+
+	const queryTokens = query
+		? query.split(/\s+/).filter(token => token.length > 0)
+		: [];
+
+  const textSearchFilter = queryTokens.length > 0 ?
+      {
+        OR: queryTokens.flatMap(token => [
+          { titulo: { contains: token, mode: Prisma.QueryMode.insensitive } },
+          { descripcion: { contains: token, mode: Prisma.QueryMode.insensitive } },
+          { comision: { contains: token, mode: Prisma.QueryMode.insensitive } },
+          { tipo: { contains: token, mode: Prisma.QueryMode.insensitive } },
+        ])
+      }
+    : {};
+
+	const finalTextFilterForAND = Object.keys(textSearchFilter).length > 0
 		? {
-			OR: [
-				{ titulo: { contains: query, mode: Prisma.QueryMode.insensitive } },
-				{ descripcion: { contains: query, mode: Prisma.QueryMode.insensitive } },
-				{ comision: { contains: query, mode: Prisma.QueryMode.insensitive } },
-			].filter(Boolean),
+			OR: textSearchFilter.OR
 		}
 		: {};
 
 	const combinedFilters = [
-		...directFilterArray, 
-		textSearchFilter
-	].filter(f => Object.keys(f).length > 0);// si 1 campo de 'query' esta vacio no se pasa
+		...orderedDirectFilters,
+		...(Object.keys(finalTextFilterForAND).length > 0 ? [finalTextFilterForAND] : [])
+	];
 
 	return prisma.material.findMany({
 		where: {
-			AND: combinedFilters,
+			AND: combinedFilters as any,
 		},
 	});
 }

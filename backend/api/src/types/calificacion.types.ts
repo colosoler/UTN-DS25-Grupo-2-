@@ -19,7 +19,7 @@ export interface UpdateCalificacionRequest {
 }
 
 export interface CalificacionResponse {
-	calificacion: Calificacion;
+	calificacion: Calificacion | null;
 	message: string;
 }
 
