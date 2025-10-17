@@ -13,7 +13,7 @@ export const MaterialPage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const { id } = useParams();
   const { user } = useAuth();
-  console.log(getToken())
+
   const { data: material, loading, error } = useFetch(`${API_URL}/materials/${id}`,
     {},
     { requireAuth: false}
@@ -27,7 +27,7 @@ export const MaterialPage = () => {
     <>
     <section className="container">
       <h1 className='title'>Titulo: {material.data.titulo}</h1>
-      <Material archivo={material.data.archivo} />
+      <Material archivo={material.data.archivo && material.data.titulo} />
       <Information material={material.data} />
       <div className='material-icons'>
         <Buttons material={material.data} user={user}/>

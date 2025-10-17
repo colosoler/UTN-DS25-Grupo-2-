@@ -13,3 +13,16 @@ const storage = new CloudinaryStorage({
 });
 
 export const upload = multer({ storage });
+
+const fileStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'user_files',
+    allowed_formats: ['pdf'],
+    resource_type: 'raw',
+    type: 'upload', 
+  } as CloudinaryParams,
+});
+
+export const fileUpload = multer({ storage: fileStorage });
+
