@@ -13,7 +13,7 @@ export const MaterialPage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const { id } = useParams();
   const { user } = useAuth();
-  console.log(getToken())
+
   const { data: material, loading, error } = useFetch(`${API_URL}/materials/${id}`,
     {},
     { requireAuth: false}
