@@ -27,7 +27,7 @@ export const MaterialPage = () => {
     <>
     <section className="container">
       <h1 className='title'>Titulo: {material.data.titulo}</h1>
-      <Material archivo={material.data.archivo && material.data.titulo} />
+      <Material archivo={material.data.archivo} />
       <Information material={material.data} />
       <div className='material-icons'>
         <Buttons material={material.data} user={user}/>
