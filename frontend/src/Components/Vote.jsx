@@ -1,107 +1,147 @@
 import { MdArrowUpward, MdArrowDownward } from 'react-icons/md';
 import { useAuth } from '../Contexts/AuthContext';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Alert } from './Alert';
-import { fetchMaterialVotes, mutateVote } from '../Services/voteService';
-import { useState } from 'react';
 import './styles/Vote.css';
+import { getToken } from '../Helpers/auth';
 
 export const Vote = ({ material }) => {
 
-    const { user } = useAuth();
-    const materialId = material.id;
-    const userId = user?.id;
-    const queryClient = useQueryClient();
-    const queryKey = ['materialVotes', materialId];
+	const API_URL = import.meta.env.VITE_API_URL;
 
-    const [showAlert, setShowAlert] = useState(false);
+	const { user } = useAuth()
+	const [vote, setVote] = useState(null);
+	const [upvotes, setUpvotes] = useState(material.upvotes);
+	const [downvotes, setDownvotes] = useState(material.downvotes);
+	
+	const upvoted = vote === true;
+	const downvoted = vote === false;
 
-    const { data, isLoading } = useQuery({
-      queryKey: queryKey,
-      queryFn: () => fetchMaterialVotes(materialId),
-    });
+	//carga manual de votos del usuario al material (solo se ejecuta si el usuario existe)
+	useEffect(() => {
+		const fetchUserVote = async () => {
+			if (!user) { //si no esta registrado no hace fetch
+				setVote(null);
+				return;
+			}
+			
+			const token = getToken();
+			if (!token) return;
 
-    const currentVote = data?.value !== undefined ? data.value : null;
+			try {
+				const response = await fetch(`${API_URL}/calificaciones/${material.id}/calificacion`, {
+					headers: {
+						'Authorization': `Bearer ${token}`
+					},
+				});
 
-    const upvoted = currentVote === true;
-    const downvoted = currentVote === false;
-    const voteMutation = useMutation({
-      mutationFn: (newVote) => mutateVote({ materialId, newVote, currentVote, userId}),
-      onMutate: async (newVote) => {
-        await queryClient.cancelQueries({ queryKey: queryKey });
-        const previousData = queryClient.getQueryData(queryKey);
+				//si la respuesta es OK o 404 (no hay voto), se actualiza el estado local.
+				if (response.ok) {
+					const calificacion = await response.json();
+					const value =
+						calificacion.value ??
+						calificacion.calificacion?.value ??
+						calificacion.data?.value ??
+						null;
+					setVote(value !== null ? Boolean(value) : null);
+				} else if (response.status === 404) {
+					setVote(null);
+				} else {
+					setVote(null);
+				}
+			} catch (error) {
+				console.error('Error cargando voto de usuario: ', error);
+				setVote(null);
+			}
+		};
+		fetchUserVote();
+	}, [user, material.id, API_URL]);
 
-        queryClient.setQueryData(queryKey, (old) => {
-          if (!old) return old;
+	const handleVote = async (type) => {
+		if (!user) {
+			alert('Debes iniciar sesión para votar'); //avisa q para votar debe estar logueado
+			return;
+		}
 
-          let newUpvotes = old.upvotes;
-          let newDownvotes = old.downvotes;
-          let finalVote;
+		const isUpvote = type === 'upvote';
+		let newVote = isUpvote ? true: false;
+		const sameVote = vote === newVote
+		
+		let newUpvotes = upvotes;
+		let newDownvotes = downvotes;
+		
+		try {
+			if (sameVote) {
+				await fetch(`${API_URL}/calificaciones/${material.id}/calificacion`, {
+					method: 'DELETE',
+					headers: { 'Authorization': `Bearer ${getToken()}`},
+				});
 
-          if (newVote === currentVote) {
-            finalVote = null;
-            if (newVote === true) newUpvotes--; else newDownvotes--;
-          } else if (currentVote === null) {
-            finalVote = newVote;
-            if (newVote === true) newUpvotes++; else newDownvotes--;
-          } else {
-            finalVote = newVote;
-            if (currentVote === true) { newUpvotes--;} 
-            else { newDownvotes--;}
+				if (isUpvote) newUpvotes--;
+				else newDownvotes--;
+				setVote(null);
+			} else if (vote === null) {
+				await fetch(`${API_URL}/calificaciones/${material.id}/calificacion`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${getToken()}`,
+					},
+					body: JSON.stringify({
+						materialId: material.id,
+						userId: user.id,
+						value: newVote
+					}),
+				});
 
-            if (newVote === true){
-              newUpvotes++;
-            }else {
-              newDownvotes++;
-            }
-          }
-          return { ...old, upvotes: newUpvotes, downvotes: newDownvotes, value: finalVote };
-        });
-        return { previousData };
+				if (isUpvote) newUpvotes++;
+				else newDownvotes++;
+				setVote(newVote);
+			}
+			else {
+				await fetch(`${API_URL}/calificaciones/${material.id}/calificacion`, {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${getToken()}`,
+					},
+					body: JSON.stringify({ value: newVote }),
+				});
 
-      },
-      onError: (err, newVote, context) => {
-        console.error('Error al mutar, revirtiendo estado: ', err);
-        queryClient.setQueryData(queryKey, context.previousData);
-        setShowAlert(true);
-      },
-      onSettled: () => {
-        queryClient.invalidateQueries({ queryKey: queryKey });
-      },
-  });
+				if (isUpvote) {
+					newUpvotes++;
+					newDownvotes--;
+				} else {
+					newDownvotes++;
+					newUpvotes--;
+				}
+				setVote(newVote);
+			}
+			setUpvotes(newUpvotes);
+			setDownvotes(newDownvotes);
 
-  const handleVote = (type) => {
-    if (!user || voteMutation.isPending) return;
-    voteMutation.mutate(type === 'upvote');
-  }
-
-  const handleCloseAlert = () => setShowAlert(false);
-    return (
-        <>
-          <div className='vote'>
-            <div
-                id='upvote'
-                className={`upvote ${upvoted ? 'active' : ''}`}
-                onClick={() => handleVote('upvote')}
-            >
-                <MdArrowUpward />
-                <p>{data?.upvotes ?? 0}</p>
-            </div>
-            <div
-              id='downvote'
-              className={`downvote ${downvoted ? 'active' : ''}`}
-              onClick={() => handleVote('downvote')}
-            >
-                <MdArrowDownward />
-                <p>{data?.downvotes ?? 0}</p>
-            </div>
-          </div>
-
-          <Alert 
-                show={showAlert}
-                message={"Hubo un error al registrar tu voto. Inténtalo de nuevo."}
-                onClose={handleCloseAlert}
-            />
-        </>
-    );
+		} catch (error) {
+			console.error('Error actualizando votos: ', error);
+		};
+	};
+	return (
+		<>
+			<div className='vote'>
+				<div
+					id='upvote'
+					className={`upvote ${upvoted ? 'active' : ''}`}
+					onClick={() => handleVote('upvote')}
+				>
+					<MdArrowUpward />
+					<p>{upvotes}</p>
+				</div>
+				<div
+					id='downvote'
+					className={`downvote ${downvoted ? 'active' : ''}`}
+					onClick={() => handleVote('downvote')}
+				>
+					<MdArrowDownward />
+					<p>{downvotes}</p>
+				</div>
+			</div>
+		</>
+	);
 };
