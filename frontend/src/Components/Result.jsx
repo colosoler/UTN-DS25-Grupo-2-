@@ -7,11 +7,11 @@ export const Result = ({result}) => {
   return (
     <Card>
       <Card.Body>
-        <Card.Title>{result.title}</Card.Title>
-        <Card.Subtitle className="mb-2 text-muted">@{result.user}</Card.Subtitle>
-        <Card.Text>{result.description}</Card.Text>
+        <Card.Title>{result.titulo}</Card.Title>
+        <Card.Subtitle className="mb-2 text-muted">@{result.userId || 'usuario anónimo'}</Card.Subtitle>
+        <Card.Text>{result.descripcion}</Card.Text>
         <Link to={`/material/${result.id}`}>Ver material</Link>
-        <Buttons result={result}></Buttons>
+        <Buttons material={result}></Buttons>
       </Card.Body>
     </Card>
   );

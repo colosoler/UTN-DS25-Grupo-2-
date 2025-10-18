@@ -12,8 +12,8 @@ import { OptionsDropdown } from './OptionsDropdown';
                     <div id="report">
                         <ReportModel />
                     </div>
-                    <Share shareUrl={`${window.location.origin}/material/${material.id}`}/>
-                    {(user.id === material.userId) && (
+                    <Share shareUrl={`${window.location.origin}/material/${material?.id}`} />
+				    {user?.id === material?.userId && (
                         <div id="options">
                             <OptionsDropdown material={material} />
                         </div>
