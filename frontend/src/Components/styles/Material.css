@@ -1,5 +1,90 @@
-.material-container{
-    height: 50vh;
-    padding: 2em;
-    background-color: var(--primary-color);
+/* src/Components/styles/Material.css */
+
+.material-container {
+    height: 80vh; /* Altura que permite que la card esté cerca del título */
+    padding: 0.5em; /* Padding reducido para subir la card */
+    display: flex; 
+    flex-direction: column;
+    align-items: center; /* Centra la tarjeta horizontalmente */
+}
+
+/* Contenedor principal de la tarjeta de preview */
+.pdf-card-preview {
+    background-color: #ffffff;
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
+    width: 100%; 
+    max-width: 800px; 
+    
+    /* Clave para eliminar el scroll y usar el 100% del alto */
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Toma la altura de 80vh del contenedor principal */
+}
+
+/* Cabecera (Icono, Nombre y Puntos) */
+.pdf-card-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px; 
+    background-color: #f7f7f7; 
+    border-bottom: 1px solid #eee; 
+    flex-shrink: 0; 
+}
+
+.pdf-icon {
+    width: 20px;
+    height: 20px;
+    color: #cc0000; 
+    margin-right: 8px; 
+    flex-shrink: 0; 
+}
+
+.pdf-card-filename {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1; 
+}
+
+.pdf-card-options {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: auto; 
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+}
+
+.pdf-card-options:hover {
+    color: #333;
+}
+
+.options-icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* Contenedor del Iframe de previsualización */
+.pdf-preview-fragment {
+    width: 100%;
+    background-color: #fff; 
+    border: none; 
+    flex-grow: 1; /* Toma todo el espacio vertical restante */
+}
+
+/* Estilo para el Iframe (el contenido del PDF) */
+.pdf-preview-fragment iframe {
+    display: block;
+    width: 100%;
+    height: 100%; /* Se estira para llenar todo el espacio vertical */
 }

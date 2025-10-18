@@ -7,47 +7,97 @@ import { useAuth } from '../Contexts/AuthContext.jsx';
 
 export const MaterialCreatePage = () => {
   const { user } = useAuth();
+
+  // Hook para manejar los datos del formulario
   const [formData, setFormData, handleChange] = useForm((name, value, newData) => {
     if (name === 'materia' || name === 'carrera') {
       setFormData({ ...newData, [name + 'Id']: value.value, [name]: value.option });
     }
   });
 
-  
   const API_URL = import.meta.env.VITE_API_URL;
   const [alert, setAlert] = useState({ show: false, message: '', variant: 'success' });
 
-  const { data: materias, loading: mLoading, error: mError } = useFetch(`${API_URL}/materias`);
+  // Fetch de materias
+  const { data: materias, loading: mLoading } = useFetch(`${API_URL}/materias`);
 
+  // Fetch de carreras según materia seleccionada
   const carrerasUrl = formData.materiaId
     ? `${API_URL}/carreras?materia=${formData.materiaId}`
     : `${API_URL}/carreras`;
-  const { data: carreras, loading: cLoading, error: cError } = useFetch(carrerasUrl);
+  const { data: carreras, loading: cLoading } = useFetch(carrerasUrl);
 
+  // Maneja el cambio de archivo
+  const handleFileChange = (e) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    handleChange({ target: { name: 'archivo', value: file } });
+  };
+
+  // Subida del archivo a Cloudinary (endpoint separado)
+  const uploadFile = async (file) => {
+    const token = getToken();
+    if (!token) throw new Error('No se encontró token de autenticación');
+
+    const formDataFile = new FormData();
+    formDataFile.append('archivo', file);
+
+    const res = await fetch(`${API_URL}/materials/upload`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formDataFile,
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({ error: 'No se pudo leer el error del backend' }));
+      throw new Error(errorData?.error || 'Error subiendo archivo');
+    }
+
+    const data = await res.json();
+    // Ajustar según tu controller: la URL debería venir en data.url o data.data.url
+    return data.url || data.data?.archivo;
+  };
+
+  // Función para enviar formulario completo
   const handleSubmit = async (data) => {
     const token = getToken();
     if (!token) throw new Error('No se encontró token de autenticación');
-    
+
+    let archivoUrl = data.archivo;
+
+    // Si hay un archivo File, lo subimos primero
+    if (data.archivo instanceof File) {
+      archivoUrl = await uploadFile(data.archivo);
+    }
+
+    const payload = {
+      ...data,
+      archivo: archivoUrl,
+      userId: Number(user.id),
+      materiaId: Number(data.materiaId),
+      carreraId: Number(data.carreraId),
+      añoCursada: Number(data.añoCursada),
+      numeroParcial: data.numeroParcial ? Number(data.numeroParcial) : undefined,
+      tipo: data.tipo.toUpperCase(), // Asegura que coincida con el enum TipoMaterial
+    };
+
+    console.log('Datos enviados al backend:', payload);
+
     const res = await fetch(`${API_URL}/materials`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) {
-      let errorData
-      try {
-        errorData = await res.json();
-      } catch (err) {
-        errorData = { error: 'No se pudo leer el error del backend'};
-      }
-      console.log('Error del backend: ', errorData)
-      throw new Error(errorData?.error || 'Error subiendo material');
+      const errorData = await res.json().catch(() => ({ error: 'No se pudo leer el error del backend' }));
+      throw new Error(errorData?.message || 'Error creando material');
     }
-    
+
     return res.json();
   };
 
@@ -63,7 +113,7 @@ export const MaterialCreatePage = () => {
           setAlert({ show: true, message: 'Material subido correctamente', variant: 'success' });
           setFormData({});
         } catch (err) {
-          console.log('Error onSubmit: ', err)
+          console.log('Error onSubmit: ', err);
           setAlert({ show: true, message: err.message, variant: 'danger' });
         }
       }}
@@ -71,6 +121,7 @@ export const MaterialCreatePage = () => {
       setAlert={setAlert}
       cLoading={cLoading}
       userId={user.id}
+      handleFileChange={handleFileChange}
     />
   );
 };

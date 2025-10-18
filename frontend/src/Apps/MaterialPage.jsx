@@ -5,6 +5,7 @@ import { useFetch } from '../Hooks/useFetch';
 import './styles/MaterialPage.css';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../Contexts/AuthContext';
+import { getToken } from '../Helpers/auth';
 
 
 export const MaterialPage = () => {

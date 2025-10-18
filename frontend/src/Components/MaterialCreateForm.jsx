@@ -13,7 +13,8 @@ export const MaterialCreateForm = ({
   alert,
   setAlert,
   cLoading,
-  userId
+  userId,
+  handleFileChange, // <- recibido como prop
 }) => {
   const showParcialSelect =
     formData.tipo === 'PARCIAL' || formData.tipo === 'PARCIAL_RESUELTO';
@@ -24,18 +25,17 @@ export const MaterialCreateForm = ({
     if (!formData.carreraId) throw new Error("Debes seleccionar una carrera");
     if (!formData.tipo) throw new Error("Debes seleccionar un tipo de material");
 
-
     const data = {
       titulo: formData.titulo || '',
       descripcion: formData.descripcion || '',
       tipo: formData.tipo || '',
       archivo: formData.archivo || '',
-      materiaId: formData.materiaId,
-      carreraId: formData.carreraId,
+      materiaId: Number(formData.materiaId),
+      carreraId: Number(formData.carreraId),
       comision: formData.comision || '',
-      numeroParcial: formData.parcial,
+      numeroParcial: Number(formData.parcial) || 0,
       añoCursada: Number(formData.añoCursada) || new Date().getFullYear(),
-      userId: userId
+      userId: Number(userId),
     };
 
     onSubmit(data);
@@ -63,9 +63,7 @@ export const MaterialCreateForm = ({
           <Form.Control
             type="file"
             name="archivo"
-            placeholder="Ingresa la dirección del archivo"
-            value={formData.archivo || ''}
-            onChange={handleChange}
+            onChange={handleFileChange} // <- ahora sí definido
             className="material-form-control"
           />
         </Form.Group>
@@ -83,18 +81,18 @@ export const MaterialCreateForm = ({
           </Col>
           {formData.materiaId && (
             <Col>
-                <Form.Group aria-required>
+              <Form.Group aria-required>
                 <SearchOptions
-                    options={
-                        cLoading
-                        ? [{ value: '', option: 'Cargando...' }]
-                        : carreras?.map(e => ({ value: e.id, option: e.nombre }))
-                    }
-                    onChange={handleChange}
-                    name="carrera"
-                    placeholder="En qué carrera la cursaste?"
+                  options={
+                    cLoading
+                      ? [{ value: '', option: 'Cargando...' }]
+                      : carreras?.map((e) => ({ value: e.id, option: e.nombre }))
+                  }
+                  onChange={handleChange}
+                  name="carrera"
+                  placeholder="En qué carrera la cursaste?"
                 />
-                </Form.Group>
+              </Form.Group>
             </Col>
           )}
         </Row>
@@ -148,8 +146,9 @@ export const MaterialCreateForm = ({
             </Form.Group>
           </Col>
         </Row>
-        <Row>
-            {showParcialSelect && (
+
+        {showParcialSelect && (
+          <Row>
             <Col>
               <Form.Group>
                 <Form.Select
@@ -166,9 +165,10 @@ export const MaterialCreateForm = ({
                   <option value={4}>4to</option>
                 </Form.Select>
               </Form.Group>
-          </Col>
-          )}
-        </Row>
+            </Col>
+          </Row>
+        )}
+
         <Form.Group className="material-form-group">
           <Form.Label className="material-form-label">Descripción del material</Form.Label>
           <Form.Control
@@ -182,9 +182,7 @@ export const MaterialCreateForm = ({
           />
         </Form.Group>
 
-        <Button type="submit" className="material-submit-btn">
-          Subir
-        </Button>
+        <Button type="submit" className="material-submit-btn">Subir</Button>
       </Form>
 
       <Alert
