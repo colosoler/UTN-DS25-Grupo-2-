@@ -1,6 +1,6 @@
 import { CreateMaterialRequest, UpdateMaterialRequest } from '../types/material.types';
 import prisma from '../config/prisma';
-import { Material } from '@prisma/client';
+import { Material, TipoMaterial } from '@prisma/client';
 import { Prisma } from '@prisma/client';
 export async function getAllMaterials(): Promise<Material[]> {
   const materials = await prisma.material.findMany({
@@ -9,87 +9,59 @@ export async function getAllMaterials(): Promise<Material[]> {
   return materials;
 }
 
-  export async function findMaterials(filters: any): Promise<Material[]> {
-	const query = filters.query as string | undefined;
+export async function findMaterials(filters: any): Promise<Material[]> {
+    const query = filters.query as string | undefined;
 
-	//separa filters en 2 partes: query (campos de texto) y directFilters (ids, para filtrarlos directamente)
-	const { query: _, ...directFilters } = filters;
+    const { query: _, ...directFilters } = filters;
 
-	//crea objeto con campos de directFilters asegurandose de q sean numeros (convirtiendolos de ser necesario)
-	const numericDirectFilters: Record<string, number> = {};
-	
-	//crea objeto con campos string pero q deben filtrarse como filtros directos (comision y tipo)
-	const textDirectFilters: Record<string, string> = {};
+    const processedDirectFilters: Record<string, number | string> = {};
+    for (const key in directFilters) {
+        const value = directFilters[key];
+        if (value !== '' && value !== null && value !== undefined) {
+            if (!isNaN(Number(value))) {
+                processedDirectFilters[key] = Number(value);
+            } else {
+                processedDirectFilters[key] = value;
+            }
+        }
+    }
 
-	for (const key in directFilters) {
-		const value = directFilters[key];
-		if (
-			!isNaN(Number(value)) &&
-			value !== '' &&
-			value !== null &&
-			value !== undefined
-		) {
-			numericDirectFilters[key] = Number(value); 	
-		} else if (
-			value !== '' &&
-			value !== null &&
-			value !== undefined
-		) {
-			textDirectFilters[key] = value;
-		}
-	}
+    const directFilterArray = Object.keys(processedDirectFilters).map(key => ({
+        [key]: processedDirectFilters[key]
+    }));
 
-	//construccion de arreglo de filtros para comparar en orden
-	const maybeMateriaId = ('materiaId' in numericDirectFilters) ? { materiaId: numericDirectFilters['materiaId'] } : undefined;
-	const maybeCarreraId = ('carreraId' in numericDirectFilters) ? { carreraId: numericDirectFilters['carreraId'] } : undefined;
-	const maybeTipo = ('tipo' in textDirectFilters) ? { tipo: textDirectFilters['tipo'] } : undefined;
-	const maybeAnoCursada = ('añoCursada' in numericDirectFilters) ? { añoCursada: numericDirectFilters['añoCursada'] } : undefined;
-	const maybeComision = ('comision' in textDirectFilters) ? { comision: textDirectFilters['comision'] } : undefined;
-	const maybeNumeroParcial = ('numeroParcial' in numericDirectFilters) ? { numeroParcial: numericDirectFilters['numeroParcial'] } : undefined;
-	const maybeUserId = ('userId' in numericDirectFilters) ? { userId: numericDirectFilters['userId'] } : undefined;
+    // Construir textSearchFilter: contains para strings; para enum 'tipo' -> in con matches parciales del enum
+    const textSearchFilter = query
+        ? (() => {
+            const q = String(query).toLowerCase();
+            const or: any[] = [
+                { titulo: { contains: query, mode: Prisma.QueryMode.insensitive } },
+                { descripcion: { contains: query, mode: Prisma.QueryMode.insensitive } },
+                { comision: { contains: query, mode: Prisma.QueryMode.insensitive } },
+            ];
 
-	//array AND en el orden exacto
-	const orderedDirectFilters = [
-		maybeMateriaId,
-		maybeCarreraId,
-		maybeTipo,
-		maybeAnoCursada,
-		maybeComision,
-		maybeNumeroParcial,
-		maybeUserId
-	].filter(f => f !== undefined) as Record<string, any>[];
+            // Buscar valores del enum TipoMaterial que coincidan parcialmente (case-insensitive)
+            const tipoMatches = Object.values(TipoMaterial).filter(v =>
+                String(v).toLowerCase().includes(q)
+            );
+            if (tipoMatches.length > 0) {
+                or.push({ tipo: { in: tipoMatches } });
+            }
 
-	const queryTokens = query
-		? query.split(/\s+/).filter(token => token.length > 0)
-		: [];
+            return { OR: or } as any;
+        })()
+        : {};
 
-  const textSearchFilter = queryTokens.length > 0 ?
-      {
-        OR: queryTokens.flatMap(token => [
-          { titulo: { contains: token, mode: Prisma.QueryMode.insensitive } },
-          { descripcion: { contains: token, mode: Prisma.QueryMode.insensitive } },
-          { comision: { contains: token, mode: Prisma.QueryMode.insensitive } },
-          { tipo: { contains: token, mode: Prisma.QueryMode.insensitive } },
-        ])
-      }
-    : {};
+    const combinedFilters = [
+        ...directFilterArray, 
+        textSearchFilter
+    ].filter(f => Object.keys(f).length > 0);
 
-	const finalTextFilterForAND = Object.keys(textSearchFilter).length > 0
-		? {
-			OR: textSearchFilter.OR
-		}
-		: {};
-
-	const combinedFilters = [
-		...orderedDirectFilters,
-		...(Object.keys(finalTextFilterForAND).length > 0 ? [finalTextFilterForAND] : [])
-	];
-
-	return prisma.material.findMany({
-		where: {
-			AND: combinedFilters as any,
-		},
-	});
+    return prisma.material.findMany({
+        where: {
+            AND: combinedFilters,
+        },
+    });
 }
 
 export async function getMaterialById(id: number): Promise<Material> {
