@@ -1,30 +1,63 @@
-import { Searchbar } from '../Components/Searchbar.jsx'
-import { Result } from '../Components/Result.jsx';
-import { useFetch } from '../Hooks/useFetch.jsx';
-import { useSearchParams } from 'react-router-dom';
-import { Container } from 'react-bootstrap'
-import './styles/SearchResultPage.css';
+import { useLocation } from "react-router-dom";
+import { useFetch } from "../Hooks/useFetch";
+import { Result } from "../components/Result";
+import { Searchbar } from "../Components/Searchbar";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 export const SearchResultPage = () => {
-  const [searchParams] = useSearchParams();
-  const API_URL = import.meta.env.VITE_API_URL;
-  const { data, loading, error } = useFetch(`${API_URL}/materials/?` + searchParams.toString());
-  if (loading) return <p>Cargando apuntes...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-  
+	const location = useLocation();
+	const params = new URLSearchParams(location.search);
 
-  return (
-    <>
-      <Container className='p-4'>
-          <Searchbar/>
-        <section id='results'>
-          <div className="results-list">
-            {data.data.map(result => (
-              <Result key={result.id} result={result}/>
-            ))}
-          </div>
-        </section>
-      </Container>
-    </>
-  )
-}
+	const queryParams = new URLSearchParams();
+
+	const tipo = params.get("tipo");
+	if (tipo) {
+		queryParams.append("tipo", tipo.trim().toUpperCase().replace(" ", "_"));
+	}
+
+	const parcial = params.get("parcial");
+	if (parcial) {
+		queryParams.append("numeroParcial", parcial);
+	}
+
+	const anio = params.get("anio");
+	if (anio) {
+		queryParams.append("añoCursada", anio);
+	}
+
+	const uploaderId = params.get("uploaderId");
+	if (uploaderId) {
+		queryParams.append("userId", uploaderId);
+	}
+
+	// cualquier otro parámetro se conserva igual
+	for (const [key, value] of params.entries()) {
+		if (!["tipo", "parcial", "anio", "uploaderId"].includes(key)) {
+			queryParams.append(key, value);
+		}
+	}
+
+	const apiUrl = `${import.meta.env.VITE_API_URL}/materials?${queryParams.toString()}`;
+
+	const { data, loading, error } = useFetch(apiUrl);
+
+	const resultsArray = data?.data;
+
+	return (
+		<Container>
+			<Searchbar />
+			<Row>
+				{loading && <p>Cargando...</p>}
+				{error && <p>Error: {error.message}</p>}
+				{resultsArray && resultsArray.length === 0 && !loading && <p>No se encontraron resultados.</p>}
+				{resultsArray && resultsArray.map((result) => (
+					<Col key={result.id} md={4} className="mb-3">
+						<Result result={result} />
+					</Col>
+				))}
+			</Row>
+		</Container>
+	);
+};

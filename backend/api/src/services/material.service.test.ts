@@ -157,24 +157,25 @@ describe('MaterialService - findMaterials', () => {
 	}
 	);
 	test('debe deolver los materiales con campos de texto que matchean parcialmente con la query', async () => {
-		(prisma.material.findMany as jest.Mock).mockResolvedValue([mockCreatedMaterial]);
-		const result = await findMaterials({ query: 'parcial' });
-		expect(result).toEqual([mockCreatedMaterial]);
-		expect(prisma.material.findMany).toHaveBeenCalledWith({
-			where: {
-				AND: [
-					{
-						OR: [
-							{ titulo: { contains: 'parcial', mode: 'insensitive' } },
-							{ descripcion: { contains: 'parcial', mode: 'insensitive' } },
-							{ comision: { contains: 'parcial', mode: 'insensitive' } },
-							{ tipo: { contains: 'parcial', mode: 'insensitive' } },
-						]
-					}
-				]
-			}
-		});
-	}
+        (prisma.material.findMany as jest.Mock).mockResolvedValue([mockCreatedMaterial]);
+        const result = await findMaterials({ query: 'parcial' });
+        expect(result).toEqual([mockCreatedMaterial]);
+        expect(prisma.material.findMany).toHaveBeenCalledWith({
+            where: {
+                AND: [
+                    {
+                        OR: [
+                            { titulo: { contains: 'parcial', mode: 'insensitive' } },
+                            { descripcion: { contains: 'parcial', mode: 'insensitive' } },
+                            { comision: { contains: 'parcial', mode: 'insensitive' } },
+                            // ahora esperamos también el filtro sobre el enum transformado a `in`
+                            { tipo: { in: [ 'PARCIAL', 'PARCIAL_RESUELTO' ] } }
+                        ]
+                    }
+                ]
+            }
+        });
+    }
 	);
 	test('debe devolver un array vacío cuando no hay materiales que coincidan con todos los campos', async () => {
 		(prisma.material.findMany as jest.Mock).mockResolvedValue([]);
