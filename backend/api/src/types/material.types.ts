@@ -8,7 +8,7 @@ export interface Material {
     comision: string;
     descripcion: string;
     fecha: Date;
-    numeroParcial: number;
+    numeroParcial: number | null;
     titulo: string;
     materiaId: number;
     carreraId: number;
@@ -28,7 +28,7 @@ export interface CreateMaterialRequest {
     archivo: string;
     comision: string;
     descripcion: string;
-    numeroParcial: number;
+    numeroParcial: number | null;
     titulo: string;
     materiaId: number;
     carreraId: number;
@@ -41,7 +41,7 @@ export interface UpdateMaterialRequest {
     archivo?: string;
     comision?: string;
     descripcion?: string;
-    numeroParcial?: number;
+    numeroParcial?: number | null;
     titulo?: string;
     materiaId?: number;
     carreraId?: number;

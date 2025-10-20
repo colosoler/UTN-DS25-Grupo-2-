@@ -1,6 +1,6 @@
 import { createMaterial, deleteMaterial, findMaterials } from '../services/material.service';
 import prisma from '../config/prisma';
-import { CreateMaterialRequest } from '../types/material.types';
+import { CreateMaterialRequest, MaterialWithUser } from '../types/material.types';
 import { TipoMaterial, Material } from '@prisma/client';
 
 jest.mock('../config/prisma', () => ({
@@ -36,6 +36,18 @@ const mockCreatedMaterial: Material = {
 	fecha: new Date(),
 	createdAt: new Date(),
 	updatedAt: new Date(),
+};
+
+const mockMaterialFromPrisma: any = { //simula respuesta que retorna Prisma (con la relación anidada 'user')
+	...mockCreatedMaterial,
+	user: {
+		username: 'test_user',
+	}
+};
+
+const mockMaterialExpected: MaterialWithUser = { //simula el resultado final que retorna el service ya formateado
+	...mockCreatedMaterial,
+	username: 'test_user',
 };
 
 describe('MaterialService - createMaterial', () => {
@@ -117,7 +129,7 @@ describe('MaterialService - findMaterials', () => {
 		jest.clearAllMocks();
 	});
 	test('debe devolver los materiales que coincidadan con todos los filtros de búsqueda', async () => {
-		(prisma.material.findMany as jest.Mock).mockResolvedValue([mockCreatedMaterial]);
+		(prisma.material.findMany as jest.Mock).mockResolvedValue([mockMaterialFromPrisma]);
 
 		const result = await findMaterials({
 			materiaId: mockCreatedMaterial.materiaId.toString(),
@@ -128,7 +140,7 @@ describe('MaterialService - findMaterials', () => {
 			numeroParcial: mockCreatedMaterial.numeroParcial?.toString() || ''
 		});//los pongo toString pq asi llega desde los query params
 
-		expect(result).toEqual([mockCreatedMaterial]);
+		expect(result).toEqual([mockMaterialExpected]);
 		expect(prisma.material.findMany).toHaveBeenCalledWith({
 			where: {
 				AND: [
@@ -139,27 +151,41 @@ describe('MaterialService - findMaterials', () => {
 					{ comision: mockCreatedMaterial.comision },
 					{ numeroParcial: mockCreatedMaterial.numeroParcial }
 				]
+			},
+			include: {
+				user: {
+					select: {
+						username: true
+					}
+				}
 			}
 		});
 	});
 	test('debe filtrar por usuario cuando se proporciona userId', async () => {
-		(prisma.material.findMany as jest.Mock).mockResolvedValue([mockCreatedMaterial]);
+		(prisma.material.findMany as jest.Mock).mockResolvedValue([mockMaterialFromPrisma]);
 		const result = await findMaterials({ userId: mockCreatedMaterial.userId.toString() });
 
-		expect(result).toEqual([mockCreatedMaterial]);
+		expect(result).toEqual([mockMaterialExpected]);
 		expect(prisma.material.findMany).toHaveBeenCalledWith({
 			where: {
 				AND: [
 					{ userId: mockCreatedMaterial.userId }
 				]
+			},
+			include: {
+				user: {
+					select: {
+						username: true
+					}
+				}
 			}
 		});
 	}
 	);
 	test('debe deolver los materiales con campos de texto que matchean parcialmente con la query', async () => {
-        (prisma.material.findMany as jest.Mock).mockResolvedValue([mockCreatedMaterial]);
+    	(prisma.material.findMany as jest.Mock).mockResolvedValue([mockMaterialFromPrisma]);
         const result = await findMaterials({ query: 'parcial' });
-        expect(result).toEqual([mockCreatedMaterial]);
+        expect(result).toEqual([mockMaterialExpected]);
         expect(prisma.material.findMany).toHaveBeenCalledWith({
             where: {
                 AND: [
@@ -173,7 +199,14 @@ describe('MaterialService - findMaterials', () => {
                         ]
                     }
                 ]
-            }
+            },
+			include: {
+				user: {
+					select: {
+						username: true
+					}
+				}
+			}
         });
     }
 	);
