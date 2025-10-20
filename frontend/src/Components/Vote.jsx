@@ -2,6 +2,7 @@ import { MdArrowUpward, MdArrowDownward } from 'react-icons/md';
 import { useAuth } from '../Contexts/AuthContext';
 import './styles/Vote.css';
 import { getToken } from '../Helpers/auth';
+import { useState, useEffect } from 'react';
 
 export const Vote = ({ material }) => {
 
