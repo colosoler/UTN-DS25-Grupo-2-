@@ -18,6 +18,10 @@ export interface Material {
     downvotes: number;
 }
 
+export interface MaterialWithUser extends Material { //interfaz para devolver el material junto con el nombre de usuario
+	username: string;
+}
+
 // id, cantidadReportes, fecha no son necesarios.
 export interface CreateMaterialRequest {
     añoCursada: number;
