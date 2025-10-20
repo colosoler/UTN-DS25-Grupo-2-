@@ -1,15 +1,33 @@
-import { CreateMaterialRequest, UpdateMaterialRequest } from '../types/material.types';
+import { CreateMaterialRequest, MaterialWithUser, UpdateMaterialRequest } from '../types/material.types';
 import prisma from '../config/prisma';
 import { Material, TipoMaterial } from '@prisma/client';
 import { Prisma } from '@prisma/client';
-export async function getAllMaterials(): Promise<Material[]> {
+
+const materialInclude = { //objeto para incluir la relación con User y seleccionar solo el username
+	user: {
+		select: {
+			username: true,
+		}
+	}
+};
+
+const mapMaterialToMaterialWithUser = (material: any): MaterialWithUser => { //formatea la respuesta para agregar el username como una porpiedad mas del objeto q devuelve el json
+	const { user, ...rest } = material;
+	return {
+		...rest,
+		username: user.username,
+	} as MaterialWithUser;
+};
+
+export async function getAllMaterials(): Promise<MaterialWithUser[]> {
   const materials = await prisma.material.findMany({
-    orderBy: { createdAt: 'desc' }
+    orderBy: { createdAt: 'desc' },
+    include: materialInclude,
   });
-  return materials;
+  return materials.map(mapMaterialToMaterialWithUser);
 }
 
-export async function findMaterials(filters: any): Promise<Material[]> {
+export async function findMaterials(filters: any):Promise<MaterialWithUser[]> {
     const query = filters.query as string | undefined;
 
     const { query: _, ...directFilters } = filters;
@@ -57,21 +75,26 @@ export async function findMaterials(filters: any): Promise<Material[]> {
         textSearchFilter
     ].filter(f => Object.keys(f).length > 0);
 
-    return prisma.material.findMany({
-        where: {
-            AND: combinedFilters,
-        },
-    });
+    const materials = await prisma.material.findMany({
+		  where: {
+			  AND: combinedFilters,
+		  },
+		    include: materialInclude, // se agrega la inclusión para traer el username
+	  });
+	  return materials.map(mapMaterialToMaterialWithUser); // formatear la respuesta
 }
 
-export async function getMaterialById(id: number): Promise<Material> {
-  const material = await prisma.material.findUnique({ where: { id } });
+export async function getMaterialById(id: number): Promise<MaterialWithUser> {
+  const material = await prisma.material.findUnique({ 
+    where: { id },
+		include: materialInclude, //se agrega la inclusión para traer el usuario
+	});
   if (!material) {
     const error = new Error('Material not found');
     (error as any).statusCode = 404;
     throw error;
   }
-  return material;
+  return mapMaterialToMaterialWithUser(material);
 }
 
 export async function createMaterial(data: CreateMaterialRequest): Promise<Material> {
