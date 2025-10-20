@@ -51,7 +51,19 @@ export const Searchbar = () => {
     });
     setFormData(defaultForm);
   }, []);
-
+  //cuando haya una materia seleccionada perteneciente a una única carrera setearla
+  useEffect(() => {
+    if (formData.includeCarrera){
+      if (fetchedCarreras.data.length === 1){
+        const carrera = fetchedCarreras.data[0];
+        setFormData({
+          ...formData,
+          carrera: carrera.nombre,
+          carreraId: carrera.id
+        });
+      }
+    } 
+  }, [formData.includeCarrera, formData.materiaId]);
   const handleClear = () => {
     const { query, ...rest } = formData;
     setFormData({ query: "", ...rest });
@@ -64,6 +76,7 @@ export const Searchbar = () => {
     //materia y carrera no se envian (sino materiaId y carreraId) 
     filtros.materia = "";
     filtros.carrera = "";
+    if (!formData.includeCarrera) filtros.carreraId=null
     filtros.includeCarrera = null
     Object.entries(filtros).forEach(([key, value]) => {
       if (value) params.set(key, value);
