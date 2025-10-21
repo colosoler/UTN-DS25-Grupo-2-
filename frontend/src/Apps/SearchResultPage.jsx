@@ -5,6 +5,7 @@ import { Searchbar } from "../Components/Searchbar";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import NoResults from "../Components/NoResult";
 
 export const SearchResultPage = () => {
 	const location = useLocation();
@@ -46,12 +47,14 @@ export const SearchResultPage = () => {
 	const resultsArray = data?.data;
 
 	return (
-		<Container>
+		<Container style={{paddingTop: "35px"}}>
 			<Searchbar />
-			<Row>
+			<Row style={{paddingTop: "35px"}}>
 				{loading && <p>Cargando...</p>}
 				{error && <p>Error: {error.message}</p>}
-				{resultsArray && resultsArray.length === 0 && !loading && <p>No se encontraron resultados.</p>}
+				{resultsArray && resultsArray.length === 0 && !loading && (
+  					< NoResults />
+				)}
 				{resultsArray && resultsArray.map((result) => (
 					<Col key={result.id} md={4} className="mb-3">
 						<Result result={result} />
