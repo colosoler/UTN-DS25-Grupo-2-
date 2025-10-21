@@ -16,6 +16,8 @@ router.get('/', (req, res, next) => {
 
 router.get('/:id', carreraController.getCarreraById);
 
+router.get('/:carreraId/materias/:materiaId', carreraController.getCarreraMateriabyIds);
+
 router.post('/', authenticate, authorize('ADMIN'), validate(createCarreraSchema), carreraController.createCarrera);
 
 router.delete('/:id', authenticate, authorize('ADMIN'), carreraController.deleteCarrera);
