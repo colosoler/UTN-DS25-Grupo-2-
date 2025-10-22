@@ -1,5 +1,3 @@
-// src/Components/Material.jsx
-import React from 'react'; 
 import './styles/Material.css';
 
 export const Material = ({ archivo }) => {
