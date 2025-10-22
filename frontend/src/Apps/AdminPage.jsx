@@ -1,39 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { Users, FileText, Flag } from "lucide-react";
-import { StatCard } from "../components/StatCard";
-import { BarChartUsers } from "../components/BarChartUsers";
-import { PieChartMaterials } from "../components/PieChartMaterials";
-import { ReportedMaterialsModal } from "../components/ReportedMaterialsModal";
-import { DeleteConfirmModal } from "../components/DeleteConfirmModal";
+import { StatCard } from "../Components/StatCard";
+import { BarChartUsers } from "../Components/BarChartUsers";
+import { PieChartMaterials } from "../Components/PieChartMaterials";
+import { ReportedMaterialsModal } from "../Components/ReportedMaterialsModal";
+import { DeleteConfirmModal } from "../Components/DeleteConfirmModal";
+import { Alert } from "../Components/Alert"; 
 import { useFetch } from "../Hooks/useFetch";
+import { getToken } from "../Helpers/auth";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/AdminPage.css";
 
 export const AdminPage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
 
-  // ✅ Fetch de usuarios
   const { data: users, loading: loadingUsers } = useFetch(
     `${API_URL}/users/`,
     {},
     { requireAuth: true }
   );
 
-  // ✅ Fetch de materiales
   const { data: materialsResponse, loading: loadingMaterials } = useFetch(
     `${API_URL}/materials/`,
     {},
     { requireAuth: true }
   );
 
-  // ✅ Fetch de carreras
   const { data: carrerasResponse, loading: loadingCarreras } = useFetch(
     `${API_URL}/carreras/`,
     {},
     { requireAuth: true }
   );
 
-  // Estados
   const [stats, setStats] = useState({
     totalMaterials: 0,
     reportedMaterialsCount: 0
@@ -45,26 +43,52 @@ export const AdminPage = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
 
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
   const COLORS = ["#4a90e2", "#50e3c2", "#f5a623", "#e94b3c", "#9013fe", "#bd10e0"];
 
-  // ✅ Manejo de eliminación
   const handleDeleteMaterial = (material) => {
     setSelectedMaterial(material);
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    setReportedMaterials(reportedMaterials.filter(m => m.id !== selectedMaterial.id));
-    setStats(prev => ({
-      ...prev,
-      reportedMaterialsCount: prev.reportedMaterialsCount - 1,
-      totalMaterials: prev.totalMaterials - 1
-    }));
-    setShowDeleteModal(false);
-    setSelectedMaterial(null);
+  const confirmDelete = async () => {
+    if (!selectedMaterial) return;
+
+    try {
+      const response = await fetch(`${API_URL}/materials/${selectedMaterial.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`, 
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al eliminar el material");
+      }
+
+      // Actualizamos el estado local
+      setReportedMaterials((prev) => prev.filter((m) => m.id !== selectedMaterial.id));
+      setStats((prev) => ({
+        ...prev,
+        reportedMaterialsCount: prev.reportedMaterialsCount - 1,
+        totalMaterials: prev.totalMaterials - 1,
+      }));
+
+      setAlertMessage("Material eliminado correctamente");
+      setShowAlert(true);
+
+    } catch (error) {
+      console.error("Error al eliminar el material:", error);
+      alert("No se pudo eliminar el material. Intenta nuevamente.");
+    } finally {
+      setShowDeleteModal(false);
+      setSelectedMaterial(null);
+    }
   };
 
-  // ✅ Usuarios por mes
   useEffect(() => {
     if (!users) return;
 
@@ -85,7 +109,6 @@ export const AdminPage = () => {
     setUsersByMonth(chartData);
   }, [users]);
 
-  // ✅ Materiales por carrera
   useEffect(() => {
     if (!materialsResponse?.data || !carrerasResponse) return;
 
@@ -105,7 +128,6 @@ export const AdminPage = () => {
     setStats(prev => ({ ...prev, totalMaterials }));
   }, [materialsResponse, carrerasResponse]);
 
-  // ✅ Materiales reportados
   useEffect(() => {
     if (!materialsResponse?.data) return;
 
@@ -122,7 +144,6 @@ export const AdminPage = () => {
         <h1 className="mb-4 admin-title">Panel de Administrador</h1>
 
         <div className="row mb-4">
-          {/* Usuarios */}
           <StatCard
             title="Usuarios Totales"
             value={loadingUsers ? "Cargando..." : totalUsers.toLocaleString()}
@@ -130,7 +151,6 @@ export const AdminPage = () => {
             colorClass="text-primary-color"
           />
 
-          {/* Materiales */}
           <StatCard
             title="Materiales Totales"
             value={stats.totalMaterials.toLocaleString()}
@@ -138,7 +158,6 @@ export const AdminPage = () => {
             colorClass="text-secondary-color"
           />
 
-          {/* Reportados */}
           <StatCard
             title="Materiales Reportados"
             value={stats.reportedMaterialsCount}
@@ -165,7 +184,6 @@ export const AdminPage = () => {
         </div>
       </div>
 
-      {/* Modal de materiales reportados */}
       {showReportedModal && (
         <ReportedMaterialsModal
           materials={reportedMaterials}
@@ -174,12 +192,17 @@ export const AdminPage = () => {
         />
       )}
 
-      {/* Modal de confirmación de eliminación */}
       <DeleteConfirmModal
         show={showDeleteModal}
         onHide={() => setShowDeleteModal(false)}
         onConfirm={confirmDelete}
         materialTitle={selectedMaterial?.titulo}
+      />
+
+      <Alert
+        show={showAlert}
+        message={alertMessage}
+        onClose={() => setShowAlert(false)}
       />
     </div>
   );
