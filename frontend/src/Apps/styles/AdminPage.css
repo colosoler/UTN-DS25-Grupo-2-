@@ -1,0 +1,124 @@
+.admin-page {
+  background-color: var(--background-color);
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: var(--font-family);
+  color: var(--text-color);
+}
+
+.admin-title {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+/* Cards */
+.stat-card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-light-primary {
+  background-color: #e3f2fd;
+}
+.bg-light-secondary {
+  background-color: #e0f7f4;
+}
+
+.icon-primary {
+  color: var(--primary-color);
+}
+.icon-secondary {
+  color: var(--secondary-color);
+}
+
+.text-primary-color {
+  color: var(--primary-color);
+}
+.text-secondary-color {
+  color: var(--secondary-color);
+}
+
+/* Botones */
+.btn-primary-custom {
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+.btn-primary-custom:hover {
+  background-color: #3a7bc8;
+  transform: translateY(-2px);
+}
+
+.btn-danger-custom {
+  background-color: #e94b3c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  transition: all 0.3s;
+  opacity: 1;
+}
+.btn-danger-custom:hover {
+  background-color: #d43b2c;
+}
+
+/* Charts */
+.chart-container {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Modals */
+.modal-content {
+  border-radius: 12px;
+  border: none;
+  background-color: #fff;
+  opacity: 1;
+}
+
+.modal-backdrop {
+  background-color: rgba(0,0,0,0.5);
+}
+
+/* Tabla */
+.text-secondary {
+  color: var(--secondary-text-color);
+}
+
+.btn-danger-small {
+  background-color: #e94b3c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.25rem 0.75rem; /* menos padding que el original */
+  font-size: 0.7rem; /* fuente más pequeña */
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.3s;
+  opacity: 1;
+}
+
+.btn-danger-small:hover {
+  background-color: #d43b2c;
+  transform: translateY(-1px);
+}
