@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { CalificacionesListResponse, CalificacionResponse, CreateCalificacionRequest, UpdateCalificacionRequest } from '../types/calificacion.types'; 
 import * as calificacionService from '../services/calificacion.service';
+import prisma from '../config/prisma';
 
 export async function getAllCalificaciones(req: Request, res: Response<CalificacionesListResponse>, next: NextFunction) {
 	try {
@@ -30,12 +31,24 @@ export async function findCalificaciones(req: Request<{ materialId?: string }, {
 }
 
 //usa materialId (parametro) y espera userId implicito (GET singular)
-export async function getCalificacionByMaterialAndUser(req: Request<{ materialId: string }>, res: Response<CalificacionResponse>, next: NextFunction) {
+export async function getCalificacionByMaterialAndUser(req: Request<{ materialId: string }>, res: Response, next: NextFunction) {
 	try {
 		const userId = req.user!.id; 
 		const { materialId } = req.params;
 		const calificacion = await calificacionService.getCalificacionByMaterialAndUser(parseInt(materialId), userId);
-		res.json({ calificacion, message: 'Calificación retrieved successfully' });
+
+		if (calificacion) {
+			res.json({ calificacion, message: 'Calificación retrieved successfully' });
+		} else {
+			const material = await prisma.material.findUnique({
+				where: { id: parseInt(materialId)}
+			})
+			res.json({
+				calificacion: null,
+				material: material,
+				message: 'Calificación no encontrada'
+			});
+		}
 	} catch (error) { 
 		next(error); 
 	}
