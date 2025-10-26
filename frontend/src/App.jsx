@@ -33,7 +33,6 @@ function App() {
           {/*Rutas públicas*/}
           <Route path="/" element={<LoginPage/>} />
           <Route path="/signup" element={<SignupPage/>} />
-          <Route path="/result" element={<SearchResultPage/>} />
           <Route path="/home" element={<HomePage/>} />
           <Route path="/carrera/:id" element={<CarreraDetailPage/>} />
           <Route path="/search" element={<SearchResultPage/>} />
