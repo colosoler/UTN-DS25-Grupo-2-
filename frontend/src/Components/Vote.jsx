@@ -26,7 +26,7 @@ export const Vote = ({ material }) => {
     const upvoted = currentVote === true;
     const downvoted = currentVote === false;
 
-    const totalVotes = (data?.upvotes ?? 0) + (data?.downvotes ?? 0);
+    const totalVotes = (data?.upvotes ?? 0) - (data?.downvotes ?? 0);
 
     const voteMutation = useMutation({
       mutationFn: (newVote) => mutateVote({ materialId, newVote, currentVote, userId}),

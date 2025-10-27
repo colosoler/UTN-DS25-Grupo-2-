@@ -8,4 +8,13 @@
   --font-size: 16px;
   --font-weight: 400;
   --font-family: 'Arial', sans-serif;
+
+  --upvote-color-hover: #22c55e;
+  --upvote-gradient-start: #4ade80;
+  --upvote-gradient-end: #16a34a;
+  --downvote-color-hover: #ef4444;
+  --downvote-gradient-start: #f87171;
+  --downvote-gradient-end: #dc2626;
+  --vote-text-neutral: #374151;
+  --vote-text-light: #ffffff;
 }
