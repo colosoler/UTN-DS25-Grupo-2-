@@ -18,26 +18,35 @@ function Information({ material }) {
   if (!materia) return null;
 
   return (
-    <Accordion className='info-accordion'>
-      <Accordion.Item eventKey="0">
-        <Accordion.Header className='accordion-header'>Información</Accordion.Header>
-        <Accordion.Body className='accordion-body'>
-          {loading && <p className='info-loading'>Cargando usuario...</p>}
-          {error && <p className='info-error'>Error al cargar usuario.</p>}
-          {(usuario && materia ) && (
-            <div className='info-content'>
-              <h5 className='username'>Creado por: @{usuario.username}</h5>
-              <p className='info-item'><strong>Materia: </strong> {materia.materia.nombre}</p>
-              <p className='info-item'><strong>Año cursada: </strong> {material.añoCursada}</p>
-              <p className='info-item'><strong>Tipo: </strong> {material.tipo}</p>
-              {material.descripcion && (
-                <p className='info-item'><strong>Descripción: </strong> {material.descripcion}</p>
-              )}
-            </div>
-          )}
-        </Accordion.Body>
-      </Accordion.Item>
-    </Accordion>
+    <div className="info-card">
+      <h4 className="info-card-header">
+        Información del Material
+      </h4>
+      <div className="info-card-body">
+        {loading && <p className='info-loading'>Cargando usuario...</p>}
+        {error && <p className='info-error'>Error al cargar usuario.</p>}
+        
+        {usuario && materia && !loading && (
+          <div className="info-content">
+            <h5 className="username">Creado por: @{usuario.username}</h5>
+            <p className="info-item">
+              <strong>Materia: </strong> {materia.materia.nombre}
+            </p>
+            <p className="info-item">
+              <strong>Año cursada: </strong> {material.añoCursada}
+            </p>
+            <p className="info-item">
+              <strong>Tipo: </strong> {material.tipo}
+            </p>
+            {material.descripcion && (
+              <p className="info-item info-item-description">
+                <strong>Descripción: </strong> {material.descripcion}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 

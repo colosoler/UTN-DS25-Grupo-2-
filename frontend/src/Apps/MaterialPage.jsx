@@ -2,11 +2,9 @@ import Information from '../Components/Information'
 import { Material } from '../Components/Material';
 import {Buttons} from '../Components/Buttons';
 import { useFetch } from '../Hooks/useFetch';
-import './styles/MaterialPage.css';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../Contexts/AuthContext';
-import { getToken } from '../Helpers/auth';
-
+import './styles/MaterialPage.css';
 
 export const MaterialPage = () => {
 
@@ -27,10 +25,16 @@ export const MaterialPage = () => {
     <>
     <section className="container">
       <h1 className='title'>Titulo: {material.data.titulo}</h1>
-      <Material archivo={material.data.archivo} />
-      <Information material={material.data} />
-      <div className='material-icons'>
-        <Buttons material={material.data} user={user}/>
+      <div className='material-layout-container'>
+        <div className='material-main-content'>
+          <Material archivo={material.data.archivo} />
+        </div>
+        <div className='material-sidebar'>
+          <Information material={material.data} />
+          <div className='material-icons'>
+            <Buttons material={material.data} user={user}/>
+          </div>
+        </div>
       </div>
     </section>
     </>
