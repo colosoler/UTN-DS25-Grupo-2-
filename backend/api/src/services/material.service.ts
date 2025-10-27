@@ -24,7 +24,9 @@ export async function getAllMaterials(): Promise<MaterialWithUser[]> {
     orderBy: { createdAt: 'desc' },
     include: materialInclude,
   });
-  return materials.map(mapMaterialToMaterialWithUser);
+  const materialsWithUser = materials.map(mapMaterialToMaterialWithUser); //formatea respuesta
+	materialsWithUser.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes)); //calcula upvotes - downvotes y devuelve de forma descendente
+	return materialsWithUser;
 }
 
 export async function findMaterials(filters: any):Promise<MaterialWithUser[]> {
@@ -81,7 +83,9 @@ export async function findMaterials(filters: any):Promise<MaterialWithUser[]> {
 		  },
 		    include: materialInclude, // se agrega la inclusión para traer el username
 	  });
-	  return materials.map(mapMaterialToMaterialWithUser); // formatear la respuesta
+	  const materialsWithUser = materials.map(mapMaterialToMaterialWithUser); //formatea la respuesta
+	  materialsWithUser.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes)); //calcula upvotes - downvotes y devuelve de forma descendente
+	  return materialsWithUser;
 }
 
 export async function getMaterialById(id: number): Promise<MaterialWithUser> {
