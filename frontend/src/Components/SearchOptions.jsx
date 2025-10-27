@@ -19,13 +19,15 @@ export const SearchOptions = ({ options, onChange, name, value='', placeholder }
             // Si hay matches, los muestro
             setFiltered(matches);
             setShowList(true);
+            //si hay texto, envia el evento al padre normalmente para que realice la peticion en base a ese texto
+			onChange(e);
         } else {
             // Si el input está vacío, limpio el filtro y oculto la lista
             setFiltered([]);
             setShowList(false);
+            //notifica al padre con un objeto para anular el ID del resultado anterior (value: null)
+			onChange({ target: { name, value: { value: null, option: '' } } });
         }
-
-        onChange(e); // Envío al padre
     };
 
     // Manejo la selección de una opción
