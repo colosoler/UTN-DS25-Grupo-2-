@@ -32,19 +32,11 @@
 }
 
 .vote-button.upvote.active {
-  background: linear-gradient(to bottom right, 
-    var(--upvote-gradient-start), 
-    var(--upvote-gradient-end)
-  );
-  color: var(--vote-text-light);
+  color: var(--upvote-color);
 }
 
 .vote-button.downvote.active {
-  background: linear-gradient(to bottom right, 
-    var(--downvote-gradient-start), 
-    var(--downvote-gradient-end)
-  );
-  color: var(--vote-text-light);
+  color: var(--downvote-color);
 }
 
 .vote-button:disabled {

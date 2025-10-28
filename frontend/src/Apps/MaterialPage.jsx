@@ -23,20 +23,20 @@ export const MaterialPage = () => {
 
   return (
     <>
-    <section className="container">
-      <h1 className='title'>Titulo: {material.data.titulo}</h1>
-      <div className='material-layout-container'>
-        <div className='material-main-content'>
-          <Material archivo={material.data.archivo} />
-        </div>
-        <div className='material-sidebar'>
-          <Information material={material.data} />
-          <div className='material-icons'>
-            <Buttons material={material.data} user={user}/>
+      <section className="container">
+      <h1 className='title'>{material.data.titulo}</h1>
+        <div className='material-layout-container'>
+          <div className="material-main-content">
+            <Material archivo={material.data.archivo} />
+          </div>
+          <div className='material-sidebar'>
+            <Information material={material.data} />
+            <div className='material-icons'>
+              <Buttons material={material.data} user={user}/>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
     </>
   );
 }

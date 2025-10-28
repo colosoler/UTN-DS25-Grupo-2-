@@ -1,4 +1,3 @@
-import Accordion from 'react-bootstrap/Accordion';
 import './styles/Information.css';
 import { useFetch } from '../Hooks/useFetch';
 
@@ -28,9 +27,12 @@ function Information({ material }) {
         
         {usuario && materia && !loading && (
           <div className="info-content">
-            <h5 className="username">Creado por: @{usuario.username}</h5>
+            <h5>Creado por: <span className='username'>@{usuario.username}</span></h5>
             <p className="info-item">
               <strong>Materia: </strong> {materia.materia.nombre}
+            </p>
+            <p className="info-item">
+              <strong>Comisión: </strong> {material.comision}
             </p>
             <p className="info-item">
               <strong>Año cursada: </strong> {material.añoCursada}
