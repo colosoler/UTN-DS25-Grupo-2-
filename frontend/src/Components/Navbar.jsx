@@ -9,7 +9,7 @@ import { useAuth } from '../Contexts/AuthContext';
 export const Navbar = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showLogoutToast, setShowLogoutToast] = useState(false);
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, isAdmin, logout } = useAuth();
 
   const navigate = useNavigate();
 
@@ -73,6 +73,12 @@ export const Navbar = () => {
                         Configurar perfil
                     </Dropdown.Item>
                   </>
+                )}
+                {isAdmin && (
+                  <Dropdown.Item className="dropdown-item" as={Link} to="/admin">
+                  <img className="dropdown-icon" src="./images/settings-icon.svg" alt="admin" />
+                    Panel de Administrador
+                  </Dropdown.Item>
                 )}
                 {!isAuthenticated && (
                 <Dropdown.Item className="dropdown-item" as={Link} to="/signup">

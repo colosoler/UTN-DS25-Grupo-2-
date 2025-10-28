@@ -12,6 +12,7 @@ import "../Apps/styles/MyMaterialsPage.css"
 import { getToken, getUser } from "../Helpers/auth"
 import { Searchbar } from "../Components/Searchbar"
 import { VotesDisplay } from "../Components/VotesDisplay";
+import { StatsCards } from "../Components/StatsCards"
 
 
 export const MyMaterialsPage = () => {
@@ -43,8 +44,8 @@ export const MyMaterialsPage = () => {
     if (searchValue) {
       const filtered = materials.filter(
         (material) =>
-          material.title?.toLowerCase().includes(searchValue.toLowerCase()) ||
-          material.description?.toLowerCase().includes(searchValue.toLowerCase())
+          material.titulo?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          material.descripcion?.toLowerCase().includes(searchValue.toLowerCase())
       );
       setFilteredMaterials(filtered);
     } else {
@@ -107,54 +108,17 @@ export const MyMaterialsPage = () => {
       </div>
 
       {/* Estadísticas rápidas */}
-      <Row className="mb-4">
-        <Col md={3} xs={6} className="mb-3">
-          <Card className="stats-card text-center">
-            <Card.Body>
-              <i className="bi bi-file-earmark-text text-primary fs-3"></i>
-              <h4 className="mt-2 mb-0">{materials.length}</h4>
-              <small className="text-muted">Publicaciones</small>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3} xs={6} className="mb-3">
-          <Card className="stats-card text-center">
-            <Card.Body>
-              <MdArrowUpward className="text-success fs-3" />
-              <h4 className="mt-2 mb-0">{materials.reduce((acc, m) => acc + (m.upvotes || 0), 0)}</h4>
-              <small className="text-muted">Upvotes totales</small>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3} xs={6} className="mb-3">
-          <Card className="stats-card text-center">
-            <Card.Body>
-              <MdArrowDownward className="text-danger fs-3" />
-              <h4 className="mt-2 mb-0">{materials.reduce((acc, m) => acc + (m.downvotes || 0), 0)}</h4>
-              <small className="text-muted">Downvotes totales</small>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3} xs={6} className="mb-3">
-          <Card className="stats-card text-center">
-            <Card.Body>
-              <i className="bi bi-trophy text-warning fs-3"></i>
-              <h4 className="mt-2 mb-0">{materials.reduce((acc, m) => acc + ((m.upvotes || 0) - (m.downvotes || 0)), 0)}</h4>
-              <small className="text-muted">Puntuación neta</small>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+      <StatsCards materials={materials} />
 
       {/* Barra de búsqueda */}
       <div className="container-fluid py-3">
         <Row className="justify-content-center">
           <Col xs={12} md={15} lg={12}>
             <Searchbar
-              value={searchValue}
-              onChange={e => setSearchValue(e.target.value)}
-              onClear={handleClear}
-              onKeyDown={handleKeyDown}
+              localMode={true}
+              localValue={searchValue}
+              onLocalChange={(e) => setSearchValue(e.target.value)}
+              onLocalClear={handleClear}
             />
           </Col>
         </Row>

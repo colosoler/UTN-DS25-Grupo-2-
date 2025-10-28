@@ -1,65 +1,104 @@
-import { CreateMaterialRequest, UpdateMaterialRequest } from '../types/material.types';
+import { CreateMaterialRequest, MaterialWithUser, UpdateMaterialRequest } from '../types/material.types';
 import prisma from '../config/prisma';
-import { Material } from '@prisma/client';
+import { Material, TipoMaterial } from '@prisma/client';
 import { Prisma } from '@prisma/client';
-export async function getAllMaterials(): Promise<Material[]> {
-  const materials = await prisma.material.findMany({
-    orderBy: { createdAt: 'desc' }
-  });
-  return materials;
-}
 
-export async function findMaterials(filters: any): Promise<Material[]> {
-	const query = filters.query as string | undefined;
-
-	//separa filters en 2 partes: query (campos de texto) y directFilters (ids, para filtrarlos directamente)
-	const { query: _, ...directFilters } = filters;
-
-  //crea objeto con campos de directFilters asegurandose de q sean numeros (convirtiendolos de ser necesario)
-	const numericDirectFilters: Record<string, number> = {};
-	for (const key in directFilters) {
-		const value = directFilters[key];
-		if (!isNaN(Number(value)) && value !== '' && value !== null && value !== undefined) {
-			numericDirectFilters[key] = Number(value);
+const materialInclude = { //objeto para incluir la relación con User y seleccionar solo el username
+	user: {
+		select: {
+			username: true,
 		}
 	}
+};
 
-  //formatea numericDirectFilters para hacer la consulta a la BD
-	const directFilterArray = Object.keys(numericDirectFilters).map(key => ({
-		[key]: numericDirectFilters[key] //[{ userId: 5 }, { materiaId: 10 }
-	}));
+const mapMaterialToMaterialWithUser = (material: any): MaterialWithUser => { //formatea la respuesta para agregar el username como una porpiedad mas del objeto q devuelve el json
+	const { user, ...rest } = material;
+	return {
+		...rest,
+		username: user.username,
+	} as MaterialWithUser;
+};
 
-	//filtro para query (campos de texto)
-	const textSearchFilter = query
-		? {
-			OR: [
-				{ titulo: { contains: query, mode: Prisma.QueryMode.insensitive } },
-				{ descripcion: { contains: query, mode: Prisma.QueryMode.insensitive } },
-				{ comision: { contains: query, mode: Prisma.QueryMode.insensitive } },
-			].filter(Boolean),
-		}
-		: {};
-
-	const combinedFilters = [
-		...directFilterArray, 
-		textSearchFilter
-	].filter(f => Object.keys(f).length > 0);// si 1 campo de 'query' esta vacio no se pasa
-
-	return prisma.material.findMany({
-		where: {
-			AND: combinedFilters,
-		},
-	});
+export async function getAllMaterials(): Promise<MaterialWithUser[]> {
+  const materials = await prisma.material.findMany({
+    orderBy: { createdAt: 'desc' },
+    include: materialInclude,
+  });
+  const materialsWithUser = materials.map(mapMaterialToMaterialWithUser); //formatea respuesta
+	materialsWithUser.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes)); //calcula upvotes - downvotes y devuelve de forma descendente
+	return materialsWithUser;
 }
 
-export async function getMaterialById(id: number): Promise<Material> {
-  const material = await prisma.material.findUnique({ where: { id } });
+export async function findMaterials(filters: any):Promise<MaterialWithUser[]> {
+    const query = filters.query as string | undefined;
+
+    const { query: _, ...directFilters } = filters;
+
+    const processedDirectFilters: Record<string, number | string> = {};
+    for (const key in directFilters) {
+        const value = directFilters[key];
+        if (value !== '' && value !== null && value !== undefined) {
+            if (!isNaN(Number(value))) {
+                processedDirectFilters[key] = Number(value);
+            } else {
+                processedDirectFilters[key] = value;
+            }
+        }
+    }
+
+    const directFilterArray = Object.keys(processedDirectFilters).map(key => ({
+        [key]: processedDirectFilters[key]
+    }));
+
+    // Construir textSearchFilter: contains para strings; para enum 'tipo' -> in con matches parciales del enum
+    const textSearchFilter = query
+        ? (() => {
+            const q = String(query).toLowerCase();
+            const or: any[] = [
+                { titulo: { contains: query, mode: Prisma.QueryMode.insensitive } },
+                { descripcion: { contains: query, mode: Prisma.QueryMode.insensitive } },
+                { comision: { contains: query, mode: Prisma.QueryMode.insensitive } },
+            ];
+
+            // Buscar valores del enum TipoMaterial que coincidan parcialmente (case-insensitive)
+            const tipoMatches = Object.values(TipoMaterial).filter(v =>
+                String(v).toLowerCase().includes(q)
+            );
+            if (tipoMatches.length > 0) {
+                or.push({ tipo: { in: tipoMatches } });
+            }
+
+            return { OR: or } as any;
+        })()
+        : {};
+
+    const combinedFilters = [
+        ...directFilterArray, 
+        textSearchFilter
+    ].filter(f => Object.keys(f).length > 0);
+
+    const materials = await prisma.material.findMany({
+		  where: {
+			  AND: combinedFilters,
+		  },
+		    include: materialInclude, // se agrega la inclusión para traer el username
+	  });
+	  const materialsWithUser = materials.map(mapMaterialToMaterialWithUser); //formatea la respuesta
+	  materialsWithUser.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes)); //calcula upvotes - downvotes y devuelve de forma descendente
+	  return materialsWithUser;
+}
+
+export async function getMaterialById(id: number): Promise<MaterialWithUser> {
+  const material = await prisma.material.findUnique({ 
+    where: { id },
+		include: materialInclude, //se agrega la inclusión para traer el usuario
+	});
   if (!material) {
     const error = new Error('Material not found');
     (error as any).statusCode = 404;
     throw error;
   }
-  return material;
+  return mapMaterialToMaterialWithUser(material);
 }
 
 export async function createMaterial(data: CreateMaterialRequest): Promise<Material> {

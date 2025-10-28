@@ -57,3 +57,13 @@ export async function deleteCarrera(
     next(error);
   }
 }
+
+export async function getCarreraMateriabyIds(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { carreraId, materiaId } = req.params as { carreraId: string; materiaId: string };
+    const result = await carreraservice.getCarreraMateriabyIds(parseInt(carreraId), parseInt(materiaId));
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+}

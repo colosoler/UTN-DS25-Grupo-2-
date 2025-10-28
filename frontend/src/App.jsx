@@ -12,6 +12,7 @@ import { ProfilePage } from './Apps/ProfilePage'
 import { SettingsPage } from './Apps/SettingsPage'
 import { MyMaterialsPage } from './Apps/MyMaterialsPage'
 import { MaterialEditPage } from './Apps/MaterialEditPage'
+import { AdminPage } from './Apps/AdminPage'
 import { AuthProvider } from './Contexts/AuthContext'
 import { PrivateRoute } from './Components/PrivateRoute'
 import { useFetch } from './Hooks/useFetch'
@@ -32,11 +33,16 @@ function App() {
           {/*Rutas públicas*/}
           <Route path="/" element={<LoginPage/>} />
           <Route path="/signup" element={<SignupPage/>} />
-          <Route path="/result" element={<SearchResultPage/>} />
           <Route path="/home" element={<HomePage/>} />
           <Route path="/carrera/:id" element={<CarreraDetailPage/>} />
           <Route path="/search" element={<SearchResultPage/>} />
           <Route path="/material/:id" element={<MaterialPage/>} />
+          <Route path="/admin/" element={
+            <PrivateRoute requiredRole="ADMIN">
+              <AdminPage/>
+            </PrivateRoute>
+          }
+            />
 
           {/*Rutas protegidas (Usuarios logueados)*/}
           <Route path="/add" element={

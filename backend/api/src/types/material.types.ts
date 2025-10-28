@@ -8,7 +8,7 @@ export interface Material {
     comision: string;
     descripcion: string;
     fecha: Date;
-    numeroParcial: number;
+    numeroParcial: number | null;
     titulo: string;
     materiaId: number;
     carreraId: number;
@@ -18,13 +18,17 @@ export interface Material {
     downvotes: number;
 }
 
+export interface MaterialWithUser extends Material { //interfaz para devolver el material junto con el nombre de usuario
+	username: string;
+}
+
 // id, cantidadReportes, fecha no son necesarios.
 export interface CreateMaterialRequest {
     añoCursada: number;
     archivo: string;
     comision: string;
     descripcion: string;
-    numeroParcial: number;
+    numeroParcial: number | null;
     titulo: string;
     materiaId: number;
     carreraId: number;
@@ -37,7 +41,7 @@ export interface UpdateMaterialRequest {
     archivo?: string;
     comision?: string;
     descripcion?: string;
-    numeroParcial?: number;
+    numeroParcial?: number | null;
     titulo?: string;
     materiaId?: number;
     carreraId?: number;

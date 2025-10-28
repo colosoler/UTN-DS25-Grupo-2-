@@ -1,31 +1,65 @@
-.upvote svg,
-.downvote svg,
-.options svg {
-  font-size: 24px;
-  transition: color 0.2s ease;
-  cursor: pointer;
-}
-
-.upvote.active svg {
-  color: blue;
-}
-
-.downvote.active svg {
-  color: red;
-}
-
-p, h3, h4{
-  margin: 5px;
-}
-
-.vote{
+.vote-container {
   display: flex;
-  flex-direction: row;
-}
-
-#upvote, #downvote{
-  display: flex;
-  flex-direction: row;
-  margin: 10px;
   align-items: center;
+  gap: 8px;
+  background-color: #fff;
+  border-radius: 0.75rem;
+  padding: 4px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  margin: 10px
+}
+
+.vote-button {
+  padding: 8px;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease-in-out;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.vote-button {
+  color: #9ca3af;
+}
+
+.vote-button.upvote:not(.active):hover {
+  color: var(--upvote-color-hover);
+}
+
+.vote-button.downvote:not(.active):hover {
+  color: var(--downvote-color-hover);
+}
+
+.vote-button.upvote.active {
+  color: var(--upvote-color);
+}
+
+.vote-button.downvote.active {
+  color: var(--downvote-color);
+}
+
+.vote-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.vote-counter {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.vote-count-text {
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--vote-text-neutral);
+  transition: color 0.2s ease-in-out;
+}
+
+.vote-count-text.upvoted {
+  color: var(--upvote-color-hover);
+}
+
+.vote-count-text.downvoted {
+  color: var(--downvote-color-hover);
 }

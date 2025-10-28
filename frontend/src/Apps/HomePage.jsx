@@ -1,4 +1,5 @@
 import { Carrera } from '../Components/Carrera.jsx';
+import { Loading } from '../Components/Loading.jsx';
 import { Searchbar } from '../Components/Searchbar.jsx';
 import { useFetch } from '../Hooks/useFetch.jsx';
 import './styles/HomePage.css';
@@ -7,7 +8,10 @@ export const HomePage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const { data: carreras, loading, error } = useFetch(`${API_URL}/carreras`, {}, { requireAuth: false });
 
-  if (loading) return <h1>Cargando...</h1>;
+  if (loading) {
+    <Loading />
+  };
+
   if (error) {
     console.error(error);
     return <h1>Ha Ocurrido un Error</h1>;
