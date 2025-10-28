@@ -16,50 +16,50 @@ export const Searchbar = ({
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [formData, setFormData, handleChange] = useForm((name, value, newData) => {
-    
     if (name === "materia" ){
-      setFormData({ ...newData, [name + 'Id']: value.value, [name]: value.option })      
+      setFormData({ ...newData, [name + 'Id']: value.value, [name]: value.option, carrera: "", carreraId: null } )      
     } else if (name === "carrera"){
       value = JSON.parse(value);
       setFormData({ ...newData, [name + 'Id']: value.value, [name]: value.option })
     } else if (name === "includeCarrera"){
       setFormData({ ...newData, [name]: !formData.includeCarrera })
-    }
+    } else if (name === "comision"){
+      setFormData({ ...newData, [name]: formData.comision.length < 3? formData.comision + value : formData.comision.slice(0,2) + value } )
+    } 
   });
-  
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
-  
-  const carrerasUrl = formData.materiaId
+  const carrerasURL = formData.materiaId
       ? `carreras/?materia=${formData.materiaId}`
       : 'carreras/';
   
   const API_URL = import.meta.env.VITE_API_URL;
   const fetchedMaterias = useFetch(`${API_URL}/materias/`);
-  const fetchedCarreras = useFetch(`${API_URL}/${carrerasUrl}`);
+  const fetchedCarreras = useFetch(`${API_URL}/${carrerasURL}`);
+  const CarreraMateriaURL = formData.materiaId && formData.carreraId
+      ? `carreras/${formData.carreraId}/materias/${formData.materiaId}`
+      : false;
+  const fetchedCarreraMateria = useFetch(`${API_URL}/${CarreraMateriaURL}`,{},{requireAuth:false},{enabled:CarreraMateriaURL});
 
   //seteo el formData con los query params que vengan en la url
   useEffect(() => {
     if (!localMode) {
-      const defaultForm = {
-        query: "",
-        materia: "",
-        materiaId: null,
-        carrera: "",
-        carreraId: null,
-        tipo: "",
-        includeCarrera: false,
-        parcial: null,
-        anio: null,
-        comision: ""
+    const defaultForm = {
+      query: "",
+      materia: "",
+      materiaId: null,
+      carrera: "",
+      carreraId: null,
+      tipo: "",
+      includeCarrera: false,
+      parcial: null,
+      añoCursada: null,
+      comision: ""
       }
       searchParams.forEach((value, key) => {
         defaultForm[key] = key.includes("Id") || key.includes("anio") ? parseInt(value) : value;
       });
       setFormData(defaultForm);
     }
-  }, [localMode]);
+  }, []);
   
   //cuando haya una materia seleccionada perteneciente a una única carrera setearla
   useEffect(() => {
@@ -98,8 +98,10 @@ export const Searchbar = ({
     //materia y carrera no se envian (sino materiaId y carreraId) 
     filtros.materia = "";
     filtros.carrera = "";
-    if (!formData.includeCarrera) filtros.carreraId=null
+    if (!formData.includeCarrera) filtros.carreraId=null; filtros.comision = "";
     filtros.includeCarrera = null
+    filtros.comision = filtros.comision.length === 3 ? filtros.comision : ""
+    filtros.parcial = filtros.parcial != 0? filtros.parcial : null;
     Object.entries(filtros).forEach(([key, value]) => {
       if (value) params.set(key, value);
     });
@@ -147,12 +149,11 @@ export const Searchbar = ({
           </button>
         )}
       </div>
-
       {!localMode && (
         <FiltersModal show={showModal}
           onHide={() => setShowModal(false)}
           useForm={[formData, setFormData, handleChange, handleSubmit]}
-          fetchedData={{ fetchedMaterias, fetchedCarreras }} />
+          fetchedData={{ fetchedMaterias, fetchedCarreras, fetchedCarreraMateria }} />
       )}
     </>
   )

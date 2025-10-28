@@ -72,3 +72,11 @@ export async function deleteCarrera(id: number): Promise<void> {
   }
 }
 
+export async function getCarreraMateriabyIds(carreraId: number, materiaId: number){
+  return await prisma.carreraMateria.findFirstOrThrow({
+    where: {
+      carreraId,
+      materiaId      
+    }
+  });
+}
