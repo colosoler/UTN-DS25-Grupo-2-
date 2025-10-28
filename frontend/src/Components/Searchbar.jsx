@@ -11,26 +11,28 @@ export const Searchbar = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [formData, setFormData, handleChange] = useForm((name, value, newData) => {
-    
     if (name === "materia" ){
-      setFormData({ ...newData, [name + 'Id']: value.value, [name]: value.option })      
+      setFormData({ ...newData, [name + 'Id']: value.value, [name]: value.option, carrera: "", carreraId: null } )      
     } else if (name === "carrera"){
       value = JSON.parse(value);
       setFormData({ ...newData, [name + 'Id']: value.value, [name]: value.option })
     } else if (name === "includeCarrera"){
       setFormData({ ...newData, [name]: !formData.includeCarrera })
-    }
+    } else if (name === "comision"){
+      setFormData({ ...newData, [name]: formData.comision.length < 3? formData.comision + value : formData.comision.slice(0,2) + value } )
+    } 
   });
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
-  const carrerasUrl = formData.materiaId
+  const carrerasURL = formData.materiaId
       ? `carreras/?materia=${formData.materiaId}`
       : 'carreras/';
   
   const API_URL = import.meta.env.VITE_API_URL;
   const fetchedMaterias = useFetch(`${API_URL}/materias/`);
-  const fetchedCarreras = useFetch(`${API_URL}/${carrerasUrl}`);
+  const fetchedCarreras = useFetch(`${API_URL}/${carrerasURL}`);
+  const CarreraMateriaURL = formData.materiaId && formData.carreraId
+      ? `carreras/${formData.carreraId}/materias/${formData.materiaId}`
+      : false;
+  const fetchedCarreraMateria = useFetch(`${API_URL}/${CarreraMateriaURL}`,{},{requireAuth:false},{enabled:CarreraMateriaURL});
 
   //seteo el formData con los query params que vengan en la url
   useEffect(() => {
@@ -43,7 +45,7 @@ export const Searchbar = () => {
       tipo: "",
       includeCarrera: false,
       parcial: null,
-      anio: null,
+      añoCursada: null,
       comision: ""
     }
     searchParams.forEach((value, key) => {
@@ -76,8 +78,10 @@ export const Searchbar = () => {
     //materia y carrera no se envian (sino materiaId y carreraId) 
     filtros.materia = "";
     filtros.carrera = "";
-    if (!formData.includeCarrera) filtros.carreraId=null
+    if (!formData.includeCarrera) filtros.carreraId=null; filtros.comision = "";
     filtros.includeCarrera = null
+    filtros.comision = filtros.comision.length === 3 ? filtros.comision : ""
+    filtros.parcial = filtros.parcial != 0? filtros.parcial : null;
     Object.entries(filtros).forEach(([key, value]) => {
       if (value) params.set(key, value);
     });
@@ -95,7 +99,7 @@ export const Searchbar = () => {
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#434343"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" /></svg>
           </button>
 
-          <input className="search-input" type="text" placeholder="Buscar apuntes, modelos de parcial y más..." onChange={handleChange} name="query" value={formData.query} />
+          <input className="search-input" type="text" placeholder="Buscar apuntes, modelos de parcial y más..." onChange={handleChange} name="query" value={formData.query || ''} />
 
           {/*Esto hace que solo aparezca la cruz para borrar cuando hay algo escrito*/}
           {formData?.query && (
@@ -113,7 +117,7 @@ export const Searchbar = () => {
       <FiltersModal show={showModal}
         onHide={() => setShowModal(false)}
         useForm={[formData, setFormData, handleChange, handleSubmit]}
-        fetchedData={{ fetchedMaterias, fetchedCarreras }} />
+        fetchedData={{ fetchedMaterias, fetchedCarreras, fetchedCarreraMateria }} />
 
     </>
   )
