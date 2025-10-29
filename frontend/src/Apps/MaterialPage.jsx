@@ -25,10 +25,11 @@ export const MaterialPage = () => {
       <section className="container">
       <h1 style={{ margin: '1em' }}>{material.data.titulo}</h1>
         <div className='row'>
-          <div className="col-9">
+
+          <div className="col-12 col-md-9">
             <Material archivo={material.data.archivo} />
           </div>
-          <div className='col-3'>
+          <div className='col-12 col-md-3'>
             <Information material={material.data} />
             <Buttons material={material.data} user={user}/>
           </div>
