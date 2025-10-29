@@ -4,7 +4,6 @@ import { Buttons } from '../Components/Buttons';
 import { useFetch } from '../Hooks/useFetch';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../Contexts/AuthContext';
-import './styles/MaterialPage.css';
 
 export const MaterialPage = () => {
 
