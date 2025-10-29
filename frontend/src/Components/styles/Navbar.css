@@ -49,6 +49,23 @@
   filter: brightness(0) invert(0.8);
 }
 
+.ranking-icon {
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: white;
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}
+
+.ranking-icon:hover {
+  transform: scale(1.1);
+  color: #ffd700;
+}
+
 .avatar-toggle {
   cursor: pointer;
   display: inline-block;

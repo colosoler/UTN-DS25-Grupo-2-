@@ -45,6 +45,10 @@ export const Navbar = () => {
               <img src="./images/hogar.png" alt="Inicio" />
             </Link>
 
+            <Link to="/ranking" className="ranking-icon" title="Ranking de Usuarios">
+              <img src="./images/ranking.png" alt="Ranking" />
+            </Link>
+
             {isAuthenticated && (
             <Link to="/add">
               <img src="./images/plus-pequeno.png" alt="Agregar contenido" />
