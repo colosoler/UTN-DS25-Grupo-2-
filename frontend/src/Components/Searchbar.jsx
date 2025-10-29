@@ -30,9 +30,6 @@ export const Searchbar = ({
         comision: ""
       });
 
-  useEffect(() => {
-    console.log("formData:", formData);
-  }, [formData]);
   const carrerasURL = formData.materiaId
     ? `carreras/?materia=${formData.materiaId}`
     : 'carreras/';

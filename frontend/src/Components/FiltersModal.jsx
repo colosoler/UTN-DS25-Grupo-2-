@@ -1,8 +1,8 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { SearchOptions } from "./SearchOptions";
 import { useEffect } from "react";
-
-
+import { CarreraExpandedSelector } from "./FormFields/carreraExpandedSelector";
+import { TipoExpandedSelector } from "./FormFields/TipoExpandedSelector";
 
 export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
   const [formData, setFormData, handleChange, handleSubmit] = useForm;
@@ -77,48 +77,12 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
               checked={formData.includeCarrera || false}
             />
             {formData.includeCarrera &&
-              (carreras.length === 0
-                ? <div> No hay carreras disponibles </div>
-                : <div>
-                  <h6>Carrera</h6>
-                  <div className="d-flex flex-wrap gap-2 pb-3">
-                    {carreras && carreras.map((carrera) => (
-                      <Button
-                        key={carrera.id}
-                        variant={formData.carreraId === carrera.id ? "primary" : "outline-secondary"}
-                        onClick={(e) => handleChange(e, (value) => {
-                          value = JSON.parse(value);
-                          setFormData({ ...formData, carreraId: value.value, carrera: value.option })
-                        }
-                        )}
-                        name="carrera"
-                        value={JSON.stringify({ value: carrera.id, option: carrera.nombre })}
-                      >
-                        {carrera.nombre}
-                      </Button>
-                    ))}
-                  </div>
-                </div>)
+              <CarreraExpandedSelector useForm={useForm} carreras={carreras} />
             }
           </Form.Group>
         }
         {/*Tipo de material */}
-        <div className="mb-3 pb-3 border-bottom">
-          <h6>Tipo de material</h6>
-          <div className="d-flex flex-wrap gap-2">
-            {["Parcial", "Parcial resuelto", "Final", "Final resuelto", "Práctica", "Práctica resuelta", "Apunte", "Resumen", "Otro"].map((tipo) => (
-              <Button
-                key={tipo}
-                variant={formData.tipo === tipo ? "primary" : "outline-secondary"}
-                onClick={handleChange}
-                name="tipo"
-                value={tipo}
-              >
-                {tipo}
-              </Button>
-            ))}
-          </div>
-        </div>
+        <TipoExpandedSelector useForm={useForm}></TipoExpandedSelector>
         <div className="d-flex flex-column flex-md-row justify-content-between mb-3 gap-3" >
           <Form.Group>
             <Form.Label>Parcial relacionado</Form.Label>
