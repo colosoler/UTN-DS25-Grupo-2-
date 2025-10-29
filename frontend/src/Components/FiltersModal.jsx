@@ -14,7 +14,15 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
     return formData.materia
       ? formData.materia
       : formData.materiaId
-        ? fetchedData.fetchedMaterias.data.materias.find(m => m.id === formData.materiaId)?.nombre
+        ? materias.materias.find(m => m.id === formData.materiaId)?.nombre
+        : ""
+  }
+
+  const getCarreraValue = () => {
+    return formData.carrera
+      ? formData.carrera
+      : formData.carreraId
+        ? carreras.find(c => c.id === formData.carreraId)?.nombre
         : ""
   }
 
@@ -48,7 +56,10 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
             placeholder="Escribí la materia"
             name="materia"
             value={getMateriaValue}
-            onChange={handleChange}
+            onChange={(e) => handleChange(e, (value) =>
+              setFormData(
+                { ...formData, materiaId: value.value, materia: value.option, carrera: "", carreraId: null })
+            )}
             options={materias ? materias.materias.map(m => ({ value: m.id, option: m.nombre })) : []}
           />
         </div>
@@ -58,7 +69,10 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
               type="switch"
               name="includeCarrera"
               label="Filtrar por Carrera"
-              onChange={handleChange}
+              onChange={(e) => handleChange(e, () =>
+                setFormData({ ...formData, includeCarrera: !formData.includeCarrera, carrera: formData.carreraId && getCarreraValue() })
+              )
+              }
               className="mb-3"
               checked={formData.includeCarrera || false}
             />
@@ -72,7 +86,11 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
                       <Button
                         key={carrera.id}
                         variant={formData.carreraId === carrera.id ? "primary" : "outline-secondary"}
-                        onClick={handleChange}
+                        onClick={(e) => handleChange(e, (value) => {
+                          value = JSON.parse(value);
+                          setFormData({ ...formData, carreraId: value.value, carrera: value.option })
+                        }
+                        )}
                         name="carrera"
                         value={JSON.stringify({ value: carrera.id, option: carrera.nombre })}
                       >
@@ -123,7 +141,9 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
                   style={{ width: '50px', paddingRight: '0' }}
                 />
                 <Form.Control
-                  onChange={handleChange}
+                  onChange={(e) => handleChange(e, (value) => setFormData(
+                    { ...formData, comision: formData.comision.length < 3 ? formData.comision + value : formData.comision.slice(0, 2) + value })
+                  )}
                   name="comision"
                   type="number"
                   placeholder="2"
@@ -137,7 +157,7 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
           }
           <Form.Group>
             <Form.Label>Año de Cursada</Form.Label>
-            <Form.Control onChange={handleChange} name="añoCursada" type="number" placeholder={new Date().getFullYear()} value={formData.añoCursada || ""} />
+            <Form.Control onChange={handleChange} name="anioCursada" type="number" placeholder={new Date().getFullYear()} value={formData.anioCursada || ""} />
           </Form.Group>
         </div>
       </Modal.Body>
