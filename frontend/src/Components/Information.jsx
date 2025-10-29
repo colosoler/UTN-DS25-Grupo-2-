@@ -26,22 +26,22 @@ function Information({ material }) {
         {error && <p className='info-error'>Error al cargar usuario.</p>}
         
         {usuario && materia && !loading && (
-          <div className="info-content">
+          <div className="">
             <h5>Creado por: <span className='username'>@{usuario.username}</span></h5>
-            <p className="info-item">
+            <p className="info-item ">
               <strong>Materia: </strong> {materia.materia.nombre}
             </p>
-            <p className="info-item">
+            <p className="info-item ">
               <strong>Comisión: </strong> {material.comision}
             </p>
-            <p className="info-item">
+            <p className="info-item ">
               <strong>Año cursada: </strong> {material.añoCursada}
             </p>
-            <p className="info-item">
+            <p className="info-item ">
               <strong>Tipo: </strong> {material.tipo}
             </p>
             {material.descripcion && (
-              <p className="info-item info-item-description">
+              <p className="info-item info-item-description ">
                 <strong>Descripción: </strong> {material.descripcion}
               </p>
             )}

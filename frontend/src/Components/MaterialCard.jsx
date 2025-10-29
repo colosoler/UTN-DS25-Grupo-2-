@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { MoreVertical, Eye } from 'lucide-react';
 import { Vote } from './Vote';
-import { Share } from './Share';
+import { ShareButton } from './ShareButton';
 import { Link } from 'react-router-dom';
-import ReportModel from './ReportModel';
+import { ReportModel } from './ReportModel';
 import './styles/MaterialCard.css';
 
 export const MaterialCard = ({ material }) => {
@@ -56,7 +56,7 @@ export const MaterialCard = ({ material }) => {
             {showMenu && (
               <div className="menu-dropdown">
                 <ReportModel />
-                <Share shareUrl={`${window.location.origin}/material/${material?.id}`} />
+                <ShareButton shareUrl={`${window.location.origin}/material/${material?.id}`} />
               </div>
             )}
           </div>
