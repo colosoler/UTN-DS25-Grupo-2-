@@ -1,10 +1,9 @@
 import Information from '../Components/Information'
 import { Material } from '../Components/Material';
-import {Buttons} from '../Components/Buttons';
+import { Buttons } from '../Components/Buttons';
 import { useFetch } from '../Hooks/useFetch';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../Contexts/AuthContext';
-import './styles/MaterialPage.css';
 
 export const MaterialPage = () => {
 
@@ -24,16 +23,15 @@ export const MaterialPage = () => {
   return (
     <>
       <section className="container">
-      <h1 className='title'>{material.data.titulo}</h1>
-        <div className='material-layout-container'>
-          <div className="material-main-content">
+      <h1 style={{ margin: '1em' }}>{material.data.titulo}</h1>
+        <div className='row'>
+
+          <div className="col-12 col-md-9">
             <Material archivo={material.data.archivo} />
           </div>
-          <div className='material-sidebar'>
+          <div className='col-12 col-md-3'>
             <Information material={material.data} />
-            <div className='material-icons'>
-              <Buttons material={material.data} user={user}/>
-            </div>
+            <Buttons material={material.data} user={user}/>
           </div>
         </div>
       </section>

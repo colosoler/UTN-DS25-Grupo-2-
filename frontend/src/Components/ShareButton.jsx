@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
-import { MdShare } from 'react-icons/md';
+import { Share2 } from 'lucide-react';
 
-export const Share = ({ shareUrl }) => {
+export const ShareButton = ({ shareUrl }) => {
   const [show, setShow] = useState(false);
   const [isError, setIsError] = useState(false);
 
@@ -22,7 +22,7 @@ export const Share = ({ shareUrl }) => {
   return (
     <>
       <div id="share" onClick={copyLink} style={{ cursor: 'pointer' }}>
-        <MdShare size={24} />
+        <Share2 size={24} />
       </div>
 
       <ToastContainer

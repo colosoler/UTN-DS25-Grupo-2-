@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
-import { MdMoreHoriz } from 'react-icons/md';
+import { MoreHorizontal } from 'lucide-react';
 import { DeleteConfirmModal } from './DeleteConfirmModal';
 import { getToken } from '../Helpers/auth';
 import { Alert } from './Alert';
@@ -72,7 +72,7 @@ export const OptionsDropdown = ({ material }) => {
           id="dropdown-options"
           className="options-toggle p-0 border-0"
         >
-          <MdMoreHoriz />
+          <MoreHorizontal />
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
