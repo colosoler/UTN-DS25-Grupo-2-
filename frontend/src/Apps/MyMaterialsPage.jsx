@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { DeleteConfirmModal } from "../Components/DeleteConfirmModal"
-import { Share } from "../Components/Share"
+import { ShareButton } from "../Components/ShareButton"
 import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
@@ -182,7 +182,7 @@ export const MyMaterialsPage = () => {
                   <div className="d-flex justify-content-between align-items-center mt-3">
                     <div className="d-flex align-items-center gap-3">
                       {/* Compartir */}
-                      <Share shareUrl={`${window.location.origin}/material/${material.id}`} />
+                      <ShareButton shareUrl={`${window.location.origin}/material/${material.id}`} />
                     </div>
 
                     {/* Eliminar */}

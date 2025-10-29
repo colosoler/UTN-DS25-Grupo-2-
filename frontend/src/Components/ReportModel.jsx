@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MdFlag } from 'react-icons/md';
+import { Flag } from 'lucide-react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
@@ -128,10 +128,10 @@ return (
             style={{ 
                 cursor: isDisabled ? 'not-allowed' : 'pointer', 
                 opacity: isDisabled ? 0.5 : 1,
-                pointerEvents: isDisabled ? 'none' : 'auto'
+                pointerEvents: isDisabled ? 'none' : 'auto',
             }}
             >
-                <MdFlag />
+                <Flag />
             </div>
 
         <Modal show={show} onHide={handleClose}>

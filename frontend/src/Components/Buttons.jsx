@@ -1,23 +1,29 @@
-import './styles/Buttons.css';
+
 import { ReportModel } from './ReportModel';
 import { Vote } from './Vote';
-import { Share } from './Share';
+import { ShareButton } from './ShareButton';
 import { OptionsDropdown } from './OptionsDropdown';
 
     export const Buttons = ({ material, user }) => {
         return (
             <>
                 <article className="buttons">
-                    <Vote material={material} />
-                    <div id="report">
-                        <ReportModel materialId={material.id}/>
-                    </div>
-                    <Share shareUrl={`${window.location.origin}/material/${material?.id}`} />
-				    {user?.id === material?.userId && (
-                        <div id="options">
-                            <OptionsDropdown material={material} />
+                    <div className='row align-items-center'>
+                        <div className='col'>
+                        <Vote material={material} />
                         </div>
-                    )}
+                        <div id="report" className='col'>
+                            <ReportModel materialId={material.id}/>
+                        </div>
+                        <div className='col'>
+                        <ShareButton shareUrl={`${window.location.origin}/material/${material?.id}`} />
+                        </div>
+                        {user?.id === material?.userId && (
+                            <div id="options" className='col'>
+                                <OptionsDropdown material={material} />
+                            </div>
+                        )}
+                    </div>
                 </article>
             </>
         );
