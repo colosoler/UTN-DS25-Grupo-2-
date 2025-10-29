@@ -1,30 +1,138 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MdFlag } from 'react-icons/md';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+import { Alert } from './Alert';
+import { Loading } from './Loading';
+import { getToken } from '../Helpers/auth';
+import { useAuth } from '../Contexts/AuthContext';
 
-function Example() {
-  const [show, setShow] = useState(false);
+export const ReportModel = ({ materialId }) => {
+    const [show, setShow] = useState(false);
+    const [reason, setReason] = useState('');
+    const [otherReason, setOtherReason] = useState('');
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [reporteExistente, setReporteExistente] = useState(false);
+    const [isChecking, setIsChecking] = useState(true);
+    const [alertInfo, setAlertInfo] = useState({ 
+        show: false, 
+        message: '', 
+        variant: 'success' 
+    });
 
-const [reason, setReason] = useState('');
-const [otherReason, setOtherReason] = useState('');
+    const API_URL = import.meta.env.VITE_API_URL;
+    const { user } = useAuth();
 
-const handleReasonChange = (e) => {
-    setReason(e.target.value);
-    if (e.target.value !== 'other') {
+    useEffect(() => {
+        const ExistingReport = async () => {
+            setIsChecking(true);
+            setReporteExistente(false);
+
+            try {
+                const res = await fetch(`${API_URL}/reportes/${materialId}/reporte`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${getToken()}` 
+                        },
+                    });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.reporte) {
+                        setReporteExistente(true);
+                    }
+                }
+            } catch(e) {
+                console.error("Error al verificar reporte:", e);
+            } finally {
+                setIsChecking(false);
+            }
+        };
+        ExistingReport();
+    }, [materialId, user]);
+    
+    const handleClose = () => {
+        setShow(false);
+        setReason('');
         setOtherReason('');
-    }
-};
+    };
 
+    const handleShow = () => setShow(true);
+
+
+    const handleReasonChange = (e) => {
+        setReason(e.target.value);
+        if (e.target.value !== 'OTRO') {
+            setOtherReason('');
+        }
+    };
+
+    const handleSubmit = async () => {
+        if (!reason) {
+            setAlertInfo({ show: true, message: 'Falta completar el motivo.', variant: 'danger' });            
+            return;
+        }
+        if (reason === 'OTRO' && !otherReason.trim()) {
+            setAlertInfo({ show: true, message: 'Falta especificar el motivo.', variant: 'danger' });            
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            const res = await fetch(`${API_URL}/reportes/${materialId}/reporte`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getToken()}` 
+                },
+                body: JSON.stringify({
+                    motivo: reason,
+                    descripcion: reason === 'OTRO' ? otherReason : null
+                })
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.message || 'Error al enviar el reporte');            
+            }
+            setAlertInfo({ 
+                show: true, 
+                message: '¡Reporte enviado con éxito!', 
+                variant: 'success' 
+            });
+            setReporteExistente(true);
+            handleClose()
+
+        } catch (e) {
+            setAlertInfo({ 
+                show: true, 
+                message: e.message || 'Ocurrió un error inesperado.', 
+                variant: 'danger' 
+            });      
+        }finally {
+            setIsLoading(false);
+        }
+    }
+
+    const handleAlertClose = () => {
+        setAlertInfo({ ...alertInfo, show: false });
+    };
+
+    const isDisabled = isChecking || reporteExistente;
 return (
     <>
-        <div onClick={handleShow}>
-            <MdFlag />
-        </div>
+        <div onClick={isDisabled ? null : handleShow}
+            style={{ 
+                cursor: isDisabled ? 'not-allowed' : 'pointer', 
+                opacity: isDisabled ? 0.5 : 1,
+                pointerEvents: isDisabled ? 'none' : 'auto'
+            }}
+            >
+                <MdFlag />
+            </div>
 
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
@@ -32,25 +140,25 @@ return (
             </Modal.Header>
             <Modal.Body>
                 <p>
-                    Por favor, seleccioná el motivo por el cual estás reportando este contenido. Esto nos ayuda a mantener la comunidad segura y útil para todos.
+                    Seleccioná el motivo por el cual estás reportando este contenido.
                 </p>
-                <select value={reason} onChange={handleReasonChange}>
+                <Form.Select value={reason} onChange={handleReasonChange}>
                     <option value="" disabled hidden>
                         Seleccioná un motivo
                     </option>
-                    <option value="inappropriate">Contenido inapropiado</option>
-                    <option value="spam">Spam o publicidad</option>
-                    <option value="plagiarism">Plagio o infracción de derechos de autor</option>
-                    <option value="other">Otro motivo</option>
-                </select>
-                {reason === 'other' && (
+                    <option value="CONTENIDO_INAPROPIADO">Contenido inapropiado</option>
+                    <option value="SPAM">Spam o publicidad</option>
+                    <option value="PLAGIO">Plagio o infracción de derechos de autor</option>
+                    <option value="OTRO">Otro motivo</option>
+                </Form.Select>
+                {reason === 'OTRO' && (
                     <Form.Group className="mt-3">
                         <Form.Label>Por favor, especificá el motivo</Form.Label>
                         <Form.Control
                             type="text"
                             value={otherReason}
                             onChange={(e) => setOtherReason(e.target.value)}
-                            placeholder="Escribí el motivo aquí"
+                            placeholder="Escribí el motivo.."
                         />
                     </Form.Group>
                 )}
@@ -59,13 +167,17 @@ return (
                 <Button variant="secondary" onClick={handleClose}>
                     Cancelar
                 </Button>
-                <Button variant="primary" onClick={handleClose}>
-                    Enviar
+                <Button variant="primary" onClick={handleSubmit}>
+                    {isLoading ? <Loading/> : 'Enviar'}
                 </Button>
             </Modal.Footer>
         </Modal>
+        <Alert 
+            show={alertInfo.show}
+            message={alertInfo.message}
+            variant={alertInfo.variant}
+            onClose={handleAlertClose}
+        />
     </>
 );
 }
-
-export default Example;

@@ -1,5 +1,5 @@
 import './styles/Buttons.css';
-import ReportModel from './ReportModel';
+import { ReportModel } from './ReportModel';
 import { Vote } from './Vote';
 import { Share } from './Share';
 import { OptionsDropdown } from './OptionsDropdown';
@@ -10,7 +10,7 @@ import { OptionsDropdown } from './OptionsDropdown';
                 <article className="buttons">
                     <Vote material={material} />
                     <div id="report">
-                        <ReportModel />
+                        <ReportModel materialId={material.id}/>
                     </div>
                     <Share shareUrl={`${window.location.origin}/material/${material?.id}`} />
 				    {user?.id === material?.userId && (

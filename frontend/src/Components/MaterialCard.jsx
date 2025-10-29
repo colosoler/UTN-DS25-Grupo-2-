@@ -3,7 +3,7 @@ import { MoreVertical, Eye } from 'lucide-react';
 import { Vote } from './Vote';
 import { Share } from './Share';
 import { Link } from 'react-router-dom';
-import ReportModel from './ReportModel';
+import { ReportModel } from './ReportModel';
 import './styles/MaterialCard.css';
 
 export const MaterialCard = ({ material }) => {
