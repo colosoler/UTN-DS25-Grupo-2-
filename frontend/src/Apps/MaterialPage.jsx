@@ -28,10 +28,12 @@ export const MaterialPage = () => {
 
           <div className="col-12 col-md-9">
             <Material archivo={material.data.archivo} />
+            <div className="d-flex justify-content-start mt-3">
+                <Buttons material={material.data} user={user}/>
+            </div>
           </div>
           <div className='col-12 col-md-3'>
             <Information material={material.data} />
-            <Buttons material={material.data} user={user}/>
           </div>
         </div>
       </section>
