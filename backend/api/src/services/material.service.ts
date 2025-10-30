@@ -3,20 +3,26 @@ import prisma from '../config/prisma';
 import { Material, TipoMaterial } from '@prisma/client';
 import { Prisma } from '@prisma/client';
 
-const materialInclude = { //objeto para incluir la relación con User y seleccionar solo el username
-	user: {
-		select: {
-			username: true,
-		}
-	}
+const materialInclude = { //objeto para incluir la relación con User y seleccionar solo el username (lo mismo con carrera y su nombre jee)
+    user: {
+        select: {
+            username: true,
+        }
+    },
+    carrera: {
+      select: {
+        nombre: true,
+      }
+  }
 };
 
 const mapMaterialToMaterialWithUser = (material: any): MaterialWithUser => { //formatea la respuesta para agregar el username como una porpiedad mas del objeto q devuelve el json
-	const { user, ...rest } = material;
-	return {
-		...rest,
-		username: user.username,
-	} as MaterialWithUser;
+    const { user, carrera, ...rest } = material;
+    return {
+        ...rest,
+        username: user?.username ?? null,
+    carreraNombre: carrera?.nombre ?? null,
+    } as MaterialWithUser;
 };
 
 export async function getAllMaterials(): Promise<MaterialWithUser[]> {
