@@ -32,6 +32,9 @@ function Information({ material }) {
               <strong>Materia: </strong> {materia.materia.nombre}
             </p>
             <p className="info-item ">
+              <strong>Carrera: </strong> {material.carreraNombre}
+            </p>
+            <p className="info-item ">
               <strong>Comisión: </strong> {material.comision}
             </p>
             <p className="info-item ">
