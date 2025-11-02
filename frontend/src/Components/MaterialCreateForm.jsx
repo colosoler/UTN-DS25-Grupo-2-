@@ -6,6 +6,7 @@ import './styles/MaterialCreateForm.css';
 
 export const MaterialCreateForm = ({
   formData,
+  setFormData,
   handleChange,
   materias,
   carreras,
@@ -73,7 +74,7 @@ export const MaterialCreateForm = ({
             <Form.Group aria-required>
               <SearchOptions
                 options={materias?.materias.map((e) => ({ value: e.id, option: e.nombre }))}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e, (value) => setFormData({ ...formData, 'materiaId': value.value, 'materia': value.option }))}
                 name="materia"
                 placeholder="De qué materia es?"
               />
@@ -88,7 +89,7 @@ export const MaterialCreateForm = ({
                       ? [{ value: '', option: 'Cargando...' }]
                       : carreras?.map((e) => ({ value: e.id, option: e.nombre }))
                   }
-                  onChange={handleChange}
+                  onChange={(e)=> handleChange(e, (value) => setFormData({ ...formData, 'carreraId': value.value, 'carrera': value.option }))}
                   name="carrera"
                   placeholder="En qué carrera la cursaste?"
                 />
