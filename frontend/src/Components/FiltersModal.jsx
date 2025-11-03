@@ -3,6 +3,7 @@ import { SearchOptions } from "./SearchOptions";
 import { useEffect } from "react";
 import { CarreraExpandedSelector } from "./FormFields/carreraExpandedSelector";
 import { TipoExpandedSelector } from "./FormFields/TipoExpandedSelector";
+import { ComisionField } from "./FormFields/ComisionField";
 
 export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
   const [formData, setFormData, handleChange, handleSubmit] = useForm;
@@ -25,19 +26,6 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
         ? carreras.find(c => c.id === formData.carreraId)?.nombre
         : ""
   }
-
-  useEffect(() => {
-    if (!formData.materiaId || !formData.carreraId || !formData.carrera || cm_loading) return;
-    let comisionPrefix = "";
-    const carreraPalabras = formData.carrera.toLowerCase().split(" ");
-    if (carreraPalabras[1] === "en") {
-      comisionPrefix = carreraPalabras[2][0].toUpperCase(); //Ingenieria en ... Sistemas -> S
-    } else {
-      comisionPrefix = carreraPalabras[1][0].toUpperCase(); //Ingeniería ... Industrial -> I
-    }
-    comisionPrefix += carreraMateria.anio;
-    setFormData({ ...formData, comision: comisionPrefix + (formData.comision.charAt(2) || "") });
-  }, [formData.carreraId, formData.carrera, formData.materiaId, cm_loading]);
 
   //no funciona pq se carga primero el return desde searchBar -> if (m_loading || c_loading) return <h1> Cargando... </h1>
   if (m_error || c_error || cm_error) return <h1> Ha ocurrido un error </h1>
@@ -94,31 +82,7 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
               <option value={4}>4to</option>
             </Form.Select>
           </Form.Group>
-          {formData.materiaId && formData.carreraId && formData.includeCarrera && formData.comision.length >= 2 &&
-            <Form.Group>
-              <Form.Label>Comisión</Form.Label>
-              <div className="d-flex">
-                <Form.Control
-                  disabled
-                  value={formData.comision.slice(0, 2) || ""}
-                  className="bg-secondary text-white"
-                  style={{ width: '50px', paddingRight: '0' }}
-                />
-                <Form.Control
-                  onChange={(e) => handleChange(e, (value) => setFormData(
-                    { ...formData, comision: formData.comision.length < 3 ? formData.comision + value : formData.comision.slice(0, 2) + value })
-                  )}
-                  name="comision"
-                  type="number"
-                  placeholder="2"
-                  value={parseInt(formData.comision.charAt(2)) || ''}
-                  style={{ width: '50px', paddingLeft: '0' }}
-                  min="0"
-                  max="9"
-                />
-              </div>
-            </Form.Group>
-          }
+          {carreraMateria && formData.includeCarrera &&<ComisionField useForm={useForm} carreraMateria={carreraMateria}/>}
           <Form.Group>
             <Form.Label>Año de Cursada</Form.Label>
             <Form.Control onChange={handleChange} name="anioCursada" type="number" placeholder={new Date().getFullYear()} value={formData.anioCursada || ""} />

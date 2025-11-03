@@ -47,7 +47,7 @@ export const Searchbar = ({
     if (!localMode) {
       let defaultForm = formData;
       searchParams.forEach((value, key) => {
-        defaultForm[key] = key.includes("Id") || key.includes("anio") ? parseInt(value) : value;
+        defaultForm[key] = key.includes("Id") || key.includes("anio") || key.includes("parcial") ? parseInt(value) : value;
       });
       setFormData(defaultForm);
     }
@@ -94,7 +94,7 @@ export const Searchbar = ({
     
     if (!formData.includeCarrera) filtros.carreraId = null; filtros.comision = "";
     filtros.includeCarrera = false;
-    comision = comision.length === 3 ? comision : "";
+    //comision = comision.length === 3 ? comision : "";
 
     filtros.parcial = filtros.parcial != 0 ? filtros.parcial : null;
 
