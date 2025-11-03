@@ -1,40 +1,49 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Form, ListGroup } from 'react-bootstrap';
 
-export const SearchOptions = ({ options, onChange, name, value='', placeholder }) => {
+export const SearchOptions = ({ options, onChange, name, value = '', placeholder }) => {
     const [inputValue, setInputValue] = useState(value);
     const [filtered, setFiltered] = useState([]);
     const [showList, setShowList] = useState(false);
 
     const handleChangeOptions = (e) => {
-        // Obtengo el valor del input
         const newValue = e.target.value;
         setInputValue(newValue);
 
-        // Filtro las opciones que coinciden con el valor del input 
         if (newValue.trim() !== '') {
-            const matches = options.filter(o =>
-                o.option.toLowerCase().includes(newValue.toLowerCase())
-            );
-            // Si hay matches, los muestro
+            const matches = options
+                .filter(o => o.option.toLowerCase().includes(newValue.toLowerCase()))
+                .slice(0, 10);
             setFiltered(matches);
             setShowList(true);
-            //si hay texto, envia el evento al padre normalmente para que realice la peticion en base a ese texto
-			onChange(e);
+            onChange(e);
         } else {
-            // Si el input está vacío, limpio el filtro y oculto la lista
             setFiltered([]);
             setShowList(false);
-            //notifica al padre con un objeto para anular el ID del resultado anterior (value: null)
-			onChange({ target: { name, value: { value: null, option: '' } } });
+            onChange({ target: { name, value: { value: null, option: '' } } });
         }
     };
 
-    // Manejo la selección de una opción
     const handleSelect = (elem) => {
         setInputValue(elem.option);
         onChange({ target: { name, value: elem } });
         setShowList(false);
+    };
+
+    const handleFocus = () => {
+        if (inputValue.trim() === '') {
+            setFiltered(options.slice(0, 10));
+            setShowList(true);
+        } else if (filtered.length > 0) {
+            setShowList(true);
+        }
+    };
+
+    const clearInput = () => {
+        setInputValue('');
+        setFiltered([]);
+        setShowList(false);
+        onChange({ target: { name, value: { value: null, option: '' } } });
     };
 
     return (
@@ -45,15 +54,32 @@ export const SearchOptions = ({ options, onChange, name, value='', placeholder }
                 name={name}
                 value={inputValue}
                 onChange={handleChangeOptions}
-                onFocus={() => {
-                    if (filtered.length > 0) setShowList(true);
-                }}
+                onFocus={handleFocus}
                 onBlur={() => setTimeout(() => setShowList(false), 100)}
                 autoComplete="off"
+                style={{ paddingRight: '25px' }}
             />
+
+            {inputValue && (
+                <span
+                    onClick={clearInput}
+                    style={{
+                        position: 'absolute',
+                        right: '8px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        cursor: 'pointer',
+                        color: '#888',
+                        fontSize: '14px',
+                        userSelect: 'none',
+                    }}
+                >
+                    ×
+                </span>
+            )}
+
             {showList && filtered.length > 0 && (
                 <ListGroup
-                    // Estilos para que la lista aparezca por encima del formulario
                     style={{
                         position: 'absolute',
                         zIndex: 1000,
