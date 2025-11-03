@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { DeleteConfirmModal } from "../Components/DeleteConfirmModal"
+import { DeleteConfirm } from "../Components/DeleteConfirm"
 import { ShareButton } from "../Components/ShareButton"
 import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
@@ -199,11 +199,12 @@ export const MyMaterialsPage = () => {
       </Row>
 
       {/* Modal de confirmación */}
-      <DeleteConfirmModal
+      <DeleteConfirm
         show={showDeleteModal}
         onHide={() => setShowDeleteModal(false)}
         onConfirm={confirmDelete}
         materialTitle={materialToDelete?.title}
+        message={"¿Estás seguro de que queres eliminar este material?"}
       />
     </Container>
   )

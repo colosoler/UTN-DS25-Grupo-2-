@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { MoreHorizontal } from 'lucide-react';
-import { DeleteConfirmModal } from './DeleteConfirmModal';
+import { DeleteConfirm } from './DeleteConfirm';
 import { getToken } from '../Helpers/auth';
 import { Alert } from './Alert';
 import { useNavigate } from 'react-router-dom';
@@ -82,11 +82,12 @@ export const OptionsDropdown = ({ material }) => {
         </Dropdown.Menu>
       </Dropdown>
 
-      <DeleteConfirmModal
+      <DeleteConfirm
         show={showDeleteModal}
         onHide={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
         materialTitle={material.title}
+        message={"¿Estás seguro de que queres eliminar este material?"}
       />
 
       <Alert

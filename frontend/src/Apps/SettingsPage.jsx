@@ -4,7 +4,7 @@ import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { settingsSchema } from "../Validations/settingsSchema";
-import { DeleteConfirmAccount } from "../Components/DeleteConfirmAccount";
+import { DeleteConfirm } from "../Components/DeleteConfirm";
 import { Alert } from "../Components/Alert";
 import { AuthField } from "../Components/AuthField";
 import { getUser, getToken, clearToken } from "../Helpers/auth";
@@ -251,7 +251,7 @@ export const SettingsPage = () => {
         </Button>
       </Form>
 
-      <DeleteConfirmAccount
+      <DeleteConfirm
         show={showDeleteModal}
         onHide={() => setShowDeleteModal(false)}
         onConfirm={handleConfirmDelete}

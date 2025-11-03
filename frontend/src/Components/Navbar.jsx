@@ -2,7 +2,7 @@ import './styles/Navbar.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { Dropdown, Container } from 'react-bootstrap';
 import { useState } from 'react';
-import { DeleteConfirmAccount } from '../Components/DeleteConfirmAccount';
+import { DeleteConfirm } from '../Components/DeleteConfirm';
 import { Alert } from '../Components/Alert';
 import { useAuth } from '../Contexts/AuthContext';
 
@@ -105,7 +105,7 @@ export const Navbar = () => {
         </Container>
       </nav>
 
-      <DeleteConfirmAccount
+      <DeleteConfirm
         show={showLogoutModal}
         onHide={handleCloseLogoutModal}
         onConfirm={handleConfirmLogout}
@@ -113,6 +113,7 @@ export const Navbar = () => {
         message="¿Estás seguro de que querés cerrar sesión?"
         confirmVariant="danger"
         buttonTitle="Cerrar sesión"
+        danger={false}
       />
 
       <Alert
