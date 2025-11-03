@@ -11,7 +11,6 @@ export const TipoExpandedSelector = ({useForm}) => {
                 setFormData({ ...formData, tipo: value.id})
             }
             )}
-          label="Tipo de material"
           options={["Parcial", "Parcial resuelto", "Final", "Final resuelto", "Práctica", "Práctica resuelta", "Apunte", "Resumen", "Otro"].map(tipo => ({ id: tipo, name: tipo }))}
         />
   )
