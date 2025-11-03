@@ -80,7 +80,7 @@ export const Navbar = () => {
                 )}
                 {isAdmin && (
                   <Dropdown.Item className="dropdown-item" as={Link} to="/admin">
-                  <img className="dropdown-icon" src="/images/settings-icon.svg" alt="admin" />
+                  <img className="dropdown-icon" src="/images/admin-icon.svg" alt="admin" />
                     Panel de Administrador
                   </Dropdown.Item>
                 )}
