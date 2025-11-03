@@ -42,22 +42,22 @@ export const Navbar = () => {
 
           <div className="navbar-icons">
             <Link to="/" className="d-none d-md-block">
-              <img src="./images/hogar.png" alt="Inicio" />
+              <img src="/images/hogar.png" alt="Inicio" />
             </Link>
 
             <Link to="/ranking" className="ranking-icon" title="Ranking de Usuarios">
-              <img src="./images/ranking.png" alt="Ranking" />
+              <img src="/images/ranking.png" alt="Ranking" />
             </Link>
 
             {isAuthenticated && (
             <Link to="/add">
-              <img src="./images/plus-pequeno.png" alt="Agregar contenido" />
+              <img src="/images/plus-pequeno.png" alt="Agregar contenido" />
             </Link>
             )}
 
             <Dropdown align="end">
               <Dropdown.Toggle as="div" className="avatar-toggle">
-                <img src="./images/avatar.png" alt="Perfil" className="avatar-img" />
+                <img src="/images/avatar.png" alt="Perfil" className="avatar-img" />
               </Dropdown.Toggle>
 
               <Dropdown.Menu className="dropdown-menu">
