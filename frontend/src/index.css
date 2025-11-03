@@ -15,4 +15,21 @@
   --downvote-color: #dc2626;
   --vote-text-neutral: #374151;
   --vote-text-light: #ffffff;
+
+  --indigo-500: #6366f1;
+  --indigo-600: #4f46e5;
+  --indigo-700: #4338ca;
+  --indigo-100-70: rgba(224, 231, 255, 0.7);
+  --indigo-200: #c7d2fe; 
+  --indigo-400: #818cf8;
+  --gray-100: #f3f4f6; 
+  --gray-200: #e5e7eb;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --red-500: #ef4444;
+  --inter-font: 'Inter', sans-serif;
+  --text-2xl: 1.5rem;
 }

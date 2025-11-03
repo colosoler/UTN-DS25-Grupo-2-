@@ -1,78 +1,131 @@
 @import url("../../index.css");
-
+/* Contenedor principal: flex max-w-4xl mx-auto w-full p-4 */
 .searchbar {
-  display: flex;
-  gap: 10px;
-  height: 2.7em;
-  width: fit-content;
+    display: flex;
+    max-width: 64rem; /* max-w-4xl (1024px) */
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto; /* mx-auto */
+    padding: 1rem; /* p-4 */
+    align-items: center; /* Asegura que el botón de filtro y el campo de búsqueda estén alineados */
 }
 
+/* Contenedor del Campo de Búsqueda y Botones: flex flex-grow bg-white rounded-full shadow-xl border border-gray-200 overflow-hidden */
 .searchbar-container {
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 37em;
-  border: 1px solid #e0e0e0;
-  border-radius: 100px;
+    display: flex;
+    flex-grow: 1; /* flex-grow */
+    background-color: white; /* bg-white */
+    border-radius: 9999px; /* rounded-full */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); /* shadow-xl */
+    border: 1px solid var(--gray-200); /* border border-gray-200 */
+    overflow: hidden; /* overflow-hidden */
 }
 
-.searchbar-container button {
-  background-color: #fff;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  border-radius: 50px;
-}
+/* ------------------------------------------- */
+/* Campo de Input */
+/* ------------------------------------------- */
 
-.search-button {
-  padding-left: 10px;
-  /* keep button compact */
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.clear-button {
-  padding-right: 10px;
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+/* input: flex-grow p-4 focus:outline-none placeholder-gray-400 text-gray-700 */
 .search-input {
-  border: none;
-  outline: none;
-  background: transparent;
-  flex: 1 1 auto; /* Este flex hace que el input tome el espacio restante */
-  min-width: 0; /* permite que el input se achique adentro del flex */
-  padding: 8px 4px;
+    flex-grow: 1; /* flex-grow */
+    padding: 1rem; /* p-4 */
+    border: none;
+    outline: none; /* focus:outline-none */
+    color: var(--gray-700); /* text-gray-700 */
+    /* Estilo del placeholder */
+    /* Esta es una pseudoclase, no una clase de Tailwind, pero es necesaria en CSS */
+    &::placeholder {
+        color: var(--gray-400); /* placeholder-gray-400 */
+    }
 }
 
-.search-input:focus {
-  border: none;
-  outline: none;
+/* ------------------------------------------- */
+/* Botón de Búsqueda (Lupa) */
+/* ------------------------------------------- */
+
+/* button: p-4 text-gray-500 hover:text-indigo-600 transition-colors */
+.search-button {
+    padding: 1rem; /* p-4 */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--gray-500); /* text-gray-500 (usaremos la propiedad fill en el SVG) */
+    transition: color 150ms ease-in-out; /* transition-colors */
 }
 
+/* Hover en el ícono */
+.search-button:hover svg {
+    fill: var(--indigo-600); /* hover:text-indigo-600 */
+}
+
+/* SVG base color */
+.search-button svg {
+    fill: var(--gray-500);
+    transition: fill 150ms ease-in-out;
+    width: 1.25rem; /* w-5 */
+    height: 1.25rem; /* h-5 */
+}
+
+
+/* ------------------------------------------- */
+/* Botón de Limpiar (X) */
+/* ------------------------------------------- */
+
+/* button: p-4 text-gray-500 hover:text-red-500 transition-colors */
+.clear-button {
+    padding: 1rem; /* p-4 */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--gray-500); /* text-gray-500 (usaremos la propiedad fill en el SVG) */
+    transition: color 150ms ease-in-out; /* transition-colors */
+}
+
+/* Hover en el ícono */
+.clear-button:hover svg {
+    fill: var(--red-500); /* hover:text-red-500 */
+}
+
+/* SVG base color */
+.clear-button svg {
+    fill: var(--gray-500);
+    transition: fill 150ms ease-in-out;
+    width: 1.25rem; /* w-5 */
+    height: 1.25rem; /* h-5 */
+}
+
+
+/* ------------------------------------------- */
+/* Botón de Filtros */
+/* ------------------------------------------- */
+
+/* button: ml-3 p-4 bg-white rounded-full shadow-xl border border-gray-200 text-gray-500 hover:bg-indigo-100 hover:text-indigo-600 transition-colors */
 .filter-button {
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 100%;
-  padding: 0 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    margin-left: 0.75rem; /* ml-3 */
+    padding: 1rem; /* p-4 */
+    background-color: white; /* bg-white */
+    border-radius: 9999px; /* rounded-full */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); /* shadow-xl */
+    border: 1px solid var(--gray-200); /* border border-gray-200 */
+    cursor: pointer;
+    color: var(--gray-500); /* text-gray-500 (usaremos fill en SVG) */
+    transition: all 150ms ease-in-out; /* transition-colors */
 }
 
+/* Efectos hover en el botón de filtro */
 .filter-button:hover {
-  background-color: #fffa;
+    background-color: var(--indigo-100); /* hover:bg-indigo-100 */
 }
 
-@media (max-width: 768px) {
-  .searchbar-container {
-    width: 20em;
-  }
+/* SVG base color */
+.filter-button svg {
+    fill: var(--gray-500);
+    transition: fill 150ms ease-in-out;
+    width: 1.5rem; /* w-6 (ajustado para que coincida con el p-4) */
+    height: 1.5rem; /* h-6 */
+}
+
+/* Hover en el ícono del filtro */
+.filter-button:hover svg {
+    fill: var(--indigo-600); /* hover:text-indigo-600 */
 }
