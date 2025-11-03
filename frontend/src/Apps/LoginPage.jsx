@@ -30,7 +30,7 @@ export const LoginPage = () => {
     const result = await login(data);
     if (result.success){
       setShowSuccessToast(true);
-      setTimeout(() => navigate("/home"), 2500);
+      setTimeout(() => navigate("/"), 2500);
     }else {
       setError("root", {
         type: "manual",

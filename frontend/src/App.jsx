@@ -24,7 +24,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 function App() {
   const location = useLocation();
 
-  const hideNavbar = location.pathname === '/' || location.pathname === '/signup';
+  const hideNavbar = location.pathname === '/login' || location.pathname === '/signup';
   return (
     <>
       <AuthProvider>
@@ -32,9 +32,9 @@ function App() {
       <main>
         <Routes>
           {/*Rutas públicas*/}
-          <Route path="/" element={<LoginPage/>} />
+          <Route path="/" element={<HomePage/>} />
           <Route path="/signup" element={<SignupPage/>} />
-          <Route path="/home" element={<HomePage/>} />
+          <Route path="/login" element={<LoginPage/>} />
           <Route path="/carrera/:id" element={<CarreraDetailPage/>} />
           <Route path="/search" element={<SearchResultPage/>} />
           <Route path="/material/:id" element={<MaterialPage/>} />
