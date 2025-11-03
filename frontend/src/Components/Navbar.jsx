@@ -64,29 +64,29 @@ export const Navbar = () => {
                 { isAuthenticated && (
                   <>
                     <Dropdown.Item className="dropdown-item" as={Link} to="/profile">
-                      <img className="dropdown-icon" src="./images/user-icon2.svg" alt="profile" />
+                      <img className="dropdown-icon" src="/images/user-icon2.svg" alt="profile" />
                         Ver perfil
                     </Dropdown.Item>
 
                     <Dropdown.Item className="dropdown-item" as={Link} to="/mymaterials">
-                      <img className="dropdown-icon" src="./images/files-icon.svg" alt="mis-publicaciones" />
+                      <img className="dropdown-icon" src="/images/files-icon.svg" alt="mis-publicaciones" />
                         Mis publicaciones
                     </Dropdown.Item>
                     <Dropdown.Item className="dropdown-item" as={Link} to="/settings">
-                      <img className="dropdown-icon" src="./images/settings-icon.svg" alt="configurar" />
+                      <img className="dropdown-icon" src="/images/settings-icon.svg" alt="configurar" />
                         Configurar perfil
                     </Dropdown.Item>
                   </>
                 )}
                 {isAdmin && (
                   <Dropdown.Item className="dropdown-item" as={Link} to="/admin">
-                  <img className="dropdown-icon" src="./images/settings-icon.svg" alt="admin" />
+                  <img className="dropdown-icon" src="/images/settings-icon.svg" alt="admin" />
                     Panel de Administrador
                   </Dropdown.Item>
                 )}
                 {!isAuthenticated && (
                 <Dropdown.Item className="dropdown-item" as={Link} to="/login">
-                  <img className="dropdown-icon" src="./images/user-icon2.svg" alt="login" />
+                  <img className="dropdown-icon" src="/images/user-icon2.svg" alt="login" />
                   Iniciar sesión
                 </Dropdown.Item>
                 )}
@@ -94,7 +94,7 @@ export const Navbar = () => {
                   <>
                     <Dropdown.Divider />
                     <Dropdown.Item className="dropdown-item" onClick={handleOpenLogoutModal}>
-                      <img className="dropdown-icon" src="./images/logout-icon.svg" alt="logout" />
+                      <img className="dropdown-icon" src="/images/logout-icon.svg" alt="logout" />
                         Cerrar Sesión
                     </Dropdown.Item>
                   </>
