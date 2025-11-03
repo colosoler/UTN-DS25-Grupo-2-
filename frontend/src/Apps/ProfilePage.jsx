@@ -1,10 +1,8 @@
 import { getUser, getToken } from "../Helpers/auth";
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
 import './styles/ProfilePage.css';
 
 export const ProfilePage = () => {
-  const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [materials, setMaterials] = useState([]);
   const user = getUser();

@@ -45,7 +45,7 @@ export const OptionsDropdown = ({ material }) => {
       setShowDeleteModal(false);
 
       setTimeout(() => {
-        navigate('/home');
+        navigate('/');
       }, 1500);
       
     } catch (error) {

@@ -21,7 +21,7 @@ export const Navbar = () => {
     setShowLogoutToast(true);
     logout();
     setTimeout(() => {
-      navigate('/');
+      navigate('/login');
       setShowLogoutToast(false);
     }, 3000);
   };
@@ -35,13 +35,13 @@ export const Navbar = () => {
       <nav className="navbar">
         <Container fluid className="d-flex justify-content-between align-items-center">
 
-          <Link to="/home" className="navbar-logo">
+          <Link to="/" className="navbar-logo">
             <img src="/images/UTNotas.png" alt="UTNotas Logo" className="logo-img" />
             <span><strong>UTN</strong>otas</span>
           </Link>
 
           <div className="navbar-icons">
-            <Link to="/home" className="d-none d-md-block">
+            <Link to="/" className="d-none d-md-block">
               <img src="./images/hogar.png" alt="Inicio" />
             </Link>
 
@@ -85,9 +85,9 @@ export const Navbar = () => {
                   </Dropdown.Item>
                 )}
                 {!isAuthenticated && (
-                <Dropdown.Item className="dropdown-item" as={Link} to="/signup">
-                  <img className="dropdown-icon" src="./images/user-icon2.svg" alt="signup" />
-                  Crear cuenta
+                <Dropdown.Item className="dropdown-item" as={Link} to="/login">
+                  <img className="dropdown-icon" src="./images/user-icon2.svg" alt="login" />
+                  Iniciar sesión
                 </Dropdown.Item>
                 )}
                 { isAuthenticated && (
