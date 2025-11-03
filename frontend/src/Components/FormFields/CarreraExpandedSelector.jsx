@@ -11,7 +11,6 @@ export const CarreraExpandedSelector = ({ useForm, carreras }) => {
                 setFormData({ ...formData, carreraId: value.id, carrera: value.name })
             }
             )}
-            label="Carrera"
         ></ExpandedSelector>
     )
 }

@@ -3,6 +3,9 @@ import { Form, Row, Col, Button } from 'react-bootstrap';
 import { SearchOptions } from '../Components/SearchOptions.jsx';
 import { Alert } from '../Components/Alert.jsx';
 import './styles/MaterialCreateForm.css';
+import { CarreraExpandedSelector } from '../Components/FormFields/CarreraExpandedSelector.jsx';
+import { TipoExpandedSelector } from '../Components/FormFields/TipoExpandedSelector';
+import { ComisionField } from '../Components/FormFields/ComisionField';
 
 export const MaterialCreateForm = ({
   formData,
@@ -15,6 +18,7 @@ export const MaterialCreateForm = ({
   setAlert,
   cLoading,
   userId,
+  carreraMateria,
   handleFileChange, // <- recibido como prop
 }) => {
   const showParcialSelect =
@@ -35,7 +39,7 @@ export const MaterialCreateForm = ({
       carreraId: Number(formData.carreraId),
       comision: formData.comision || '',
       numeroParcial: Number(formData.parcial) || 0,
-      añoCursada: Number(formData.añoCursada) || new Date().getFullYear(),
+      anioCursada: Number(formData.anioCursada) || new Date().getFullYear(),
       userId: Number(userId),
     };
 
@@ -72,27 +76,23 @@ export const MaterialCreateForm = ({
         <Row className="material-form-row">
           <Col>
             <Form.Group aria-required>
+              <Form.Label className="material-form-label">Materia</Form.Label>
               <SearchOptions
                 options={materias?.materias.map((e) => ({ value: e.id, option: e.nombre }))}
                 onChange={(e) => handleChange(e, (value) => setFormData({ ...formData, 'materiaId': value.value, 'materia': value.option }))}
                 name="materia"
-                placeholder="De qué materia es?"
+                placeholder="Ej: Analisis Matemático II"
               />
             </Form.Group>
           </Col>
           {formData.materiaId && (
             <Col>
               <Form.Group aria-required>
-                <SearchOptions
-                  options={
-                    cLoading
-                      ? [{ value: '', option: 'Cargando...' }]
-                      : carreras?.map((e) => ({ value: e.id, option: e.nombre }))
-                  }
-                  onChange={(e)=> handleChange(e, (value) => setFormData({ ...formData, 'carreraId': value.value, 'carrera': value.option }))}
-                  name="carrera"
-                  placeholder="En qué carrera la cursaste?"
-                />
+                <Form.Label className="material-form-label">Carrera</Form.Label>
+                <CarreraExpandedSelector
+									useForm={[formData, setFormData, handleChange]}
+									carreras={cLoading ? [] : carreras}
+								/>
               </Form.Group>
             </Col>
           )}
@@ -101,48 +101,25 @@ export const MaterialCreateForm = ({
         <Row className="material-form-row">
           <Col>
             <Form.Group>
-              <Form.Select
-                name="tipo"
-                onChange={handleChange}
-                value={formData.tipo || ''}
-                className="material-form-select"
-              >
-                <option value="" disabled hidden>Tipo de material</option>
-                <option value="APUNTE">Apunte</option>
-                <option value="PARCIAL">Parcial</option>
-                <option value="PARCIAL_RESUELTO">Parcial Resuelto</option>
-                <option value="PRACTICA">Práctica</option>
-                <option value="PRACTICA_RESULTA">Práctica Resuelta</option>
-                <option value="FINAL">Final</option>
-                <option value="FINAL_RESUELTO">Final Resuelto</option>
-                <option value="RESUMEN">Resumen</option>
-                <option value="OTRO">Otro</option>
-              </Form.Select>
+              <Form.Label>Tipo de Material</Form.Label>
+                <TipoExpandedSelector useForm={[formData, setFormData, handleChange]}/>
             </Form.Group>
           </Col>
 
           <Col>
-            <Form.Group>
-              <Form.Control
-                type="text"
-                name="comision"
-                placeholder="Comisión"
-                value={formData.comision || ''}
-                onChange={handleChange}
-                className="material-form-control"
-              />
-            </Form.Group>
+            <ComisionField useForm={[formData, setFormData, handleChange]} carreraMateria={carreraMateria}/>
           </Col>
 
           <Col>
             <Form.Group>
+              <Form.Label className="material-form-label">Año de cursada</Form.Label>
               <Form.Control
                 type="number"
                 name="añoCursada"
-                placeholder="Año de cursada"
                 value={formData.añoCursada || ''}
                 onChange={handleChange}
                 className="material-form-control"
+                placeholder='Ej: 2023'
               />
             </Form.Group>
           </Col>

@@ -1,7 +1,7 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { SearchOptions } from "./SearchOptions";
 import { useEffect } from "react";
-import { CarreraExpandedSelector } from "./FormFields/carreraExpandedSelector";
+import { CarreraExpandedSelector } from "./FormFields/CarreraExpandedSelector";
 import { TipoExpandedSelector } from "./FormFields/TipoExpandedSelector";
 import { ComisionField } from "./FormFields/ComisionField";
 
@@ -70,6 +70,7 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
           </Form.Group>
         }
         {/*Tipo de material */}
+        <Form.Label>Tipo de material</Form.Label>
         <TipoExpandedSelector useForm={useForm}></TipoExpandedSelector>
         <div className="d-flex flex-column flex-md-row justify-content-between mb-3 gap-3" >
           <Form.Group>
