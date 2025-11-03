@@ -57,7 +57,7 @@ html, body {
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   width: 100%;
-  margin-top: 5em;
+  margin-top: 2em;
 }
 
 @media (max-width: 1350px) {
