@@ -8,7 +8,6 @@
 
 html, body {
   height: 100%;
-  overflow: hidden;
 }
 
 #root {
@@ -17,11 +16,12 @@ html, body {
 }
 
 .home-wrapper {
-  min-height: 100vh;
+  height: 100%; 
+  flex-grow: 1;
+  padding-bottom: 4rem; 
   background-color: var(--background-color);
-  padding-bottom: 4rem;
   font-family: var(--inter-font);
-  margin-top: 2em;
+  padding-top: 2em; 
 }
 
 #carreras {

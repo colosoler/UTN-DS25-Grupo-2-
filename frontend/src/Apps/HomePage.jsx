@@ -9,7 +9,7 @@ export const HomePage = () => {
   const { data: carreras, loading, error } = useFetch(`${API_URL}/carreras`, {}, { requireAuth: false });
 
   if (loading) {
-    <Loading />
+    return <Loading />
   };
 
   if (error) {
