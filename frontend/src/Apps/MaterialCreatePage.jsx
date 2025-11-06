@@ -37,6 +37,17 @@ export const MaterialCreatePage = () => {
     : `${API_URL}/carreras`;
   const { data: carreras, loading: cLoading } = useFetch(carrerasUrl);
 
+  //construir URL para obtener la relación carrera/materia
+  const CarreraMateriaURL = formData.materiaId && formData.carreraId
+		? `carreras/${formData.carreraId}/materias/${formData.materiaId}`
+		: false;
+	const { data: carreraMateria, loading: cmLoading } = useFetch(
+		CarreraMateriaURL ? `${API_URL}/${CarreraMateriaURL}` : '', //si no hay url pasa '' para evitar fetch
+		{},
+		{ requireAuth: false },
+		{ enabled: Boolean(CarreraMateriaURL) }
+	);
+
   // Maneja el cambio de archivo
   const handleFileChange = (e) => {
     const file = e.target.files ? e.target.files[0] : null;
@@ -134,6 +145,8 @@ export const MaterialCreatePage = () => {
       cLoading={cLoading}
       userId={user.id}
       handleFileChange={handleFileChange}
+      carreraMateria={carreraMateria}
+			cmLoading={cmLoading}
     />
   );
 };
