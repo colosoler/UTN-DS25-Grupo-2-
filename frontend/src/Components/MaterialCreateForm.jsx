@@ -7,6 +7,9 @@ import { CarreraExpandedSelector } from '../Components/FormFields/CarreraExpande
 import { TipoExpandedSelector } from '../Components/FormFields/TipoExpandedSelector';
 import { ComisionField } from '../Components/FormFields/ComisionField';
 
+import { CarreraDropdownSelector } from '../Components/FormFields/CarreraDropdownSelector.jsx';
+import { TipoDropdownSelector } from '../Components/FormFields/TipoDropdownSelector';
+
 export const MaterialCreateForm = ({
   formData,
   setFormData,
@@ -89,7 +92,7 @@ export const MaterialCreateForm = ({
             <Col>
               <Form.Group aria-required>
                 <Form.Label className="material-form-label">Carrera</Form.Label>
-                <CarreraExpandedSelector
+                <CarreraDropdownSelector
 									useForm={[formData, setFormData, handleChange]}
 									carreras={cLoading ? [] : carreras}
 								/>
@@ -102,7 +105,7 @@ export const MaterialCreateForm = ({
           <Col>
             <Form.Group>
               <Form.Label>Tipo de Material</Form.Label>
-                <TipoExpandedSelector useForm={[formData, setFormData, handleChange]}/>
+                <TipoDropdownSelector useForm={[formData, setFormData, handleChange]} />
             </Form.Group>
           </Col>
 
