@@ -1,19 +1,16 @@
 import { useState, useEffect } from "react"
 import { DeleteConfirm } from "../Components/DeleteConfirm"
-import { ShareButton } from "../Components/ShareButton"
 import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import Card from "react-bootstrap/Card"
 import { Link, useNavigate } from "react-router-dom"
-import { MdEdit, MdArrowUpward, MdArrowDownward } from "react-icons/md"
 import { useFetch } from "../Hooks/useFetch"
-import "../Apps/styles/MyMaterialsPage.css"
 import { getToken, getUser } from "../Helpers/auth"
 import { Searchbar } from "../Components/Searchbar"
-import { VotesDisplay } from "../Components/VotesDisplay";
 import { StatsCards } from "../Components/StatsCards"
 import { MaterialCard } from "../Components/MaterialCard"
+import "../Apps/styles/MyMaterialsPage.css"
 
 
 export const MyMaterialsPage = () => {
