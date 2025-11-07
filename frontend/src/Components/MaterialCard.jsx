@@ -4,16 +4,22 @@ import { Vote } from './Vote';
 import { Link, useNavigate } from 'react-router-dom';
 import { ReportModel } from './ReportModel';
 import { DeleteConfirm } from "../Components/DeleteConfirm"
+import { useAuth } from '../Contexts/AuthContext'
 import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
 import './styles/MaterialCard.css';
 
 export const MaterialCard = ({ material }) => {
+  console.log("Material en MaterialCard:", material);
   const [showMenu, setShowMenu] = useState(false);
   const [showCopyMsg, setShowCopyMsg] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [materialToDelete, setMaterialToDelete] = useState(null);
+  const { user } = useAuth();
   const navigate = useNavigate();
+
+  {/* Defino si el usuario que está viendo la card es quién subió el material*/}
+  const isOwner = user && (user.id === material.userId)
 
   {/* Con esto le doy formato lindo a la fecha */}
   const formatDate = (dateString) => {
@@ -86,10 +92,14 @@ export const MaterialCard = ({ material }) => {
             {showMenu && (
               <div className="menu-dropdown">
 
-                {/* Opción Reportar */}
-                <div className="menu-item report-item">
-                  <ReportModel materialId={material.id} />
-                </div>
+                {!isOwner && (
+                  <>
+                    {/* Opción Reportar */}
+                    <div className="menu-item report-item">
+                      <ReportModel materialId={material.id} />
+                    </div>
+                  </>
+                )}
 
 
                 {/* Opción Compartir */}
@@ -106,26 +116,30 @@ export const MaterialCard = ({ material }) => {
                   Compartir
                 </button>
 
-                {/* Opción Editar */}
-                <button
-                  className="menu-item"
-                  onClick={() => {
-                    navigate(`/edit/${material.id}`);
-                    setShowMenu(false);
-                  }}
-                >
-                  <Edit3 size={16} style={{ marginRight: 8 }} />
-                  Editar
-                </button>
+                {isOwner && ( 
+                  <>
+                  {/* Opción Editar */}
+                  <button
+                    className="menu-item"
+                    onClick={() => {
+                      navigate(`/edit/${material.id}`);
+                      setShowMenu(false);
+                    }}
+                  >
+                    <Edit3 size={16} style={{ marginRight: 8 }} />
+                    Editar
+                  </button>
 
-                {/* Opción Eliminar */}
-                <button
-                  className="menu-item"
-                  onClick={() => handleDeleteClick(material)}
-                >
-                  <Trash2 size={16} style={{ marginRight: 8, color: 'red' }} />
-                  Eliminar
-                </button>
+                  {/* Opción Eliminar */}
+                  <button
+                    className="menu-item"
+                    onClick={() => handleDeleteClick(material)}
+                  >
+                    <Trash2 size={16} style={{ marginRight: 8, color: 'red' }} />
+                    Eliminar
+                  </button>
+                  </>
+                )}
               </div>
             )}
           </div>
