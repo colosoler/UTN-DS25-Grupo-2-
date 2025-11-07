@@ -98,7 +98,7 @@ export const MaterialCreatePage = () => {
       userId: Number(user.id),
       materiaId: Number(data.materiaId),
       carreraId: Number(data.carreraId),
-      añoCursada: Number(data.añoCursada),
+      añoCursada: Number(data.anioCursada),
       numeroParcial: data.numeroParcial ? Number(data.numeroParcial) : undefined,
       tipo: data.tipo.toUpperCase(), // Asegura que coincida con el enum TipoMaterial
     };
