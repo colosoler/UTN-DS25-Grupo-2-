@@ -10,7 +10,6 @@ import ToastContainer from 'react-bootstrap/ToastContainer';
 import './styles/MaterialCard.css';
 
 export const MaterialCard = ({ material }) => {
-  console.log("Material en MaterialCard:", material);
   const [showMenu, setShowMenu] = useState(false);
   const [showCopyMsg, setShowCopyMsg] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
