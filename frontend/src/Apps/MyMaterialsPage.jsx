@@ -104,7 +104,7 @@ export const MyMaterialsPage = () => {
       {/* Título */}
       <div className="mb-4">
         <h2 className="fw-bold">Mis Publicaciones</h2>
-        <p className="text-muted">Gestiona todo el material de estudio que has subido</p>
+        <p className="text-muted">Gestiona todo el material de estudio que subiste</p>
       </div>
 
       {/* Estadísticas rápidas */}
@@ -132,10 +132,10 @@ export const MyMaterialsPage = () => {
               <Card.Body>
                 <i className="bi bi-journal-x text-muted" style={{ fontSize: "3rem" }}></i>
                 <h4 className="mt-3 text-muted">
-                  {searchValue ? "No se encontraron resultados" : "Todavía no has subido ningún material"}
+                  {searchValue ? "No se encontraron resultados" : "Todavía no subiste ningún material"}
                 </h4>
                 <p className="text-muted">
-                  {searchValue ? "Intenta ajustar tu búsqueda" : "Comienza subiendo tu primer material de estudio"}
+                  {searchValue ? "Intenta ajustar tu búsqueda" : "Comenzá subiendo tu primer material de estudio"}
                 </p>
                 {!searchValue && (
                   <button
