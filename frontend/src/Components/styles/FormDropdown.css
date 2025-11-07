@@ -18,4 +18,8 @@
 	box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.1) !important;
 }
 
+.dropdown-item:hover {
+	background-color: #dee2e6 !important;
+	color: #212529 !important;
+}
 
