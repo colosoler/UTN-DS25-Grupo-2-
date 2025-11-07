@@ -13,6 +13,7 @@ import { getToken, getUser } from "../Helpers/auth"
 import { Searchbar } from "../Components/Searchbar"
 import { VotesDisplay } from "../Components/VotesDisplay";
 import { StatsCards } from "../Components/StatsCards"
+import { MaterialCard } from "../Components/MaterialCard"
 
 
 export const MyMaterialsPage = () => {
@@ -152,47 +153,7 @@ export const MyMaterialsPage = () => {
         ) : (
           filteredMaterials.map((material) => (
             <Col key={material.id}>
-              {/* Tarjeta personalizada para mis publicaciones */}
-              <Card className="material-card h-100">
-                <Card.Body>
-                  {/* Header con botón de editar */}
-                  <div className="d-flex justify-content-between align-items-start mb-2">
-                    <div className="flex-grow-1">
-                      <Card.Title>{material.titulo}</Card.Title>
-                      
-                    </div>
-                    <button
-                      className="btn btn-link p-1 text-muted edit-btn"
-                      onClick={() => handleEdit(material)}
-                      title="Editar material"
-                    >
-                      <MdEdit size={20} />
-                    </button>
-                  </div>
-
-                  <Card.Text>{material.descripcion}</Card.Text>
-
-                  <Link to={`/material/${material.id}`} className="text-primary fw-semibold">
-                    Ver material
-                  </Link>
-
-                  <VotesDisplay upvotes={material.upvotes || 0} downvotes={material.downvotes || 0} />
-
-                  {/* Acciones: Compartir y Eliminar */}
-                  <div className="d-flex justify-content-between align-items-center mt-3">
-                    <div className="d-flex align-items-center gap-3">
-                      {/* Compartir */}
-                      <ShareButton shareUrl={`${window.location.origin}/material/${material.id}`} />
-                    </div>
-
-                    {/* Eliminar */}
-                    <button className="btn btn-outline-danger btn-sm" onClick={() => handleDeleteClick(material)}>
-                      <i className="bi bi-trash me-1"></i>
-                      Eliminar
-                    </button>
-                  </div>
-                </Card.Body>
-              </Card>
+              <MaterialCard material={material} />
             </Col>
           ))
         )}
