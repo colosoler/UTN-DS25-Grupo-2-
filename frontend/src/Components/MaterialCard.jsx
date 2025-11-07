@@ -9,18 +9,26 @@ import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
 import './styles/MaterialCard.css';
 
-export const MaterialCard = ({ material }) => {
+export const MaterialCard = ({ material, onDelete }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [showCopyMsg, setShowCopyMsg] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [materialToDelete, setMaterialToDelete] = useState(null);
   const { user } = useAuth();
+
+  const API_URL = import.meta.env.VITE_API_URL;
+  
   const navigate = useNavigate();
 
-  {/* Defino si el usuario que está viendo la card es quién subió el material*/}
+  // Defino si el usuario que está viendo la card es quién subió el material
   const isOwner = user && (user.id === material.userId)
 
-  {/* Con esto le doy formato lindo a la fecha */}
+  // Función para obtener el token
+  const getToken = () => {
+    return localStorage.getItem('token');
+  };
+
+  // Con esto le doy formato lindo a la fecha
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = date.getDate();
@@ -30,7 +38,7 @@ export const MaterialCard = ({ material }) => {
     return `${day} ${month} ${year}`;
   };
 
-  {/* Con esto obtengo el nombre de la carrera */}
+  // Con esto obtengo el nombre de la carrera
   const getCarreraName = (carreraId) => {
     const carreras = {
       1: 'Ingeniería en Sistemas',
@@ -43,27 +51,49 @@ export const MaterialCard = ({ material }) => {
     return carreras[carreraId];
   };
 
-  {/* Manejo la eliminación del material */}
+  // Manejo la eliminación del material
   const handleDeleteClick = (material) => {
     setMaterialToDelete(material);
     setShowDeleteModal(true);
+    setShowMenu(false); // Cierro el menú
   };
 
   const confirmDelete = async () => {
-      try {
-        await fetch(`${API_URL}/materials/${materialToDelete.id}`, {
-          method: "DELETE",
-          headers: {
-            "Authorization": `Bearer ${getToken()}`
-          }
-        });
-        setMaterials((prev) => prev.filter((m) => m.id !== materialToDelete.id));
-      } catch (err) {
-        alert("Error al eliminar el material");
+    try {
+      const token = getToken();
+      
+      if (!token) {
+        alert("No estás autenticado");
+        return;
       }
+
+      const response = await fetch(`${API_URL}/materials/${materialToDelete.id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al eliminar el material');
+      }
+
+      // Si hay un callback onDelete, lo llamo para actualizar la lista
+      if (onDelete) {
+        onDelete(materialToDelete.id);
+      } else {
+        // Si no hay callback, recargo la página
+        window.location.reload();
+      }
+
+    } catch (err) {
+      console.error("Error al eliminar:", err);
+      alert("Error al eliminar el material");
+    } finally {
       setShowDeleteModal(false);
       setMaterialToDelete(null);
-    };
+    }
+  };
 
   return (
     <div className="card-container">
@@ -175,7 +205,7 @@ export const MaterialCard = ({ material }) => {
           show={showDeleteModal}
           onHide={() => setShowDeleteModal(false)}
           onConfirm={confirmDelete}
-          materialTitle={materialToDelete?.title}
+          materialTitle={materialToDelete?.titulo}
           message={"¿Estás seguro de que queres eliminar este material?"}
         />
         
