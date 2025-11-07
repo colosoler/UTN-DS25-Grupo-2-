@@ -5,6 +5,7 @@ import { CarreraDetailPage } from './Apps/CarreraDetailPage'
 import { SearchResultPage} from './Apps/SearchResultPage'
 import { MaterialPage} from './Apps/MaterialPage'
 import { Navbar } from './Components/Navbar'
+import { Footer } from './Components/Footer'
 import { LoginPage } from './Apps/LoginPage'
 import { SignupPage } from './Apps/SignupPage'
 import { MaterialCreatePage } from './Apps/MaterialCreatePage'
@@ -25,6 +26,8 @@ function App() {
   const location = useLocation();
 
   const hideNavbar = location.pathname === '/login' || location.pathname === '/signup';
+  const hideFooter = location.pathname === '/login' || location.pathname === '/signup';
+
   return (
     <>
       <AuthProvider>
@@ -76,6 +79,7 @@ function App() {
           <Route path="/unauthorized" element={<h2>Página no encontrada</h2>} />
         </Routes>   
       </main>
+      {!hideFooter && <Footer />}
       </AuthProvider>
     </>
   )
