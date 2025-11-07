@@ -3,10 +3,7 @@ import { Form, Row, Col, Button } from 'react-bootstrap';
 import { SearchOptions } from '../Components/SearchOptions.jsx';
 import { Alert } from '../Components/Alert.jsx';
 import './styles/MaterialCreateForm.css';
-import { CarreraExpandedSelector } from '../Components/FormFields/CarreraExpandedSelector.jsx';
-import { TipoExpandedSelector } from '../Components/FormFields/TipoExpandedSelector';
 import { ComisionField } from '../Components/FormFields/ComisionField';
-
 import { CarreraDropdownSelector } from '../Components/FormFields/CarreraDropdownSelector.jsx';
 import { TipoDropdownSelector } from '../Components/FormFields/TipoDropdownSelector';
 
