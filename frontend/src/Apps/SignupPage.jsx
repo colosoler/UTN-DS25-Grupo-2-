@@ -74,12 +74,11 @@ export const SignupPage = () => {
             } else {
               value = e.target.value; // valor que escribe el usuario
           }
-
           setValue("career", value, { shouldValidate: true });
           clearErrors("career"); // elimina el error al seleccionar
         }}
         />
-        {errors.career && <div className="field-error">{errors.career.message}</div>}
+        {errors.career && <div className="field-error">{"Debe seleccionar una carrera"}</div>}
       </Form.Group>
 
       {/* Error general */}
