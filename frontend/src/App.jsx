@@ -26,7 +26,7 @@ function App() {
   const location = useLocation();
 
   const hideNavbar = location.pathname === '/login' || location.pathname === '/signup';
-  const hideFooter = location.pathname === '/login' || location.pathname === '/signup';
+  const hideFooter = location.pathname === '/login' || location.pathname === '/signup' || location.pathname === '/profile';
 
   return (
     <>

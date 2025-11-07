@@ -6,6 +6,7 @@
   justify-content: center;
   padding: 20px;
   position: relative;
+  margin-bottom: 0px;
 }
 
 .profile-card {
@@ -41,19 +42,6 @@
 .profile-info {
   text-align: center;
   margin-top: 20px;
-}
-
-.edit-button {
-  justify-content: center;
-  display: flex;
-  align-items: center;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  background: none;
-  margin-left: 0.5em;
-  margin-bottom: 0.5em;
 }
 
 .profile-name {
