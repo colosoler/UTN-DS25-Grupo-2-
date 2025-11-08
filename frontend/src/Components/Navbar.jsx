@@ -37,7 +37,7 @@ export const Navbar = () => {
 
           <Link to="/" className="navbar-logo">
             <img src="/images/UTNotas.png" alt="UTNotas Logo" className="logo-img" />
-            <span><strong>UTN</strong>otas</span>
+            <span><strong>PAPUN</strong>otas</span>
           </Link>
 
           <div className="navbar-icons">
