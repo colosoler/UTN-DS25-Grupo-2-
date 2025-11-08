@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react"
-import { DeleteConfirm } from "../Components/DeleteConfirm"
 import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import Card from "react-bootstrap/Card"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useFetch } from "../Hooks/useFetch"
-import { getToken, getUser } from "../Helpers/auth"
+import { getUser } from "../Helpers/auth"
 import { Searchbar } from "../Components/Searchbar"
 import { StatsCards } from "../Components/StatsCards"
 import { MaterialCard } from "../Components/MaterialCard"
@@ -23,9 +22,6 @@ export const MyMaterialsPage = () => {
   const [materials, setMaterials] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [filteredMaterials, setFilteredMaterials] = useState([]);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [materialToDelete, setMaterialToDelete] = useState(null);
-  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     // Accede a data.data si existe
@@ -54,47 +50,8 @@ export const MyMaterialsPage = () => {
   if (loading) return <p>Cargando apuntes...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  const handleDeleteClick = (material) => {
-    setMaterialToDelete(material);
-    setShowDeleteModal(true);
-  };
-
-  const handleEdit = (material) => {
-    navigate(`/edit/${material.id}`, {
-      state: {
-        materialData: material,
-      },
-    });
-  };
-
-  const confirmDelete = async () => {
-    try {
-      await fetch(`${API_URL}/materials/${materialToDelete.id}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${getToken()}` // si usas autenticación
-        }
-      });
-      setMaterials((prev) => prev.filter((m) => m.id !== materialToDelete.id));
-    } catch (err) {
-      alert("Error al eliminar el material");
-    }
-    setShowDeleteModal(false);
-    setMaterialToDelete(null);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      
-    }
-  };
-
   const handleClear = () => {
     setSearchValue("");
-  };
-
-  const handleMenuClick = () => {
-    setShowForm(!showForm);
   };
 
   return (
@@ -155,15 +112,6 @@ export const MyMaterialsPage = () => {
           ))
         )}
       </Row>
-
-      {/* Modal de confirmación */}
-      <DeleteConfirm
-        show={showDeleteModal}
-        onHide={() => setShowDeleteModal(false)}
-        onConfirm={confirmDelete}
-        materialTitle={materialToDelete?.title}
-        message={"¿Estás seguro de que queres eliminar este material?"}
-      />
     </Container>
   )
 }
