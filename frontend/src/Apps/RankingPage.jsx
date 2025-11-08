@@ -50,7 +50,7 @@ export const RankingPage = () => {
       <Row className="mb-4">
         <Col>
           <div className="text-center">
-            <h1 className="display-4 mb-3">
+            <h1 className="display-4 mb-3" style={{ fontWeight: 'bold' }}>
               <i className="bi bi-trophy-fill text-warning"></i> Ranking de Usuarios
             </h1>
             <p className="lead text-muted">
