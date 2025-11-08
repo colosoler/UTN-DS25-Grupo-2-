@@ -37,6 +37,23 @@
   .votes-display > div:first-child {
     justify-content: center;
   }
+
+
+  .stats-card-publications {
+    order: 1 !important;
+  }
+
+  .stats-card-netscore {
+    order: 2 !important;
+  }
+
+  .stats-card-upvotes {
+    order: 3 !important;
+  }
+
+  .stats-card-downvotes {
+    order: 4 !important;
+  }
 }
 
 /* Animaciones */
