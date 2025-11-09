@@ -22,7 +22,7 @@ model User {
   profilePicture String?       @db.VarChar(1000)
   career        Carrera        @relation(fields: [careerId], references: [id])
   materialVotes Calificacion[]
-
+  reportes Reporte[]
   @@map("users")
 }
 
@@ -80,7 +80,7 @@ model Material {
   materia          Materia        @relation(fields: [materiaId], references: [id])
   user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   materialVotes    Calificacion[]
-
+  reportes Reporte[]
   @@map("materials")
 }
 
@@ -113,4 +113,26 @@ model Calificacion {
 
   @@unique([userId, materialId])
   @@map("material_votes")
+}
+
+model Reporte {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  materialId Int
+  descripcion String?
+  motivo      MotivoReporte
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id])
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, materialId])
+  @@map("reportes")
+}
+
+enum MotivoReporte {
+  CONTENIDO_INAPROPIADO
+  SPAM
+  PLAGIO
+  OTRO
 }

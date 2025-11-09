@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import { useFetch } from "../Hooks/useFetch";
 import { MaterialCard } from "../Components/MaterialCard";
 import { Searchbar } from "../Components/Searchbar";
+import { Loading } from "../Components/Loading"
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -50,7 +51,7 @@ export const SearchResultPage = () => {
 		<Container style={{paddingTop: "35px"}}>
 			<Searchbar />
 			<Row style={{paddingTop: "35px"}}>
-				{loading && <p>Cargando...</p>}
+				{loading && <Loading />}
 				{error && <p>Error: {error.message}</p>}
 				{resultsArray && resultsArray.length === 0 && !loading && (
 					<NoResults />

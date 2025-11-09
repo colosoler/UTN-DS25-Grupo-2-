@@ -1,14 +1,34 @@
 import { useState } from 'react';
-import { MoreVertical, Eye } from 'lucide-react';
+import { MoreVertical, Eye, Flag, Share2, Edit3, Trash2 } from 'lucide-react';
 import { Vote } from './Vote';
-import { Share } from './Share';
-import { Link } from 'react-router-dom';
-import ReportModel from './ReportModel';
+import { Link, useNavigate } from 'react-router-dom';
+import { ReportModel } from './ReportModel';
+import { DeleteConfirm } from "../Components/DeleteConfirm"
+import { useAuth } from '../Contexts/AuthContext'
+import Toast from 'react-bootstrap/Toast';
+import ToastContainer from 'react-bootstrap/ToastContainer';
 import './styles/MaterialCard.css';
 
-export const MaterialCard = ({ material }) => {
+export const MaterialCard = ({ material, onDelete }) => {
   const [showMenu, setShowMenu] = useState(false);
+  const [showCopyMsg, setShowCopyMsg] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [materialToDelete, setMaterialToDelete] = useState(null);
+  const { user } = useAuth();
 
+  const API_URL = import.meta.env.VITE_API_URL;
+  
+  const navigate = useNavigate();
+
+  // Defino si el usuario que está viendo la card es quién subió el material
+  const isOwner = user && (user.id === material.userId)
+
+  // Función para obtener el token
+  const getToken = () => {
+    return localStorage.getItem('token');
+  };
+
+  // Con esto le doy formato lindo a la fecha
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = date.getDate();
@@ -18,6 +38,7 @@ export const MaterialCard = ({ material }) => {
     return `${day} ${month} ${year}`;
   };
 
+  // Con esto obtengo el nombre de la carrera
   const getCarreraName = (carreraId) => {
     const carreras = {
       1: 'Ingeniería en Sistemas',
@@ -30,10 +51,53 @@ export const MaterialCard = ({ material }) => {
     return carreras[carreraId];
   };
 
+  // Manejo la eliminación del material
+  const handleDeleteClick = (material) => {
+    setMaterialToDelete(material);
+    setShowDeleteModal(true);
+    setShowMenu(false); // Cierro el menú
+  };
+
+  const confirmDelete = async () => {
+    try {
+      const token = getToken();
+      
+      if (!token) {
+        alert("No estás autenticado");
+        return;
+      }
+
+      const response = await fetch(`${API_URL}/materials/${materialToDelete.id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al eliminar el material');
+      }
+
+      // Si hay un callback onDelete, lo llamo para actualizar la lista
+      if (onDelete) {
+        onDelete(materialToDelete.id);
+      } else {
+        // Si no hay callback, recargo la página
+        window.location.reload();
+      }
+
+    } catch (err) {
+      console.error("Error al eliminar:", err);
+      alert("Error al eliminar el material");
+    } finally {
+      setShowDeleteModal(false);
+      setMaterialToDelete(null);
+    }
+  };
+
   return (
     <div className="card-container">
       <div className="study-card">
-        
         <div className="card-header">
           <div className="card-title-section">
             <h3 className="card-title">{material.titulo}</h3>
@@ -43,7 +107,8 @@ export const MaterialCard = ({ material }) => {
               <span className="card-date">{formatDate(material.fecha)}</span>
             </div>
           </div>
-          
+
+          {/* Menú con opciones varias*/}
           <div className="menu-container">
             <button
               onClick={() => setShowMenu(!showMenu)}
@@ -52,28 +117,98 @@ export const MaterialCard = ({ material }) => {
             >
               <MoreVertical className="icon" />
             </button>
-            
+
             {showMenu && (
               <div className="menu-dropdown">
-                <ReportModel />
-                <Share shareUrl={`${window.location.origin}/material/${material?.id}`} />
+
+                {!isOwner && (
+                  <>
+                    {/* Opción Reportar */}
+                    <div className="menu-item report-item">
+                      <ReportModel materialId={material.id} />
+                    </div>
+                  </>
+                )}
+
+
+                {/* Opción Compartir */}
+                <button
+                  className="menu-item"
+                  onClick={() => {
+                    navigator.clipboard.writeText(`${window.location.origin}/material/${material.id}`);
+                    setShowCopyMsg(true);
+                    setTimeout(() => setShowCopyMsg(false), 2500);
+                    setShowMenu(false);
+                  }}
+                >
+                  <Share2 size={16} style={{ marginRight: 8 }} />
+                  Compartir
+                </button>
+
+                {isOwner && ( 
+                  <>
+                  {/* Opción Editar */}
+                  <button
+                    className="menu-item"
+                    onClick={() => {
+                      navigate(`/edit/${material.id}`);
+                      setShowMenu(false);
+                    }}
+                  >
+                    <Edit3 size={16} style={{ marginRight: 8 }} />
+                    Editar
+                  </button>
+
+                  {/* Opción Eliminar */}
+                  <button
+                    className="menu-item"
+                    onClick={() => handleDeleteClick(material)}
+                  >
+                    <Trash2 size={16} style={{ marginRight: 8, color: 'red' }} />
+                    Eliminar
+                  </button>
+                  </>
+                )}
               </div>
             )}
           </div>
         </div>
 
         <div className="card-badges">
-            <span className="badge badge-type">{material.tipo}</span>
-            <span className="badge badge-career">{getCarreraName(material.carreraId)}</span>
+          <span className="badge badge-type">{material.tipo}</span>
+          <span className="badge badge-career">{getCarreraName(material.carreraId)}</span>
         </div>
 
         <div className="card-footer">
-            <Vote material={material} />
-            <Link to={`/material/${material.id}`} className="btn-view-material">
-                <Eye className="icon-btn" />
-                Ver Material
-            </Link>
+          <Vote material={material} />
+          <Link to={`/material/${material.id}`} className="btn-view-material">
+            <Eye className="icon-btn" />
+            Ver Material
+          </Link>
         </div>
+
+        {/* Mensaje cuando tocan el compartir */}
+        <ToastContainer
+          position="bottom-center"
+          className="p-3"
+          style={{position: 'fixed', marginBottom: '20px'}}
+        >
+          <Toast show={showCopyMsg} bg={'success'} delay={1500} autohide>
+            <Toast.Body className="text-white text-center">
+              {'¡Link copiado al portapapeles!'}
+            </Toast.Body>
+          </Toast>
+        </ToastContainer>
+    
+        {/* Muestro pop up para confirmar eliminación */}    
+        <DeleteConfirm
+          show={showDeleteModal}
+          onHide={() => setShowDeleteModal(false)}
+          onConfirm={confirmDelete}
+          materialTitle={materialToDelete?.titulo}
+          message={"¿Estás seguro de que queres eliminar este material?"}
+        />
+        
       </div>
     </div>
   );

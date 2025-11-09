@@ -4,15 +4,25 @@ import { useForm } from '../Hooks/useForm.jsx';
 import { useFetch } from '../Hooks/useFetch.jsx';
 import { getToken } from '../Helpers/auth.js';
 import { useAuth } from '../Contexts/AuthContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 export const MaterialCreatePage = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Hook para manejar los datos del formulario
-  const [formData, setFormData, handleChange] = useForm((name, value, newData) => {
-    if (name === 'materia' || name === 'carrera') {
-      setFormData({ ...newData, [name + 'Id']: value.value, [name]: value.option });
-    }
+  const [formData, setFormData, handleChange] = useForm({
+    titulo: '',
+    descripcion: '',
+    tipo: '',
+    archivo: null,
+    materiaId: '',
+    carreraId: '',
+    materia: '',
+    carrera: '',
+    comision: '',
+    parcial: '',
+    anioCursada: '',
   });
 
   const API_URL = import.meta.env.VITE_API_URL;
@@ -26,6 +36,17 @@ export const MaterialCreatePage = () => {
     ? `${API_URL}/carreras?materia=${formData.materiaId}`
     : `${API_URL}/carreras`;
   const { data: carreras, loading: cLoading } = useFetch(carrerasUrl);
+
+  //construir URL para obtener la relación carrera/materia
+  const CarreraMateriaURL = formData.materiaId && formData.carreraId
+		? `carreras/${formData.carreraId}/materias/${formData.materiaId}`
+		: false;
+	const { data: carreraMateria, loading: cmLoading } = useFetch(
+		CarreraMateriaURL ? `${API_URL}/${CarreraMateriaURL}` : '', //si no hay url pasa '' para evitar fetch
+		{},
+		{ requireAuth: false },
+		{ enabled: Boolean(CarreraMateriaURL) }
+	);
 
   // Maneja el cambio de archivo
   const handleFileChange = (e) => {
@@ -77,7 +98,7 @@ export const MaterialCreatePage = () => {
       userId: Number(user.id),
       materiaId: Number(data.materiaId),
       carreraId: Number(data.carreraId),
-      añoCursada: Number(data.añoCursada),
+      añoCursada: Number(data.anioCursada),
       numeroParcial: data.numeroParcial ? Number(data.numeroParcial) : undefined,
       tipo: data.tipo.toUpperCase(), // Asegura que coincida con el enum TipoMaterial
     };
@@ -104,6 +125,7 @@ export const MaterialCreatePage = () => {
   return (
     <MaterialCreateForm
       formData={formData}
+      setFormData={setFormData}
       handleChange={handleChange}
       materias={materias}
       carreras={carreras}
@@ -112,6 +134,7 @@ export const MaterialCreatePage = () => {
           await handleSubmit(data);
           setAlert({ show: true, message: 'Material subido correctamente', variant: 'success' });
           setFormData({});
+          navigate('/')
         } catch (err) {
           console.log('Error onSubmit: ', err);
           setAlert({ show: true, message: err.message, variant: 'danger' });
@@ -122,6 +145,8 @@ export const MaterialCreatePage = () => {
       cLoading={cLoading}
       userId={user.id}
       handleFileChange={handleFileChange}
+      carreraMateria={carreraMateria}
+			cmLoading={cmLoading}
     />
   );
 };

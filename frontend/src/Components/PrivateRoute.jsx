@@ -9,7 +9,7 @@ export function PrivateRoute({ children, requiredRole = null }) {
     }
 
     if (!isAuthenticated) {
-        return <Navigate to="/" replace/>;
+        return <Navigate to="/login" replace/>;
     }
 
     if (requiredRole && user.role !== requiredRole) {

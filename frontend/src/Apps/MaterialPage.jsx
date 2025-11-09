@@ -1,10 +1,10 @@
 import Information from '../Components/Information'
 import { Material } from '../Components/Material';
-import {Buttons} from '../Components/Buttons';
+import { Buttons } from '../Components/Buttons';
 import { useFetch } from '../Hooks/useFetch';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../Contexts/AuthContext';
-import './styles/MaterialPage.css';
+import { Loading } from '../Components/Loading';
 
 export const MaterialPage = () => {
 
@@ -17,23 +17,24 @@ export const MaterialPage = () => {
     { requireAuth: false}
   );
   
-  if (loading) return <p className="loading">Cargando material...</p>;
+  if (loading) {return <Loading />};
   if (error) return <p className="error">Error al cargar: {error.message}</p>;
-  if (!material) return <p>No se encontró el material.</p>;
+  if (!material) {return <Loading />};
 
   return (
     <>
       <section className="container">
-      <h1 className='title'>{material.data.titulo}</h1>
-        <div className='material-layout-container'>
-          <div className="material-main-content">
+      <h1 style={{ margin: '1em' }}>{material.data.titulo}</h1>
+        <div className='row'>
+
+          <div className="col-12 col-md-9">
             <Material archivo={material.data.archivo} />
-          </div>
-          <div className='material-sidebar'>
-            <Information material={material.data} />
-            <div className='material-icons'>
-              <Buttons material={material.data} user={user}/>
+            <div className="d-flex justify-content-start mt-3">
+                <Buttons material={material.data} user={user}/>
             </div>
+          </div>
+          <div className='col-12 col-md-3'>
+            <Information material={material.data} />
           </div>
         </div>
       </section>

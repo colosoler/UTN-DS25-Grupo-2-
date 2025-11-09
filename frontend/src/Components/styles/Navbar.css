@@ -3,10 +3,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--primary-color);
+  background-color: var(--indigo-600);
   padding: 0.8em 1.5em;
   color: var(--text-color);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.05);
   font-family: var(--font-family);
   font-size: var(--font-size);
   font-weight: var(--font-weight);
@@ -14,26 +14,27 @@
 }
 
 .navbar-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.6em;
-  text-decoration: none;
-}
-
-.logo-img {
-  height: 40px;
-  width: auto;
+    text-decoration: none; 
+    display: flex;
+    align-items: center;
 }
 
 .navbar-logo span {
-  font-size: 1.3em;
-  color: white;
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    color: white !important;
+}
+
+.navbar-logo .logo-img {
+    height: 1.8rem;
+    margin-right: 0.5rem;
 }
 
 .navbar-icons {
   display: flex;
-  gap: 1.2em;
-  align-items: center;
+  gap: 1rem; /* space-x-4 */
+  color: var(--gray-600); /* text-gray-600 (color base para los íconos) */
+  align-items: center; 
 }
 
 .navbar-icons img {
@@ -47,6 +48,23 @@
 .navbar-icons img:hover {
   transform: scale(1.1);
   filter: brightness(0) invert(0.8);
+}
+
+.ranking-icon {
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: white;
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}
+
+.ranking-icon:hover {
+  transform: scale(1.1);
+  color: #ffd700;
 }
 
 .avatar-toggle {

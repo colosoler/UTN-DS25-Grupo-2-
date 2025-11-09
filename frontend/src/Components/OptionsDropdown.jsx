@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
-import { MdMoreHoriz } from 'react-icons/md';
-import { DeleteConfirmModal } from './DeleteConfirmModal';
+import { MoreHorizontal } from 'lucide-react';
+import { DeleteConfirm } from './DeleteConfirm';
 import { getToken } from '../Helpers/auth';
 import { Alert } from './Alert';
 import { useNavigate } from 'react-router-dom';
@@ -45,7 +45,7 @@ export const OptionsDropdown = ({ material }) => {
       setShowDeleteModal(false);
 
       setTimeout(() => {
-        navigate('/home');
+        navigate('/');
       }, 1500);
       
     } catch (error) {
@@ -72,7 +72,7 @@ export const OptionsDropdown = ({ material }) => {
           id="dropdown-options"
           className="options-toggle p-0 border-0"
         >
-          <MdMoreHoriz />
+          <MoreHorizontal />
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
@@ -82,11 +82,12 @@ export const OptionsDropdown = ({ material }) => {
         </Dropdown.Menu>
       </Dropdown>
 
-      <DeleteConfirmModal
+      <DeleteConfirm
         show={showDeleteModal}
         onHide={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
         materialTitle={material.title}
+        message={"¿Estás seguro de que queres eliminar este material?"}
       />
 
       <Alert

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useFetch } from '../Hooks/useFetch'
 import { CarreraDetailAnio } from '../Components/CarreraDetailAnio'
 import { intToAnioString } from '../Helpers/intToAnioString';
+import { Loading } from '../Components/Loading';
 
 function sortCarreraMateriasByAnio(carreraMaterias) {
   let anios = [];
@@ -22,7 +23,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 export const CarreraDetailPage = () => {
   const { id } = useParams();
   const { data: carrera, loading, error } = useFetch(`${API_URL}/carreras/${id}`)
-  if (loading) return <h1>Cargando...</h1>
+
+  if (loading || !carrera) {return <Loading />};
   if (error) { console.log(error); return <h1>Ha Ocurrido un Error</h1> }
   return (
     <Container>

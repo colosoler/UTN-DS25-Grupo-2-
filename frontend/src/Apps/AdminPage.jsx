@@ -4,7 +4,7 @@ import { StatCard } from "../Components/StatCard";
 import { BarChartUsers } from "../Components/BarChartUsers";
 import { PieChartMaterials } from "../Components/PieChartMaterials";
 import { ReportedMaterialsModal } from "../Components/ReportedMaterialsModal";
-import { DeleteConfirmModal } from "../Components/DeleteConfirmModal";
+import { DeleteConfirm } from "../Components/DeleteConfirm";
 import { Alert } from "../Components/Alert"; 
 import { useFetch } from "../Hooks/useFetch";
 import { getToken } from "../Helpers/auth";
@@ -192,11 +192,12 @@ export const AdminPage = () => {
         />
       )}
 
-      <DeleteConfirmModal
+      <DeleteConfirm
         show={showDeleteModal}
         onHide={() => setShowDeleteModal(false)}
         onConfirm={confirmDelete}
         materialTitle={selectedMaterial?.titulo}
+        message={"¿Estás seguro de que queres eliminar este material?"}
       />
 
       <Alert

@@ -18,8 +18,9 @@ export interface Material {
     downvotes: number;
 }
 
-export interface MaterialWithUser extends Material { //interfaz para devolver el material junto con el nombre de usuario
+export interface MaterialWithUser extends Material { //interfaz para devolver el material junto con el nombre de usuario y nombre de carrera 
 	username: string;
+    carreraNombre?: string | null;
 }
 
 // id, cantidadReportes, fecha no son necesarios.

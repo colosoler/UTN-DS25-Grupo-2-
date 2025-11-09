@@ -40,7 +40,7 @@ export const SignupPage = () => {
     const result = await signup(data);
     if (result.success) {
         setShowSuccessToast(true);
-        setTimeout(() => navigate("/home"), 2500);
+        setTimeout(() => navigate("/"), 2500);
     } else {
         setError("root", { type: "manual", message: result.error });
     }
@@ -74,12 +74,11 @@ export const SignupPage = () => {
             } else {
               value = e.target.value; // valor que escribe el usuario
           }
-
           setValue("career", value, { shouldValidate: true });
           clearErrors("career"); // elimina el error al seleccionar
         }}
         />
-        {errors.career && <div className="field-error">{errors.career.message}</div>}
+        {errors.career && <div className="field-error">{"Debe seleccionar una carrera"}</div>}
       </Form.Group>
 
       {/* Error general */}
@@ -90,7 +89,7 @@ export const SignupPage = () => {
       </Button>
 
       <p className="signup-register-link">
-        ¿Ya tenés cuenta? <Link to="/">Inicia Sesión</Link>
+        ¿Ya tenés cuenta? <Link to="/login">Inicia Sesión</Link>
       </p>
 
       <Alert

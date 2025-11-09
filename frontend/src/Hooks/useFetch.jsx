@@ -21,7 +21,7 @@ export function useFetch(url, options = {}, { requireAuth = false } = {}, {enabl
                const res = await fetch(url, { ...options, headers, signal: controller.signal });
                if (res.status === 401 && requireAuth) {
                    clearToken();
-                   navigate("/");
+                   navigate("/login");
                    return;
                }
                if (!res.ok) throw new Error(res.statusText);

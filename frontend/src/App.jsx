@@ -5,6 +5,7 @@ import { CarreraDetailPage } from './Apps/CarreraDetailPage'
 import { SearchResultPage} from './Apps/SearchResultPage'
 import { MaterialPage} from './Apps/MaterialPage'
 import { Navbar } from './Components/Navbar'
+import { Footer } from './Components/Footer'
 import { LoginPage } from './Apps/LoginPage'
 import { SignupPage } from './Apps/SignupPage'
 import { MaterialCreatePage } from './Apps/MaterialCreatePage'
@@ -13,6 +14,7 @@ import { SettingsPage } from './Apps/SettingsPage'
 import { MyMaterialsPage } from './Apps/MyMaterialsPage'
 import { MaterialEditPage } from './Apps/MaterialEditPage'
 import { AdminPage } from './Apps/AdminPage'
+import { RankingPage } from './Apps/RankingPage'
 import { AuthProvider } from './Contexts/AuthContext'
 import { PrivateRoute } from './Components/PrivateRoute'
 import { useFetch } from './Hooks/useFetch'
@@ -23,7 +25,9 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 function App() {
   const location = useLocation();
 
-  const hideNavbar = location.pathname === '/' || location.pathname === '/signup';
+  const hideNavbar = location.pathname === '/login' || location.pathname === '/signup';
+  const hideFooter = location.pathname === '/login' || location.pathname === '/signup' || location.pathname === '/profile';
+
   return (
     <>
       <AuthProvider>
@@ -31,12 +35,13 @@ function App() {
       <main>
         <Routes>
           {/*Rutas públicas*/}
-          <Route path="/" element={<LoginPage/>} />
+          <Route path="/" element={<HomePage/>} />
           <Route path="/signup" element={<SignupPage/>} />
-          <Route path="/home" element={<HomePage/>} />
+          <Route path="/login" element={<LoginPage/>} />
           <Route path="/carrera/:id" element={<CarreraDetailPage/>} />
           <Route path="/search" element={<SearchResultPage/>} />
           <Route path="/material/:id" element={<MaterialPage/>} />
+          <Route path="/ranking" element={<RankingPage/>} />
           <Route path="/admin/" element={
             <PrivateRoute requiredRole="ADMIN">
               <AdminPage/>
@@ -74,6 +79,7 @@ function App() {
           <Route path="/unauthorized" element={<h2>Página no encontrada</h2>} />
         </Routes>   
       </main>
+      {!hideFooter && <Footer />}
       </AuthProvider>
     </>
   )

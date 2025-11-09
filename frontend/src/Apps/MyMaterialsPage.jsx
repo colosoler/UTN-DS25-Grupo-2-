@@ -1,18 +1,16 @@
 import { useState, useEffect } from "react"
-import { DeleteConfirmModal } from "../Components/DeleteConfirmModal"
-import { Share } from "../Components/Share"
 import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import Card from "react-bootstrap/Card"
-import { Link, useNavigate } from "react-router-dom"
-import { MdEdit, MdArrowUpward, MdArrowDownward } from "react-icons/md"
+import { useNavigate } from "react-router-dom"
 import { useFetch } from "../Hooks/useFetch"
-import "../Apps/styles/MyMaterialsPage.css"
-import { getToken, getUser } from "../Helpers/auth"
+import { getUser } from "../Helpers/auth"
 import { Searchbar } from "../Components/Searchbar"
-import { VotesDisplay } from "../Components/VotesDisplay";
 import { StatsCards } from "../Components/StatsCards"
+import { MaterialCard } from "../Components/MaterialCard"
+import { Loading } from "../Components/Loading"
+import "../Apps/styles/MyMaterialsPage.css"
 
 
 export const MyMaterialsPage = () => {
@@ -25,9 +23,6 @@ export const MyMaterialsPage = () => {
   const [materials, setMaterials] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [filteredMaterials, setFilteredMaterials] = useState([]);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [materialToDelete, setMaterialToDelete] = useState(null);
-  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     // Accede a data.data si existe
@@ -53,50 +48,11 @@ export const MyMaterialsPage = () => {
     }
   }, [searchValue, materials]);
 
-  if (loading) return <p>Cargando apuntes...</p>;
+  if (loading) {return <Loading />} ;
   if (error) return <p>Error: {error.message}</p>;
-
-  const handleDeleteClick = (material) => {
-    setMaterialToDelete(material);
-    setShowDeleteModal(true);
-  };
-
-  const handleEdit = (material) => {
-    navigate(`/edit/${material.id}`, {
-      state: {
-        materialData: material,
-      },
-    });
-  };
-
-  const confirmDelete = async () => {
-    try {
-      await fetch(`${API_URL}/materials/${materialToDelete.id}`, {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${getToken()}` // si usas autenticación
-        }
-      });
-      setMaterials((prev) => prev.filter((m) => m.id !== materialToDelete.id));
-    } catch (err) {
-      alert("Error al eliminar el material");
-    }
-    setShowDeleteModal(false);
-    setMaterialToDelete(null);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      
-    }
-  };
 
   const handleClear = () => {
     setSearchValue("");
-  };
-
-  const handleMenuClick = () => {
-    setShowForm(!showForm);
   };
 
   return (
@@ -104,7 +60,7 @@ export const MyMaterialsPage = () => {
       {/* Título */}
       <div className="mb-4">
         <h2 className="fw-bold">Mis Publicaciones</h2>
-        <p className="text-muted">Gestiona todo el material de estudio que has subido</p>
+        <p className="text-muted">Gestiona todo el material de estudio que subiste</p>
       </div>
 
       {/* Estadísticas rápidas */}
@@ -132,10 +88,10 @@ export const MyMaterialsPage = () => {
               <Card.Body>
                 <i className="bi bi-journal-x text-muted" style={{ fontSize: "3rem" }}></i>
                 <h4 className="mt-3 text-muted">
-                  {searchValue ? "No se encontraron resultados" : "Todavía no has subido ningún material"}
+                  {searchValue ? "No se encontraron resultados" : "Todavía no subiste ningún material"}
                 </h4>
                 <p className="text-muted">
-                  {searchValue ? "Intenta ajustar tu búsqueda" : "Comienza subiendo tu primer material de estudio"}
+                  {searchValue ? "Intenta ajustar tu búsqueda" : "Comenzá subiendo tu primer material de estudio"}
                 </p>
                 {!searchValue && (
                   <button
@@ -152,59 +108,11 @@ export const MyMaterialsPage = () => {
         ) : (
           filteredMaterials.map((material) => (
             <Col key={material.id}>
-              {/* Tarjeta personalizada para mis publicaciones */}
-              <Card className="material-card h-100">
-                <Card.Body>
-                  {/* Header con botón de editar */}
-                  <div className="d-flex justify-content-between align-items-start mb-2">
-                    <div className="flex-grow-1">
-                      <Card.Title>{material.titulo}</Card.Title>
-                      
-                    </div>
-                    <button
-                      className="btn btn-link p-1 text-muted edit-btn"
-                      onClick={() => handleEdit(material)}
-                      title="Editar material"
-                    >
-                      <MdEdit size={20} />
-                    </button>
-                  </div>
-
-                  <Card.Text>{material.descripcion}</Card.Text>
-
-                  <Link to={`/material/${material.id}`} className="text-primary fw-semibold">
-                    Ver material
-                  </Link>
-
-                  <VotesDisplay upvotes={material.upvotes || 0} downvotes={material.downvotes || 0} />
-
-                  {/* Acciones: Compartir y Eliminar */}
-                  <div className="d-flex justify-content-between align-items-center mt-3">
-                    <div className="d-flex align-items-center gap-3">
-                      {/* Compartir */}
-                      <Share shareUrl={`${window.location.origin}/material/${material.id}`} />
-                    </div>
-
-                    {/* Eliminar */}
-                    <button className="btn btn-outline-danger btn-sm" onClick={() => handleDeleteClick(material)}>
-                      <i className="bi bi-trash me-1"></i>
-                      Eliminar
-                    </button>
-                  </div>
-                </Card.Body>
-              </Card>
+              <MaterialCard material={material} />
             </Col>
           ))
         )}
       </Row>
-
-      {/* Modal de confirmación */}
-      <DeleteConfirmModal
-        show={showDeleteModal}
-        onHide={() => setShowDeleteModal(false)}
-        onConfirm={confirmDelete}
-        materialTitle={materialToDelete?.title}
-      />
     </Container>
   )
 }

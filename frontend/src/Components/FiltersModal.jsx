@@ -1,8 +1,9 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { SearchOptions } from "./SearchOptions";
 import { useEffect } from "react";
-
-
+import { CarreraExpandedSelector } from "./FormFields/CarreraExpandedSelector";
+import { TipoExpandedSelector } from "./FormFields/TipoExpandedSelector";
+import { ComisionField } from "./FormFields/ComisionField";
 
 export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
   const [formData, setFormData, handleChange, handleSubmit] = useForm;
@@ -14,22 +15,17 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
     return formData.materia
       ? formData.materia
       : formData.materiaId
-        ? fetchedData.fetchedMaterias.data.materias.find(m => m.id === formData.materiaId)?.nombre
+        ? materias.materias.find(m => m.id === formData.materiaId)?.nombre
         : ""
   }
 
-  useEffect(() => {
-    if (!formData.materiaId || !formData.carreraId || !formData.carrera || cm_loading) return;
-    let comisionPrefix = "";
-    const carreraPalabras = formData.carrera.toLowerCase().split(" ");
-    if (carreraPalabras[1] === "en") {
-      comisionPrefix = carreraPalabras[2][0].toUpperCase(); //Ingenieria en ... Sistemas -> S
-    } else {
-      comisionPrefix = carreraPalabras[1][0].toUpperCase(); //Ingeniería ... Industrial -> I
-    }
-    comisionPrefix += carreraMateria.anio;
-    setFormData({ ...formData, comision: comisionPrefix + (formData.comision.charAt(2) || "") });
-  }, [formData.carreraId, formData.carrera, formData.materiaId, cm_loading]);
+  const getCarreraValue = () => {
+    return formData.carrera
+      ? formData.carrera
+      : formData.carreraId
+        ? carreras.find(c => c.id === formData.carreraId)?.nombre
+        : ""
+  }
 
   //no funciona pq se carga primero el return desde searchBar -> if (m_loading || c_loading) return <h1> Cargando... </h1>
   if (m_error || c_error || cm_error) return <h1> Ha ocurrido un error </h1>
@@ -48,7 +44,10 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
             placeholder="Escribí la materia"
             name="materia"
             value={getMateriaValue}
-            onChange={handleChange}
+            onChange={(e) => handleChange(e, (value) =>
+              setFormData(
+                { ...formData, materiaId: value.value, materia: value.option, carrera: "", carreraId: null })
+            )}
             options={materias ? materias.materias.map(m => ({ value: m.id, option: m.nombre })) : []}
           />
         </div>
@@ -58,49 +57,21 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
               type="switch"
               name="includeCarrera"
               label="Filtrar por Carrera"
-              onChange={handleChange}
+              onChange={(e) => handleChange(e, () =>
+                setFormData({ ...formData, includeCarrera: !formData.includeCarrera, carrera: formData.carreraId && getCarreraValue() })
+              )
+              }
               className="mb-3"
               checked={formData.includeCarrera || false}
             />
             {formData.includeCarrera &&
-              (carreras.length === 0
-                ? <div> No hay carreras disponibles </div>
-                : <div>
-                  <h6>Carrera</h6>
-                  <div className="d-flex flex-wrap gap-2 pb-3">
-                    {carreras && carreras.map((carrera) => (
-                      <Button
-                        key={carrera.id}
-                        variant={formData.carreraId === carrera.id ? "primary" : "outline-secondary"}
-                        onClick={handleChange}
-                        name="carrera"
-                        value={JSON.stringify({ value: carrera.id, option: carrera.nombre })}
-                      >
-                        {carrera.nombre}
-                      </Button>
-                    ))}
-                  </div>
-                </div>)
+              <CarreraExpandedSelector useForm={useForm} carreras={carreras} />
             }
           </Form.Group>
         }
         {/*Tipo de material */}
-        <div className="mb-3 pb-3 border-bottom">
-          <h6>Tipo de material</h6>
-          <div className="d-flex flex-wrap gap-2">
-            {["Parcial", "Parcial resuelto", "Final", "Final resuelto", "Práctica", "Práctica resuelta", "Apunte", "Resumen", "Otro"].map((tipo) => (
-              <Button
-                key={tipo}
-                variant={formData.tipo === tipo ? "primary" : "outline-secondary"}
-                onClick={handleChange}
-                name="tipo"
-                value={tipo}
-              >
-                {tipo}
-              </Button>
-            ))}
-          </div>
-        </div>
+        <Form.Label>Tipo de material</Form.Label>
+        <TipoExpandedSelector useForm={useForm}></TipoExpandedSelector>
         <div className="d-flex flex-column flex-md-row justify-content-between mb-3 gap-3" >
           <Form.Group>
             <Form.Label>Parcial relacionado</Form.Label>
@@ -112,32 +83,10 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
               <option value={4}>4to</option>
             </Form.Select>
           </Form.Group>
-          {formData.materiaId && formData.carreraId && formData.includeCarrera && formData.comision.length >= 2 &&
-            <Form.Group>
-              <Form.Label>Comisión</Form.Label>
-              <div className="d-flex">
-                <Form.Control
-                  disabled
-                  value={formData.comision.slice(0, 2) || ""}
-                  className="bg-secondary text-white"
-                  style={{ width: '50px', paddingRight: '0' }}
-                />
-                <Form.Control
-                  onChange={handleChange}
-                  name="comision"
-                  type="number"
-                  placeholder="2"
-                  value={parseInt(formData.comision.charAt(2)) || ''}
-                  style={{ width: '50px', paddingLeft: '0' }}
-                  min="0"
-                  max="9"
-                />
-              </div>
-            </Form.Group>
-          }
+          {carreraMateria && formData.includeCarrera &&<ComisionField useForm={useForm} carreraMateria={carreraMateria}/>}
           <Form.Group>
             <Form.Label>Año de Cursada</Form.Label>
-            <Form.Control onChange={handleChange} name="añoCursada" type="number" placeholder={new Date().getFullYear()} value={formData.añoCursada || ""} />
+            <Form.Control onChange={handleChange} name="anioCursada" type="number" placeholder={new Date().getFullYear()} value={formData.anioCursada || ""} />
           </Form.Group>
         </div>
       </Modal.Body>

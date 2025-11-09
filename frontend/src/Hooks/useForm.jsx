@@ -1,17 +1,14 @@
 import { useState } from "react"
 
-export const useForm = (callback,...params) => {
-    const [formData, setFormData] = useState({})
+export const useForm = (defaultForm={}) => {
+    const [formData, setFormData] = useState(defaultForm)
 
-    const handleChange = (e) => {
+    const handleChange = (e,callback,...params) => {
         const { name, value } = e.target
-        const newData = {
-            ...formData,
-            [name]: value
-        }
-        setFormData(newData)
         if (callback) {
-            callback(name,value,newData,...params)
+            callback(value,...params)
+        }else {
+            setFormData({ ...formData, [name]: value })
         }
     }
 

@@ -10,8 +10,8 @@ export const StatsCards = ({ materials }) => {
   const netScore = materials.reduce((acc, m) => acc + ((m.upvotes || 0) - (m.downvotes || 0)), 0);
 
   return (
-    <Row className="mb-4">
-      <Col md={3} xs={6} className="mb-3">
+    <Row className="mb-4 stats-cards-row">
+      <Col md={3} xs={6} className="mb-3 stats-card-col stats-card-publications">
         <Card className="stats-card text-center">
           <Card.Body>
             <i className="bi bi-file-earmark-text text-primary fs-3"></i>
@@ -20,7 +20,7 @@ export const StatsCards = ({ materials }) => {
           </Card.Body>
         </Card>
       </Col>
-      <Col md={3} xs={6} className="mb-3">
+      <Col md={3} xs={6} className="mb-3 stats-card-col stats-card-upvotes">
         <Card className="stats-card text-center">
           <Card.Body>
             <MdArrowUpward className="text-success fs-3" />
@@ -29,7 +29,7 @@ export const StatsCards = ({ materials }) => {
           </Card.Body>
         </Card>
       </Col>
-      <Col md={3} xs={6} className="mb-3">
+      <Col md={3} xs={6} className="mb-3 stats-card-col stats-card-downvotes">
         <Card className="stats-card text-center">
           <Card.Body>
             <MdArrowDownward className="text-danger fs-3" />
@@ -38,7 +38,7 @@ export const StatsCards = ({ materials }) => {
           </Card.Body>
         </Card>
       </Col>
-      <Col md={3} xs={6} className="mb-3">
+      <Col md={3} xs={6} className="mb-3 stats-card-col stats-card-netscore">
         <Card className="stats-card text-center">
           <Card.Body>
             <i className="bi bi-trophy text-warning fs-3"></i>

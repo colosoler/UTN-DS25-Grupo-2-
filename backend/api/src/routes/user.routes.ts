@@ -10,7 +10,7 @@ import { updateProfilePicture } from '../controllers/user.controller';
 const router = Router();
 
 
-router.get('/', authenticate, authorize('ADMIN'),userController.getAllUsers);
+router.get('/', userController.getAllUsers);
 
 
 router.get('/:id', authenticate, userController.getUserById);
