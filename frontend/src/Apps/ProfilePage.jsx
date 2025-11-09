@@ -1,5 +1,6 @@
 import { getUser, getToken } from "../Helpers/auth";
 import { useEffect, useState } from "react";
+import { Loading } from "../Components/Loading";
 import './styles/ProfilePage.css';
 
 export const ProfilePage = () => {
@@ -35,7 +36,7 @@ export const ProfilePage = () => {
       .catch(err => console.error(err));
   }, []);
 
-  if (!userData) return <p>Cargando...</p>;
+  if (!userData) return <Loading />;
 
   // Calcular votos totales
   const totalUpvotes = materials.reduce((acc, m) => acc + (m.upvotes || 0), 0);
