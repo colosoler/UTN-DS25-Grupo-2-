@@ -21,7 +21,7 @@ export const Navbar = () => {
     setShowLogoutToast(true);
     logout();
     setTimeout(() => {
-      navigate('/login');
+      navigate('/');
       setShowLogoutToast(false);
     }, 3000);
   };
