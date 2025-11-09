@@ -5,6 +5,7 @@ import { useFetch } from '../Hooks/useFetch.jsx';
 import { getToken } from '../Helpers/auth.js';
 import { useAuth } from '../Contexts/AuthContext.jsx';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Loading } from '../Components/Loading.jsx';
 
 export const MaterialEditPage = () => {
   const { id } = useParams();
@@ -220,7 +221,7 @@ export const MaterialEditPage = () => {
   const handleFileChange = () => {};
 
   if (loading) {
-    return <div>Cargando material...</div>;
+    return <Loading />;
   }
 
   return (
