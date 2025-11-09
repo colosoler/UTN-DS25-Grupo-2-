@@ -1,10 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Form, ListGroup } from 'react-bootstrap';
 
 export const SearchOptions = ({ options, onChange, name, value = '', placeholder }) => {
     const [inputValue, setInputValue] = useState(value);
     const [filtered, setFiltered] = useState([]);
     const [showList, setShowList] = useState(false);
+
+    // Sincronizar inputValue cuando value cambia desde fuera
+    useEffect(() => {
+        if (value && value !== inputValue) {
+            setInputValue(value);
+        }
+    }, [value]);
 
     const handleChangeOptions = (e) => {
         const newValue = e.target.value;

@@ -20,6 +20,8 @@ export const MaterialCreateForm = ({
   userId,
   carreraMateria,
   handleFileChange, // <- recibido como prop
+  hideFileUpload = false, // <- nueva prop para ocultar el campo de archivo
+  buttonText = 'Subir', // <- nueva prop para el texto del botón
 }) => {
   const showParcialSelect =
     formData.tipo === 'PARCIAL' || formData.tipo === 'PARCIAL_RESUELTO';
@@ -63,15 +65,17 @@ export const MaterialCreateForm = ({
           />
         </Form.Group>
 
-        <Form.Group className="material-form-group">
-          <Form.Label className="material-form-label">Subí el archivo que quieras publicar</Form.Label>
-          <Form.Control
-            type="file"
-            name="archivo"
-            onChange={handleFileChange} // <- ahora sí definido
-            className="material-form-control"
-          />
-        </Form.Group>
+        {!hideFileUpload && (
+          <Form.Group className="material-form-group">
+            <Form.Label className="material-form-label">Subí el archivo que quieras publicar</Form.Label>
+            <Form.Control
+              type="file"
+              name="archivo"
+              onChange={handleFileChange}
+              className="material-form-control"
+            />
+          </Form.Group>
+        )}
 
         <Row className="material-form-row">
           <Col>
@@ -81,6 +85,7 @@ export const MaterialCreateForm = ({
                 options={materias?.materias.map((e) => ({ value: e.id, option: e.nombre }))}
                 onChange={(e) => handleChange(e, (value) => setFormData({ ...formData, 'materiaId': value.value, 'materia': value.option }))}
                 name="materia"
+                value={formData.materia || ''}
                 placeholder="Ej: Analisis Matemático II"
               />
             </Form.Group>
@@ -160,7 +165,7 @@ export const MaterialCreateForm = ({
           />
         </Form.Group>
 
-        <Button type="submit" className="material-submit-btn">Subir</Button>
+        <Button type="submit" className="material-submit-btn">{buttonText}</Button>
       </Form>
 
       <Alert
