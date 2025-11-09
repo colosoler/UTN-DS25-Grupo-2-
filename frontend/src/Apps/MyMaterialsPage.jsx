@@ -9,6 +9,7 @@ import { getUser } from "../Helpers/auth"
 import { Searchbar } from "../Components/Searchbar"
 import { StatsCards } from "../Components/StatsCards"
 import { MaterialCard } from "../Components/MaterialCard"
+import { Loading } from "../Components/Loading"
 import "../Apps/styles/MyMaterialsPage.css"
 
 
@@ -47,7 +48,7 @@ export const MyMaterialsPage = () => {
     }
   }, [searchValue, materials]);
 
-  if (loading) return <p>Cargando apuntes...</p>;
+  if (loading) {return <Loading />} ;
   if (error) return <p>Error: {error.message}</p>;
 
   const handleClear = () => {

@@ -4,6 +4,7 @@ import { Buttons } from '../Components/Buttons';
 import { useFetch } from '../Hooks/useFetch';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../Contexts/AuthContext';
+import { Loading } from '../Components/Loading';
 
 export const MaterialPage = () => {
 
@@ -16,7 +17,7 @@ export const MaterialPage = () => {
     { requireAuth: false}
   );
   
-  if (loading) return <p className="loading">Cargando material...</p>;
+  if (loading) {return <Loading />};
   if (error) return <p className="error">Error al cargar: {error.message}</p>;
   if (!material) return <p>No se encontró el material.</p>;
 
