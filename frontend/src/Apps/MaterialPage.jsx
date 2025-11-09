@@ -19,7 +19,7 @@ export const MaterialPage = () => {
   
   if (loading) {return <Loading />};
   if (error) return <p className="error">Error al cargar: {error.message}</p>;
-  if (!material) return <p>No se encontró el material.</p>;
+  if (!material) {return <Loading />};
 
   return (
     <>
