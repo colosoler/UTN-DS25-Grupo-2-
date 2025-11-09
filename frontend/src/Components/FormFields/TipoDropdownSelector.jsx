@@ -10,7 +10,7 @@ export const TipoDropdownSelector = ({ useForm }) => {
 		"Parcial resuelto",
 		"Final",
 		"Final resuelto",
-		"Práctica",
+		"Practica",
 		"Práctica resuelta",
 		"Apunte",
 		"Resumen",

@@ -100,7 +100,7 @@ export const MaterialCreatePage = () => {
       carreraId: Number(data.carreraId),
       añoCursada: Number(data.anioCursada),
       numeroParcial: data.numeroParcial ? Number(data.numeroParcial) : undefined,
-      tipo: data.tipo.toUpperCase(), // Asegura que coincida con el enum TipoMaterial
+      tipo: data.tipo.toUpperCase().replace(/\s/g, '_'),
     };
 
     console.log('Datos enviados al backend:', payload);
