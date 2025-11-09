@@ -52,7 +52,6 @@ export const SearchResultPage = () => {
 			<Searchbar />
 			<Row style={{paddingTop: "35px"}}>
 				{loading && <Loading />}
-				{error && <p>Error: {error.message}</p>}
 				{resultsArray && resultsArray.length === 0 && !loading && (
 					<NoResults />
 				)}
