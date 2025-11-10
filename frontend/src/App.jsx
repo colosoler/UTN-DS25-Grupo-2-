@@ -17,7 +17,6 @@ import { AdminPage } from './Apps/AdminPage'
 import { RankingPage } from './Apps/RankingPage'
 import { AuthProvider } from './Contexts/AuthContext'
 import { PrivateRoute } from './Components/PrivateRoute'
-import { useFetch } from './Hooks/useFetch'
 import { LoginRequired } from './Components/LoginRequired'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -27,13 +26,14 @@ function App() {
   const location = useLocation();
 
   const hideNavbar = location.pathname === '/login' || location.pathname === '/signup';
-  const hideFooter = location.pathname === '/login' || location.pathname === '/signup' || location.pathname === '/profile';
+  const hideFooter = location.pathname === '/login' || location.pathname === '/signup' || location.pathname === '/profile' || location.pathname === '/admin';
 
   return (
     <>
       <AuthProvider>
+        <div className="d-flex flex-column" style={{ minHeight: '100vh' }}>
       {!hideNavbar && <Navbar />}
-      <main>
+      <main className='flex-grow-1'>
         <Routes>
           {/*Rutas públicas*/}
           <Route path="/" element={<HomePage/>} />
@@ -81,6 +81,7 @@ function App() {
         </Routes>   
       </main>
       {!hideFooter && <Footer />}
+        </div>
       </AuthProvider>
     </>
   )
