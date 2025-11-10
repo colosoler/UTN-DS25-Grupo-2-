@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { Alert } from './Alert';
-import { Loading } from './Loading';
+import Spinner from 'react-bootstrap/Spinner';
 import { getToken } from '../Helpers/auth';
 import { useAuth } from '../Contexts/AuthContext';
 
@@ -168,7 +168,13 @@ return (
                     Cancelar
                 </Button>
                 <Button variant="primary" onClick={handleSubmit}>
-                    {isLoading ? <Loading/> : 'Enviar'}
+                    {isLoading ? <Spinner
+                            as="span"
+                            animation="border"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                        /> : 'Enviar'}
                 </Button>
             </Modal.Footer>
         </Modal>
