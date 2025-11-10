@@ -22,7 +22,7 @@ export const MaterialCreatePage = () => {
     carrera: '',
     comision: '',
     parcial: '',
-    anioCursada: '',
+    añoCursada: '',
   });
 
   const API_URL = import.meta.env.VITE_API_URL;
@@ -98,7 +98,7 @@ export const MaterialCreatePage = () => {
       userId: Number(user.id),
       materiaId: Number(data.materiaId),
       carreraId: Number(data.carreraId),
-      añoCursada: Number(data.anioCursada),
+      añoCursada: Number(data.añoCursada),
       numeroParcial: data.numeroParcial ? Number(data.numeroParcial) : undefined,
       tipo: data.tipo.toUpperCase().replace(/\s/g, '_'),
     };
