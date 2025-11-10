@@ -18,6 +18,7 @@ import { RankingPage } from './Apps/RankingPage'
 import { AuthProvider } from './Contexts/AuthContext'
 import { PrivateRoute } from './Components/PrivateRoute'
 import { useFetch } from './Hooks/useFetch'
+import { LoginRequired } from './Components/LoginRequired'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -51,9 +52,9 @@ function App() {
 
           {/*Rutas protegidas (Usuarios logueados)*/}
           <Route path="/add" element={
-            <PrivateRoute>
+            <LoginRequired>
               <MaterialCreatePage/>
-            </PrivateRoute>
+            </LoginRequired>
           } />
           <Route path="/profile" element={
             <PrivateRoute>
@@ -66,9 +67,9 @@ function App() {
             </PrivateRoute>
           } />
           <Route path="/mymaterials" element={
-            <PrivateRoute>
+            <LoginRequired>
               <MyMaterialsPage/>
-            </PrivateRoute>
+            </LoginRequired>
           } />
           <Route path="/edit/:id" element={
             <PrivateRoute>
