@@ -100,7 +100,7 @@ export const MaterialCreatePage = () => {
       carreraId: Number(data.carreraId),
       añoCursada: Number(data.añoCursada),
       numeroParcial: data.numeroParcial ? Number(data.numeroParcial) : undefined,
-      tipo: data.tipo.toUpperCase().replace(/\s/g, '_'),
+      tipo: data.tipo,
     };
 
     console.log('Datos enviados al backend:', payload);

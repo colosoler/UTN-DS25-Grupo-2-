@@ -6,18 +6,19 @@ export const TipoDropdownSelector = ({ useForm }) => {
 	const [formData, setFormData, handleChange] = useForm;
 
 	const tipos = [
-		"Parcial",
-		"Parcial resuelto",
-		"Final",
-		"Final resuelto",
-		"Practica",
-		"Práctica resuelta",
-		"Apunte",
-		"Resumen",
-		"Otro",
-	];
+        { label: "Parcial", value: "PARCIAL" },
+        { label: "Parcial resuelto", value: "PARCIAL_RESUELTO" },
+        { label: "Final", value: "FINAL" },
+        { label: "Final resuelto", value: "FINAL_RESUELTO" },
+        { label: "Práctica", value: "PRACTICA" },
+        { label: "Práctica resuelta", value: "PRACTICA_RESUELTA" }, 
+        { label: "Apunte", value: "APUNTE" },
+        { label: "Resumen", value: "RESUMEN" },
+        { label: "Otro", value: "OTRO" },
+    ];
 
-	const title = formData.tipo || "Seleccione un tipo de material";
+	const selectedTipo = tipos.find(t => t.value === formData.tipo);
+    const title = selectedTipo ? selectedTipo.label : "Seleccione un tipo de material";
 
 	return (
 		<Dropdown as={ButtonGroup}>
@@ -33,12 +34,12 @@ export const TipoDropdownSelector = ({ useForm }) => {
 			<Dropdown.Menu>
 				{tipos.map((t) => (
 					<Dropdown.Item
-						key={t}
+						key={t.value}
 						onClick={() => {
-							setFormData({ ...formData, tipo: t });
+							setFormData({ ...formData, tipo: t.value });
 						}}
 					>
-						{t}
+						{t.label}
 					</Dropdown.Item>
 				))}
 			</Dropdown.Menu>
