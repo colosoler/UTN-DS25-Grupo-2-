@@ -26,6 +26,10 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
         ? carreras.find(c => c.id === formData.carreraId)?.nombre
         : ""
   }
+  
+  const showParcialSelect = 
+   formData.tipo === 'Parcial' || 
+   formData.tipo === 'Parcial resuelto';
 
   //no funciona pq se carga primero el return desde searchBar -> if (m_loading || c_loading) return <h1> Cargando... </h1>
   if (m_error || c_error || cm_error) return <h1> Ha ocurrido un error </h1>
@@ -73,6 +77,7 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
         <Form.Label>Tipo de material</Form.Label>
         <TipoExpandedSelector useForm={useForm}></TipoExpandedSelector>
         <div className="d-flex flex-column flex-md-row justify-content-between mb-3 gap-3" >
+        {showParcialSelect && (
           <Form.Group>
             <Form.Label>Parcial relacionado</Form.Label>
             <Form.Select onChange={handleChange} name="parcial" value={formData.parcial || 0}>
@@ -83,10 +88,11 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
               <option value={4}>4to</option>
             </Form.Select>
           </Form.Group>
+        )}
           {carreraMateria && formData.includeCarrera &&<ComisionField useForm={useForm} carreraMateria={carreraMateria}/>}
           <Form.Group>
             <Form.Label>Año de Cursada</Form.Label>
-            <Form.Control onChange={handleChange} name="anioCursada" type="number" placeholder={new Date().getFullYear()} value={formData.anioCursada || ""} />
+            <Form.Control onChange={handleChange} name="añoCursada" type="number" placeholder={new Date().getFullYear()} value={formData.añoCursada || ""} />
           </Form.Group>
         </div>
       </Modal.Body>
