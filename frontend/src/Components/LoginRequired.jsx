@@ -26,11 +26,7 @@ export const LoginRequired = ({ children }) => {
                     color: 'white',
                 }}
             >
-                <i 
-                    className="bi bi-lock-fill display-4" 
-                    style={{ marginBottom: '0.5rem' }} 
-                />
-                <h2 className="fs-2 fw-bold mb-3">Contenido Exclusivo</h2>
+                <h2 className="fs-2 fw-bold mb-3">Función restringida :(</h2>
                 <p className="fs-5 mb-5" style={{ opacity: 0.9 }}>
                     Necesitás iniciar sesión para usar esta función.                
                 </p>
