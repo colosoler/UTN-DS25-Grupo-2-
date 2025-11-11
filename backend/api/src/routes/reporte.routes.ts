@@ -9,7 +9,7 @@ const router = Router();
 
 router.get('/:materialId/reportes', authenticate, reporteController.findReportes);
 
-router.get('/:materialId/reporte', authenticate, reporteController.getReporteByMaterialAndUser);
+router.get('/:materialId/reporte', reporteController.getReporteByMaterialAndUser);
 
 router.post('/:materialId/reporte', authenticate,
     reporteController.createReporteByMaterialAndUser);
