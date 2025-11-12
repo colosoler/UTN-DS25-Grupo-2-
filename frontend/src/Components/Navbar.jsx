@@ -65,22 +65,24 @@ export const Navbar = () => {
                     Iniciar sesión
                   </Dropdown.Item>
                   )}
-                  <Dropdown.Item className="dropdown-item" as={Link} to="/mymaterials">
-                    <img className="dropdown-icon" src="/images/files-icon.svg" alt="mis-publicaciones" />
-                      Mis publicaciones
-                  </Dropdown.Item>
+
                 { isAuthenticated && (
-                  <>
                     <Dropdown.Item className="dropdown-item" as={Link} to="/profile">
                       <img className="dropdown-icon" src="/images/user-icon2.svg" alt="profile" />
                         Ver perfil
                     </Dropdown.Item>
+                )}
 
+                <Dropdown.Item className="dropdown-item" as={Link} to="/mymaterials">
+                    <img className="dropdown-icon" src="/images/files-icon.svg" alt="mis-publicaciones" />
+                      Mis publicaciones
+                </Dropdown.Item>
+
+                { isAuthenticated && (
                     <Dropdown.Item className="dropdown-item" as={Link} to="/settings">
                       <img className="dropdown-icon" src="/images/settings-icon.svg" alt="configurar" />
                         Configurar perfil
                     </Dropdown.Item>
-                  </>
                 )}
                 {isAdmin && (
                   <Dropdown.Item className="dropdown-item" as={Link} to="/admin">
