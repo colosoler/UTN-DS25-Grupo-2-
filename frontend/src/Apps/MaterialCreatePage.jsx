@@ -134,7 +134,7 @@ export const MaterialCreatePage = () => {
           await handleSubmit(data);
           setAlert({ show: true, message: 'Material subido correctamente', variant: 'success' });
           setFormData({});
-          navigate('/')
+          navigate('/mymaterials')
         } catch (err) {
           console.log('Error onSubmit: ', err);
           setAlert({ show: true, message: err.message, variant: 'danger' });
