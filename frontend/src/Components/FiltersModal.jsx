@@ -1,38 +1,52 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { SearchOptions } from "./SearchOptions";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CarreraExpandedSelector } from "./FormFields/CarreraExpandedSelector";
 import { TipoExpandedSelector } from "./FormFields/TipoExpandedSelector";
 import { ComisionField } from "./FormFields/ComisionField";
 
 export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
   const [formData, setFormData, handleChange, handleSubmit] = useForm;
-  //lo resuelvo de esta forma pq sino se cargaba el componente desde SearchBar antes que el fetch
-  const { data: materias = [], loading: m_loading, error: m_error } = fetchedData.fetchedMaterias || {};
-  const { data: carreras = [], loading: c_loading, error: c_error } = fetchedData.fetchedCarreras || {};
-  const { data: carreraMateria, loading: cm_loading, error: cm_error } = fetchedData.fetchedCarreraMateria || {};
+  const [materiaBusqueda, setMateriaBusqueda] = useState("");
+  
+  const { data: materias = [], loading: m_loading, error: m_error } = fetchedData?.fetchedMaterias || {};
+  const { data: carreras = [], loading: c_loading, error: c_error } = fetchedData?.fetchedCarreras || {};
+  const { data: carreraMateria, loading: cm_loading, error: cm_error } = fetchedData?.fetchedCarreraMateria || {};
+
   const getMateriaValue = () => {
+    if (!materias || !materias.materias) return "";
     return formData.materia
       ? formData.materia
       : formData.materiaId
         ? materias.materias.find(m => m.id === formData.materiaId)?.nombre
-        : ""
-  }
+        : "";
+  };
 
   const getCarreraValue = () => {
+    if (!carreras || !Array.isArray(carreras)) return "";
     return formData.carrera
       ? formData.carrera
       : formData.carreraId
         ? carreras.find(c => c.id === formData.carreraId)?.nombre
-        : ""
-  }
-  
-  const showParcialSelect = 
-   formData.tipo === 'Parcial' || 
-   formData.tipo === 'Parcial resuelto';
+        : "";
+  };
 
-  //no funciona pq se carga primero el return desde searchBar -> if (m_loading || c_loading) return <h1> Cargando... </h1>
-  if (m_error || c_error || cm_error) return <h1> Ha ocurrido un error </h1>
+  // Filtrar materias según búsqueda
+  const materiasFiltradasOptions = 
+    materias && materias.materias
+      ? materiaBusqueda
+        ? materias.materias.filter(m => 
+            m.nombre.toLowerCase().includes(materiaBusqueda.toLowerCase())
+          ).map(m => ({ value: m.id, option: m.nombre }))
+        : materias.materias.map(m => ({ value: m.id, option: m.nombre }))
+      : [];
+
+  const showParcialSelect = 
+    formData.tipo === 'Parcial' || 
+    formData.tipo === 'Parcial resuelto';
+
+  if (m_error || c_error || cm_error) return <h1> Ha ocurrido un error </h1>;
+  
   return (
     <Modal show={show} onHide={onHide} size="lg" centered scrollable>
       <Modal.Header closeButton>
@@ -47,12 +61,21 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
           <SearchOptions
             placeholder="Escribí la materia"
             name="materia"
-            value={getMateriaValue}
-            onChange={(e) => handleChange(e, (value) =>
-              setFormData(
-                { ...formData, materiaId: value.value, materia: value.option, carrera: "", carreraId: null })
-            )}
-            options={materias ? materias.materias.map(m => ({ value: m.id, option: m.nombre })) : []}
+            value={getMateriaValue()}
+            onChange={(e) => {
+              const selectedValue = e.target.value;
+              if (selectedValue && selectedValue.value) {
+                setFormData({
+                  ...formData,
+                  materiaId: selectedValue.value,
+                  materia: selectedValue.option,
+                  carrera: "",
+                  carreraId: null
+                });
+              }
+            }}
+            options={materiasFiltradasOptions}
+            onInputChange={(valor) => setMateriaBusqueda(valor)}
           />
         </div>
         {formData.materiaId &&
