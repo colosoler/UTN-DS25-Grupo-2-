@@ -21,7 +21,7 @@ export const Navbar = () => {
     setShowLogoutToast(true);
     logout();
     setTimeout(() => {
-      navigate('/login');
+      navigate('/');
       setShowLogoutToast(false);
     }, 3000);
   };
@@ -49,11 +49,9 @@ export const Navbar = () => {
               <img src="/images/ranking.png" alt="Ranking" />
             </Link>
 
-            {isAuthenticated && (
             <Link to="/add">
               <img src="/images/plus-pequeno.png" alt="Agregar contenido" />
             </Link>
-            )}
 
             <Dropdown align="end">
               <Dropdown.Toggle as="div" className="avatar-toggle">
@@ -61,34 +59,36 @@ export const Navbar = () => {
               </Dropdown.Toggle>
 
               <Dropdown.Menu className="dropdown-menu">
+                  {!isAuthenticated && (
+                  <Dropdown.Item className="dropdown-item" as={Link} to="/login">
+                    <img className="dropdown-icon" src="/images/user-icon2.svg" alt="login" />
+                    Iniciar sesión
+                  </Dropdown.Item>
+                  )}
+
                 { isAuthenticated && (
-                  <>
                     <Dropdown.Item className="dropdown-item" as={Link} to="/profile">
                       <img className="dropdown-icon" src="/images/user-icon2.svg" alt="profile" />
                         Ver perfil
                     </Dropdown.Item>
+                )}
 
-                    <Dropdown.Item className="dropdown-item" as={Link} to="/mymaterials">
-                      <img className="dropdown-icon" src="/images/files-icon.svg" alt="mis-publicaciones" />
-                        Mis publicaciones
-                    </Dropdown.Item>
+                <Dropdown.Item className="dropdown-item" as={Link} to="/mymaterials">
+                    <img className="dropdown-icon" src="/images/files-icon.svg" alt="mis-publicaciones" />
+                      Mis publicaciones
+                </Dropdown.Item>
+
+                { isAuthenticated && (
                     <Dropdown.Item className="dropdown-item" as={Link} to="/settings">
                       <img className="dropdown-icon" src="/images/settings-icon.svg" alt="configurar" />
                         Configurar perfil
                     </Dropdown.Item>
-                  </>
                 )}
                 {isAdmin && (
                   <Dropdown.Item className="dropdown-item" as={Link} to="/admin">
                   <img className="dropdown-icon" src="/images/admin-icon.svg" alt="admin" />
                     Panel de Administrador
                   </Dropdown.Item>
-                )}
-                {!isAuthenticated && (
-                <Dropdown.Item className="dropdown-item" as={Link} to="/login">
-                  <img className="dropdown-icon" src="/images/user-icon2.svg" alt="login" />
-                  Iniciar sesión
-                </Dropdown.Item>
                 )}
                 { isAuthenticated && (
                   <>

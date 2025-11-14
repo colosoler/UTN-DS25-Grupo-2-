@@ -4,11 +4,11 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { Alert } from './Alert';
-import { Loading } from './Loading';
+import Spinner from 'react-bootstrap/Spinner';
 import { getToken } from '../Helpers/auth';
 import { useAuth } from '../Contexts/AuthContext';
 
-export const ReportModel = ({ materialId }) => {
+export const ReportModel = ({ size, materialId, children, className }) => {
     const [show, setShow] = useState(false);
     const [reason, setReason] = useState('');
     const [otherReason, setOtherReason] = useState('');
@@ -124,15 +124,21 @@ export const ReportModel = ({ materialId }) => {
     const isDisabled = isChecking || reporteExistente;
 return (
     <>
-        <div onClick={isDisabled ? null : handleShow}
+        <button 
+            onClick={isDisabled ? null : handleShow}
+            className={className}
+            disabled={isDisabled}
             style={{ 
                 cursor: isDisabled ? 'not-allowed' : 'pointer', 
                 opacity: isDisabled ? 0.5 : 1,
                 pointerEvents: isDisabled ? 'none' : 'auto',
+                border: 'none',
+                background: 'none'
             }}
             >
-                <Flag />
-            </div>
+                <Flag size={size} style={{ marginRight: 8 }}/>
+                {children}
+            </button>
 
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
@@ -168,7 +174,13 @@ return (
                     Cancelar
                 </Button>
                 <Button variant="primary" onClick={handleSubmit}>
-                    {isLoading ? <Loading/> : 'Enviar'}
+                    {isLoading ? <Spinner
+                            as="span"
+                            animation="border"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                        /> : 'Enviar'}
                 </Button>
             </Modal.Footer>
         </Modal>

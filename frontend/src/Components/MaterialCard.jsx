@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ReportModel } from './ReportModel';
 import { DeleteConfirm } from "../Components/DeleteConfirm"
 import { useAuth } from '../Contexts/AuthContext'
+import { getToken } from '../Helpers/auth';
 import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
 import './styles/MaterialCard.css';
@@ -22,11 +23,6 @@ export const MaterialCard = ({ material, onDelete }) => {
 
   // Defino si el usuario que está viendo la card es quién subió el material
   const isOwner = user && (user.id === material.userId)
-
-  // Función para obtener el token
-  const getToken = () => {
-    return localStorage.getItem('token');
-  };
 
   // Con esto le doy formato lindo a la fecha
   const formatDate = (dateString) => {
@@ -124,9 +120,12 @@ export const MaterialCard = ({ material, onDelete }) => {
                 {!isOwner && (
                   <>
                     {/* Opción Reportar */}
-                    <div className="menu-item report-item">
-                      <ReportModel materialId={material.id} />
-                    </div>
+                      <ReportModel 
+                        materialId={material.id}
+                        className='menu-item'
+                        size={16}>
+                          Reportar
+                      </ReportModel>
                   </>
                 )}
 

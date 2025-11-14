@@ -22,7 +22,7 @@ export const MaterialCreatePage = () => {
     carrera: '',
     comision: '',
     parcial: '',
-    anioCursada: '',
+    añoCursada: '',
   });
 
   const API_URL = import.meta.env.VITE_API_URL;
@@ -98,9 +98,9 @@ export const MaterialCreatePage = () => {
       userId: Number(user.id),
       materiaId: Number(data.materiaId),
       carreraId: Number(data.carreraId),
-      añoCursada: Number(data.anioCursada),
+      añoCursada: Number(data.añoCursada),
       numeroParcial: data.numeroParcial ? Number(data.numeroParcial) : undefined,
-      tipo: data.tipo.toUpperCase(), // Asegura que coincida con el enum TipoMaterial
+      tipo: data.tipo,
     };
 
     console.log('Datos enviados al backend:', payload);
@@ -134,7 +134,7 @@ export const MaterialCreatePage = () => {
           await handleSubmit(data);
           setAlert({ show: true, message: 'Material subido correctamente', variant: 'success' });
           setFormData({});
-          navigate('/')
+          navigate('/mymaterials')
         } catch (err) {
           console.log('Error onSubmit: ', err);
           setAlert({ show: true, message: err.message, variant: 'danger' });

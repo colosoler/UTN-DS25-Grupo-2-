@@ -31,6 +31,8 @@ export const MaterialCreateForm = ({
     if (!formData.materiaId) throw new Error("Debes seleccionar una materia");
     if (!formData.carreraId) throw new Error("Debes seleccionar una carrera");
     if (!formData.tipo) throw new Error("Debes seleccionar un tipo de material");
+    
+    const anio = Number(formData.añoCursada);
 
     const data = {
       titulo: formData.titulo || '',
@@ -41,7 +43,7 @@ export const MaterialCreateForm = ({
       carreraId: Number(formData.carreraId),
       comision: formData.comision || '',
       numeroParcial: Number(formData.parcial) || 0,
-      anioCursada: Number(formData.anioCursada) || new Date().getFullYear(),
+      añoCursada: anio === 0 ? new Date().getFullYear(): anio,
       userId: Number(userId),
     };
 
