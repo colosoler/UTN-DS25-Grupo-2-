@@ -33,6 +33,11 @@ export const MaterialCreateForm = ({
     if (!formData.tipo) throw new Error("Debes seleccionar un tipo de material");
     
     const anio = Number(formData.añoCursada);
+    const añoActual = new Date().getFullYear();
+    
+    if (anio < 2000 || anio > añoActual) {
+      throw new Error(`El año debe estar entre 2000 y ${añoActual}`);
+    }
 
     const data = {
       titulo: formData.titulo || '',
@@ -127,6 +132,8 @@ export const MaterialCreateForm = ({
                 onChange={handleChange}
                 className="material-form-control"
                 placeholder='Ej: 2023'
+                min="2000"
+                max={new Date().getFullYear()}
               />
             </Form.Group>
           </Col>
