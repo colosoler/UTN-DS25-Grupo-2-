@@ -33,6 +33,11 @@ export const MaterialCreateForm = ({
     if (!formData.tipo) throw new Error("Debes seleccionar un tipo de material");
     
     const anio = Number(formData.añoCursada);
+    const añoActual = new Date().getFullYear();
+    
+    if (anio < 2000 || anio > añoActual) {
+      throw new Error(`El año debe estar entre 2000 y ${añoActual}`);
+    }
 
     const data = {
       titulo: formData.titulo || '',
@@ -85,7 +90,22 @@ export const MaterialCreateForm = ({
               <Form.Label className="material-form-label">Materia</Form.Label>
               <SearchOptions
                 options={materias?.materias.map((e) => ({ value: e.id, option: e.nombre }))}
-                onChange={(e) => handleChange(e, (value) => setFormData({ ...formData, 'materiaId': value.value, 'materia': value.option }))}
+                onChange={(e) => {
+                  const selectedValue = e.target.value;
+                  if (selectedValue && selectedValue.value !== undefined) {
+                    setFormData({ 
+                      ...formData, 
+                      'materiaId': selectedValue.value, 
+                      'materia': selectedValue.option 
+                    });
+                  } else {
+                    setFormData({ 
+                      ...formData, 
+                      'materia': selectedValue || '',
+                      'materiaId': undefined
+                    });
+                  }
+                }}
                 name="materia"
                 value={formData.materia || ''}
                 placeholder="Ej: Analisis Matemático II"
@@ -127,6 +147,8 @@ export const MaterialCreateForm = ({
                 onChange={handleChange}
                 className="material-form-control"
                 placeholder='Ej: 2023'
+                min="2000"
+                max={new Date().getFullYear()}
               />
             </Form.Group>
           </Col>

@@ -3,13 +3,14 @@ import Container from "react-bootstrap/Container"
 import Row from "react-bootstrap/Row"
 import Col from "react-bootstrap/Col"
 import Card from "react-bootstrap/Card"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { useFetch } from "../Hooks/useFetch"
 import { getUser } from "../Helpers/auth"
 import { Searchbar } from "../Components/Searchbar"
 import { StatsCards } from "../Components/StatsCards"
 import { MaterialCard } from "../Components/MaterialCard"
 import { Loading } from "../Components/Loading"
+import { Alert } from "../Components/Alert"
 import "../Apps/styles/MyMaterialsPage.css"
 
 
@@ -17,12 +18,14 @@ export const MyMaterialsPage = () => {
   const user = getUser();
   const userId = user?.id;
   const API_URL = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
+  const location = useLocation();
   
   const { data, loading, error } = useFetch(`${API_URL}/materials?userId=${userId}`);
-  const navigate = useNavigate();
   const [materials, setMaterials] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [filteredMaterials, setFilteredMaterials] = useState([]);
+  const [successAlert, setSuccessAlert] = useState({ show: false, message: '' });
 
   useEffect(() => {
     // Accede a data.data si existe
@@ -34,6 +37,18 @@ export const MyMaterialsPage = () => {
       setFilteredMaterials(data);
     }
   }, [data]);
+
+  useEffect(() => {
+    // Mostrar alerta de éxito si viene del redirect
+    if (location.state?.successMessage) {
+      setSuccessAlert({ show: true, message: location.state.successMessage });
+      // Ocultarla después de 3 segundos
+      const timer = setTimeout(() => {
+        setSuccessAlert({ show: false, message: '' });
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (searchValue) {
@@ -57,6 +72,14 @@ export const MyMaterialsPage = () => {
 
   return (
     <Container className="my-4">
+      {/* Alerta de éxito */}
+      <Alert
+        show={successAlert.show}
+        message={successAlert.message}
+        variant="success"
+        onClose={() => setSuccessAlert({ show: false, message: '' })}
+      />
+
       {/* Título */}
       <div className="mb-4">
         <h2 className="fw-bold">Mis Publicaciones</h2>

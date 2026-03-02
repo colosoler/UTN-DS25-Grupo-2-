@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MaterialCreateForm } from '../Components/MaterialCreateForm.jsx';
+import { Loading } from '../Components/Loading.jsx';
 import { useForm } from '../Hooks/useForm.jsx';
 import { useFetch } from '../Hooks/useFetch.jsx';
 import { getToken } from '../Helpers/auth.js';
@@ -27,6 +28,7 @@ export const MaterialCreatePage = () => {
 
   const API_URL = import.meta.env.VITE_API_URL;
   const [alert, setAlert] = useState({ show: false, message: '', variant: 'success' });
+  const [isLoading, setIsLoading] = useState(false);
 
   // Fetch de materias
   const { data: materias, loading: mLoading } = useFetch(`${API_URL}/materias`);
@@ -123,30 +125,38 @@ export const MaterialCreatePage = () => {
   };
 
   return (
-    <MaterialCreateForm
-      formData={formData}
-      setFormData={setFormData}
-      handleChange={handleChange}
-      materias={materias}
-      carreras={carreras}
-      onSubmit={async (data) => {
-        try {
-          await handleSubmit(data);
-          setAlert({ show: true, message: 'Material subido correctamente', variant: 'success' });
-          setFormData({});
-          navigate('/mymaterials')
-        } catch (err) {
-          console.log('Error onSubmit: ', err);
-          setAlert({ show: true, message: err.message, variant: 'danger' });
-        }
-      }}
-      alert={alert}
-      setAlert={setAlert}
-      cLoading={cLoading}
-      userId={user.id}
-      handleFileChange={handleFileChange}
-      carreraMateria={carreraMateria}
-			cmLoading={cmLoading}
-    />
+    <>
+      {isLoading && <Loading />}
+      {!isLoading && (
+        <MaterialCreateForm
+          formData={formData}
+          setFormData={setFormData}
+          handleChange={handleChange}
+          materias={materias}
+          carreras={carreras}
+          onSubmit={async (data) => {
+            try {
+              setIsLoading(true);
+              await handleSubmit(data);
+              setFormData({});
+              // Redirige sin esperar, el mensaje aparecerá en MyMaterialsPage
+              navigate('/mymaterials', { state: { successMessage: 'Material subido correctamente' } });
+            } catch (err) {
+              console.log('Error onSubmit: ', err);
+              setAlert({ show: true, message: err.message, variant: 'danger' });
+            } finally {
+              setIsLoading(false);
+            }
+          }}
+          alert={alert}
+          setAlert={setAlert}
+          cLoading={cLoading}
+          userId={user.id}
+          handleFileChange={handleFileChange}
+          carreraMateria={carreraMateria}
+          cmLoading={cmLoading}
+        />
+      )}
+    </>
   );
 };

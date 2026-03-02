@@ -13,6 +13,11 @@ export const SearchOptions = ({
   const [filtered, setFiltered] = useState([]);
   const [showList, setShowList] = useState(false);
 
+  // Función para normalizar acentos y asi aparecen todas las materias aunque no pongas los acentos
+  const normalizeText = (text) => {
+    return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  };
+
   useEffect(() => {
     if (value && value !== inputValue) {
       setInputValue(value);
@@ -28,8 +33,9 @@ export const SearchOptions = ({
     }
 
     if (newValue.trim() !== '') {
+      const normalizedInput = normalizeText(newValue.toLowerCase());
       const matches = options
-        .filter(o => o.option.toLowerCase().includes(newValue.toLowerCase()))
+        .filter(o => normalizeText(o.option.toLowerCase()).includes(normalizedInput))
         .slice(0, 10);
       setFiltered(matches);
       setShowList(true);

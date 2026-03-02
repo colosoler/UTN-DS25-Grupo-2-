@@ -34,7 +34,7 @@ export const ComisionField = ({ useForm, carreraMateria }) => {
                     name="comision"
                     type="number"
                     placeholder="2"
-                    value={parseInt(formData.comision.charAt(2)) || ''}
+                    value={parseInt(formData.comision?.charAt(2)) || ''}
                     style={{ width: '50px', paddingLeft: '0' }}
                     min="0"
                     max="9"
