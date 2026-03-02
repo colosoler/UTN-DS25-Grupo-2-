@@ -90,7 +90,22 @@ export const MaterialCreateForm = ({
               <Form.Label className="material-form-label">Materia</Form.Label>
               <SearchOptions
                 options={materias?.materias.map((e) => ({ value: e.id, option: e.nombre }))}
-                onChange={(e) => handleChange(e, (value) => setFormData({ ...formData, 'materiaId': value.value, 'materia': value.option }))}
+                onChange={(e) => {
+                  const selectedValue = e.target.value;
+                  if (selectedValue && selectedValue.value !== undefined) {
+                    setFormData({ 
+                      ...formData, 
+                      'materiaId': selectedValue.value, 
+                      'materia': selectedValue.option 
+                    });
+                  } else {
+                    setFormData({ 
+                      ...formData, 
+                      'materia': selectedValue || '',
+                      'materiaId': undefined
+                    });
+                  }
+                }}
                 name="materia"
                 value={formData.materia || ''}
                 placeholder="Ej: Analisis Matemático II"
