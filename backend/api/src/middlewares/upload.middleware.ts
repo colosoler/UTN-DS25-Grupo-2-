@@ -1,4 +1,4 @@
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import CloudinaryStorage from 'multer-storage-cloudinary';
 import multer from 'multer';
 import cloudinary from '../config/cloudinary';
 import { CloudinaryParams } from '../types/upload.types';
