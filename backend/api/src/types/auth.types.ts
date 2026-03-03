@@ -4,6 +4,7 @@ import { Request } from "express";
 export interface LoginRequest {
   email: string;
   password: string;
+  captchaToken: string;
 }
 
 export interface UserWithoutPassword extends Omit<User, 'password'> {} //Omit sirve para quitar el atributo password de user

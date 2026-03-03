@@ -6,6 +6,7 @@ import { loginSchema } from "../Validations/loginSchema";
 import { AuthContainer } from "../Components/AuthContainer";
 import { AuthField } from "../Components/AuthField";
 import { Alert } from "../Components/Alert";
+import { CaptchaField } from "../Components/CaptchaField";
 import { Button } from "react-bootstrap";
 import { useAuth } from "../Contexts/AuthContext";
 import "./styles/LoginPage.css";
@@ -14,6 +15,8 @@ export const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const [captchaError, setCaptchaError] = useState("");
 
   const {
     register,
@@ -27,7 +30,12 @@ export const LoginPage = () => {
   });
 
   const onSubmit = async (data) => {
-    const result = await login(data);
+    if (!captchaToken) {
+      setCaptchaError("Por favor completa el CAPTCHA");
+      return;
+    }
+    
+    const result = await login({ ...data, captchaToken });
     if (result.success){
       setShowSuccessToast(true);
       setTimeout(() => navigate("/"), 2500);
@@ -73,6 +81,12 @@ export const LoginPage = () => {
       {errors.root && (
         <div style={{ color: "red", textAlign: "center" }}>{errors.root.message}</div>
       )}
+
+      <CaptchaField
+        onVerify={setCaptchaToken}
+        error={captchaError}
+        clearError={() => setCaptchaError("")}
+      />
 
       <Button type="submit" className="w-100" disabled={isSubmitting}>
         {isSubmitting ? "Ingresando..." : "Ingresar"}
