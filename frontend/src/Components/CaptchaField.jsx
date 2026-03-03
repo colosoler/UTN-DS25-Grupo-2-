@@ -13,7 +13,7 @@ export const CaptchaField = ({ onVerify, error, clearError }) => {
   return (
     <div style={{ display: "flex", justifyContent: "center", marginBottom: "1rem" }}>
       <ReCAPTCHA
-        sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+        sitekey={import.meta.env.VITE_RECAPTCHA_SITE}
         onChange={handleChange}
         onExpired={() => {
           setToken(null);
