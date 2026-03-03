@@ -6,8 +6,11 @@ import { v2 as cloudinary } from 'cloudinary';
 
 export async function getAllMaterials(req: Request, res: Response, next: NextFunction) {
     try {
-        const materials = await materialService.getAllMaterials();
-        res.json({ success: true, data: materials });
+        const page = Math.max(1, parseInt(req.query.page as string) || 1);
+        const limit = Math.max(1, Math.min(100, parseInt(req.query.limit as string) || 10));
+        
+        const result = await materialService.getAllMaterials(page, limit);
+        res.json({ success: true, ...result });
     } catch (error) {
         next(error);
     }
@@ -15,9 +18,11 @@ export async function getAllMaterials(req: Request, res: Response, next: NextFun
 
 export async function findMaterials(req: Request, res: Response, next: NextFunction) {
     try {
-        const filters = req.query;
-        const materials = await materialService.findMaterials(filters);
-        res.json({ success: true, data: materials });
+        const page = Math.max(1, parseInt(req.query.page as string) || 1);
+        const limit = Math.max(1, Math.min(100, parseInt(req.query.limit as string) || 10));
+        
+        const result = await materialService.findMaterials(req.query, page, limit);
+        res.json({ success: true, ...result });
     } catch (error) {
         next(error);
     }
