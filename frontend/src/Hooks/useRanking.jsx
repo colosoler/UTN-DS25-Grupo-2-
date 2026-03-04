@@ -20,7 +20,7 @@ export function useRanking() {
               'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
           }),
-          fetch(`${API_URL}/materials/`)
+          fetch(`${API_URL}/materials/?limit=500`)
         ]);
 
         if (!usersResponse.ok || !materialsResponse.ok) {

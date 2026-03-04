@@ -3,11 +3,12 @@ import Col from "react-bootstrap/Col"
 import Card from "react-bootstrap/Card"
 import { MdArrowUpward, MdArrowDownward } from "react-icons/md"
 
-export const StatsCards = ({ materials }) => {
-  const totalPublications = materials.length;
-  const totalUpvotes = materials.reduce((acc, m) => acc + (m.upvotes || 0), 0);
-  const totalDownvotes = materials.reduce((acc, m) => acc + (m.downvotes || 0), 0);
-  const netScore = materials.reduce((acc, m) => acc + ((m.upvotes || 0) - (m.downvotes || 0)), 0);
+export const StatsCards = ({ materials, stats, total }) => {
+  // Si tenemos stats (paginado), usar eso; si no, calcular desde materials
+  const totalPublications = total !== undefined ? total : materials.length;
+  const totalUpvotes = stats?.totalUpvotes ?? materials.reduce((acc, m) => acc + (m.upvotes || 0), 0);
+  const totalDownvotes = stats?.totalDownvotes ?? materials.reduce((acc, m) => acc + (m.downvotes || 0), 0);
+  const netScore = stats?.netScore ?? materials.reduce((acc, m) => acc + ((m.upvotes || 0) - (m.downvotes || 0)), 0);
 
   return (
     <Row className="mb-4 stats-cards-row">

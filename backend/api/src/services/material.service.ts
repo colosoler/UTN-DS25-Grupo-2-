@@ -25,20 +25,51 @@ const mapMaterialToMaterialWithUser = (material: any): MaterialWithUser => { //f
     } as MaterialWithUser;
 };
 
-export async function getAllMaterials(): Promise<MaterialWithUser[]> {
-  const materials = await prisma.material.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: materialInclude,
-  });
-  const materialsWithUser = materials.map(mapMaterialToMaterialWithUser); //formatea respuesta
-	materialsWithUser.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes)); //calcula upvotes - downvotes y devuelve de forma descendente
-	return materialsWithUser;
+export async function getAllMaterials(page: number = 1, limit: number = 10): Promise<{ data: MaterialWithUser[], total: number, page: number, limit: number, totalPages: number, stats: { totalUpvotes: number, totalDownvotes: number, netScore: number } }> {
+  const skip = (page - 1) * limit;
+  
+  const [materials, total, allMaterials] = await Promise.all([
+    prisma.material.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: materialInclude,
+      skip,
+      take: limit,
+    }),
+    prisma.material.count(),
+    prisma.material.findMany({
+      select: {
+        upvotes: true,
+        downvotes: true
+      }
+    })
+  ]);
+  
+  const materialsWithUser = materials.map(mapMaterialToMaterialWithUser);
+  materialsWithUser.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
+  
+  const totalUpvotes = allMaterials.reduce((sum, m) => sum + (m.upvotes || 0), 0);
+  const totalDownvotes = allMaterials.reduce((sum, m) => sum + (m.downvotes || 0), 0);
+  const netScore = totalUpvotes - totalDownvotes;
+  
+  const totalPages = Math.ceil(total / limit);
+  
+  return {
+    data: materialsWithUser,
+    total,
+    page,
+    limit,
+    totalPages,
+    stats: {
+      totalUpvotes,
+      totalDownvotes,
+      netScore
+    }
+  };
 }
 
-export async function findMaterials(filters: any):Promise<MaterialWithUser[]> {
+export async function findMaterials(filters: any, page: number = 1, limit: number = 10): Promise<{ data: MaterialWithUser[], total: number, page: number, limit: number, totalPages: number, stats: { totalUpvotes: number, totalDownvotes: number, netScore: number } }> {
     const query = filters.query as string | undefined;
-
-    const { query: _, ...directFilters } = filters;
+    const { query: _, page: __, limit: ___, ...directFilters } = filters;
 
     const processedDirectFilters: Record<string, number | string> = {};
     for (const key in directFilters) {
@@ -83,15 +114,54 @@ export async function findMaterials(filters: any):Promise<MaterialWithUser[]> {
         textSearchFilter
     ].filter(f => Object.keys(f).length > 0);
 
-    const materials = await prisma.material.findMany({
-		  where: {
-			  AND: combinedFilters,
-		  },
-		    include: materialInclude, // se agrega la inclusión para traer el username
-	  });
-	  const materialsWithUser = materials.map(mapMaterialToMaterialWithUser); //formatea la respuesta
-	  materialsWithUser.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes)); //calcula upvotes - downvotes y devuelve de forma descendente
-	  return materialsWithUser;
+    const skip = (page - 1) * limit;
+
+    const [materials, total, allMaterials] = await Promise.all([
+      prisma.material.findMany({
+        where: {
+          AND: combinedFilters,
+        },
+        include: materialInclude,
+        skip,
+        take: limit,
+      }),
+      prisma.material.count({
+        where: {
+          AND: combinedFilters,
+        }
+      }),
+      prisma.material.findMany({
+        where: {
+          AND: combinedFilters,
+        },
+        select: {
+          upvotes: true,
+          downvotes: true
+        }
+      })
+    ]);
+
+    const materialsWithUser = materials.map(mapMaterialToMaterialWithUser);
+    materialsWithUser.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
+    
+    const totalUpvotes = allMaterials.reduce((sum, m) => sum + (m.upvotes || 0), 0);
+    const totalDownvotes = allMaterials.reduce((sum, m) => sum + (m.downvotes || 0), 0);
+    const netScore = totalUpvotes - totalDownvotes;
+    
+    const totalPages = Math.ceil(total / limit);
+    
+    return {
+      data: materialsWithUser,
+      total,
+      page,
+      limit,
+      totalPages,
+      stats: {
+        totalUpvotes,
+        totalDownvotes,
+        netScore
+      }
+    };
 }
 
 export async function getMaterialById(id: number): Promise<MaterialWithUser> {

@@ -11,8 +11,10 @@ import { StatsCards } from "../Components/StatsCards"
 import { MaterialCard } from "../Components/MaterialCard"
 import { Loading } from "../Components/Loading"
 import { Alert } from "../Components/Alert"
+import { Pagination } from "../Components/Pagination"
 import "../Apps/styles/MyMaterialsPage.css"
 
+const ITEMS_PER_PAGE = 10;
 
 export const MyMaterialsPage = () => {
   const user = getUser();
@@ -21,17 +23,24 @@ export const MyMaterialsPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  const { data, loading, error } = useFetch(`${API_URL}/materials?userId=${userId}`);
+  const params = new URLSearchParams(location.search);
+  const currentPage = Math.max(1, parseInt(params.get("page") || "1", 10));
+  
+  const { data, loading, error } = useFetch(`${API_URL}/materials?userId=${userId}&page=${currentPage}&limit=${ITEMS_PER_PAGE}`);
   const [materials, setMaterials] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [filteredMaterials, setFilteredMaterials] = useState([]);
   const [successAlert, setSuccessAlert] = useState({ show: false, message: '' });
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     // Accede a data.data si existe
     if (data && data.data) {
       setMaterials(data.data);
       setFilteredMaterials(data.data);
+      setTotalPages(data.totalPages || 1);
+      setTotal(data.total || 0);
     } else if (Array.isArray(data)) {
       setMaterials(data);
       setFilteredMaterials(data);
@@ -70,6 +79,13 @@ export const MyMaterialsPage = () => {
     setSearchValue("");
   };
 
+  const handlePageChange = (newPage) => {
+    const newParams = new URLSearchParams(location.search);
+    newParams.set("page", newPage.toString());
+    navigate(`?${newParams.toString()}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <Container className="my-4">
       {/* Alerta de éxito */}
@@ -87,7 +103,7 @@ export const MyMaterialsPage = () => {
       </div>
 
       {/* Estadísticas rápidas */}
-      <StatsCards materials={materials} />
+      <StatsCards materials={materials} stats={data?.stats} total={total} />
 
       {/* Barra de búsqueda */}
       <div className="container-fluid py-3">
@@ -136,6 +152,16 @@ export const MyMaterialsPage = () => {
           ))
         )}
       </Row>
+
+      {/* Paginación */}
+      {!searchValue && filteredMaterials.length > 0 && totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          isLoading={loading}
+        />
+      )}
     </Container>
   )
 }
