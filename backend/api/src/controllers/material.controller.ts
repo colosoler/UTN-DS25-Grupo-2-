@@ -54,11 +54,20 @@ export async function uploadMaterialFile(
   next: NextFunction
 ) {
   try {
-    if (!req.file || !req.file.path) {
+    console.log('uploadMaterialFile - req.file:', req.file);
+    console.log('uploadMaterialFile - req.body:', req.body);
+
+    if (!req.file) {
       return res.status(400).json({ success: false, message: 'No se envió ningún archivo.' });
     }
 
-    const fileUrl = req.file.path;
+    // multer-storage-cloudinary puede devolver distintas propiedades según la versión
+    const fileUrl = (req.file as any).path || (req.file as any).secure_url || (req.file as any).location || (req.file as any).url;
+
+    if (!fileUrl) {
+      console.error('uploadMaterialFile: archivo subido pero no se encontró URL en req.file', req.file);
+      return res.status(400).json({ success: false, message: 'Archivo subido pero no se encontró URL.' });
+    }
 
     res.status(200).json({
       success: true,
