@@ -120,7 +120,7 @@ export async function deleteUserProfilePicture(id: number) {
       const publicIdMatch = user.profilePicture.match(/\/([^\/]+)\.[a-zA-Z]+$/);
       if (publicIdMatch) {
         const publicId = publicIdMatch[1];
-        await cloudinary.uploader.destroy(publicId);
+        await (cloudinary as any).v2.uploader.destroy(publicId);
       }
     } catch (error) {
       console.error('Error al borrar la imagen de Cloudinary', error);
