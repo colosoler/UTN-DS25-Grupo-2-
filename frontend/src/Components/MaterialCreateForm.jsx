@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import { SearchOptions } from '../Components/SearchOptions.jsx';
 import { Alert } from '../Components/Alert.jsx';
@@ -26,18 +26,44 @@ export const MaterialCreateForm = ({
   const showParcialSelect =
     formData.tipo === 'PARCIAL' || formData.tipo === 'PARCIAL_RESUELTO';
 
+  const [fieldError, setFieldError] = useState(null); // { field, message }
+
+  const clearField = (field) => {
+    if (fieldError?.field === field) setFieldError(null);
+  };
+
+  const FieldError = ({ field }) =>
+    fieldError?.field === field
+      ? <small style={{ color: '#e65100', fontWeight: 600, fontSize: '0.82rem' }}>&#9888; {fieldError.message}</small>
+      : null;
+
+  const validate = () => {
+    const añoActual = new Date().getFullYear();
+    const anio = Number(formData.añoCursada);
+
+    if (!formData.titulo?.trim()) return { field: 'titulo', message: 'El título es obligatorio.' };
+    if (!hideFileUpload && !formData.archivo) return { field: 'archivo', message: 'Debés adjuntar un archivo.' };
+    if (!formData.materiaId) return { field: 'materiaId', message: 'Debés seleccionar una materia.' };
+    if (formData.materiaId && !formData.carreraId) return { field: 'carreraId', message: 'Debés seleccionar una carrera.' };
+    if (!formData.tipo) return { field: 'tipo', message: 'Debés seleccionar un tipo de material.' };
+    if (!formData.comision?.trim() || !/\d$/.test(formData.comision)) return { field: 'comision', message: 'La comisión es obligatoria.' };
+    if (!formData.añoCursada) return { field: 'añoCursada', message: 'El año de cursada es obligatorio.' };
+    if (anio < 2000 || anio > añoActual) return { field: 'añoCursada', message: `El año debe estar entre 2000 y ${añoActual}.` };
+    if (showParcialSelect && (formData.parcial === '' || formData.parcial === undefined || formData.parcial === null)) return { field: 'parcial', message: 'Debés seleccionar el número de parcial.' };
+    if (!formData.descripcion?.trim()) return { field: 'descripcion', message: 'La descripción es obligatoria.' };
+    return null;
+  };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (!formData.materiaId) throw new Error("Debes seleccionar una materia");
-    if (!formData.carreraId) throw new Error("Debes seleccionar una carrera");
-    if (!formData.tipo) throw new Error("Debes seleccionar un tipo de material");
-    
-    const anio = Number(formData.añoCursada);
-    const añoActual = new Date().getFullYear();
-    
-    if (anio < 2000 || anio > añoActual) {
-      throw new Error(`El año debe estar entre 2000 y ${añoActual}`);
+    const error = validate();
+    if (error) {
+      setFieldError(error);
+      return;
     }
+    setFieldError(null);
+
+    const anio = Number(formData.añoCursada);
 
     const data = {
       titulo: formData.titulo || '',
@@ -48,7 +74,7 @@ export const MaterialCreateForm = ({
       carreraId: Number(formData.carreraId),
       comision: formData.comision || '',
       numeroParcial: Number(formData.parcial) || 0,
-      añoCursada: anio === 0 ? new Date().getFullYear(): anio,
+      añoCursada: anio === 0 ? new Date().getFullYear() : anio,
       userId: Number(userId),
     };
 
@@ -57,28 +83,34 @@ export const MaterialCreateForm = ({
 
   return (
     <>
-      <Form onSubmit={handleFormSubmit} className="material-form-container">
+      <Form onSubmit={handleFormSubmit} className="material-form-container" noValidate>
         <h1>Subí tu material de estudio</h1>
 
         <Form.Group className="material-form-group">
-          <Form.Label className="material-form-label">Título</Form.Label>
+          <div className="d-flex justify-content-between align-items-baseline">
+            <Form.Label className="material-form-label">Título</Form.Label>
+            <FieldError field="titulo" />
+          </div>
           <Form.Control
             type="text"
             name="titulo"
             placeholder="Ej: Resumen Ecuaciones Diferenciales"
             value={formData.titulo || ''}
-            onChange={handleChange}
+            onChange={(e) => { handleChange(e); clearField('titulo'); }}
             className="material-form-control"
           />
         </Form.Group>
 
         {!hideFileUpload && (
           <Form.Group className="material-form-group">
-            <Form.Label className="material-form-label">Subí el archivo que quieras publicar</Form.Label>
+            <div className="d-flex justify-content-between align-items-baseline">
+              <Form.Label className="material-form-label">Subí el archivo que quieras publicar</Form.Label>
+              <FieldError field="archivo" />
+            </div>
             <Form.Control
               type="file"
               name="archivo"
-              onChange={handleFileChange}
+              onChange={(e) => { handleFileChange(e); clearField('archivo'); }}
               className="material-form-control"
             />
           </Form.Group>
@@ -87,7 +119,10 @@ export const MaterialCreateForm = ({
         <Row className="material-form-row">
           <Col>
             <Form.Group aria-required>
-              <Form.Label className="material-form-label">Materia</Form.Label>
+              <div className="d-flex justify-content-between align-items-baseline">
+                <Form.Label className="material-form-label">Materia</Form.Label>
+                <FieldError field="materiaId" />
+              </div>
               <SearchOptions
                 options={materias?.materias.map((e) => ({ value: e.id, option: e.nombre }))}
                 onChange={(e) => {
@@ -115,11 +150,14 @@ export const MaterialCreateForm = ({
           {formData.materiaId && (
             <Col>
               <Form.Group aria-required>
-                <Form.Label className="material-form-label">Carrera</Form.Label>
+                <div className="d-flex justify-content-between align-items-baseline">
+                  <Form.Label className="material-form-label">Carrera</Form.Label>
+                  <FieldError field="carreraId" />
+                </div>
                 <CarreraDropdownSelector
-									useForm={[formData, setFormData, handleChange]}
-									carreras={cLoading ? [] : carreras}
-								/>
+                  useForm={[formData, setFormData, (e) => { handleChange(e); clearField('carreraId'); }]}
+                  carreras={cLoading ? [] : carreras}
+                />
               </Form.Group>
             </Col>
           )}
@@ -128,23 +166,30 @@ export const MaterialCreateForm = ({
         <Row className="material-form-row">
           <Col>
             <Form.Group>
-              <Form.Label>Tipo de Material</Form.Label>
-                <TipoDropdownSelector useForm={[formData, setFormData, handleChange]} />
+              <div className="d-flex justify-content-between align-items-baseline">
+                <Form.Label>Tipo de Material</Form.Label>
+                <FieldError field="tipo" />
+              </div>
+              <TipoDropdownSelector useForm={[formData, setFormData, (e) => { handleChange(e); clearField('tipo'); }]} />
             </Form.Group>
           </Col>
 
           <Col>
-            <ComisionField useForm={[formData, setFormData, handleChange]} carreraMateria={carreraMateria}/>
+            <ComisionField useForm={[formData, setFormData, (e, ...args) => { handleChange(e, ...args); clearField('comision'); }]} carreraMateria={carreraMateria}/>
+            <FieldError field="comision" />
           </Col>
 
           <Col>
             <Form.Group>
-              <Form.Label className="material-form-label">Año de cursada</Form.Label>
+              <div className="d-flex justify-content-between align-items-baseline">
+                <Form.Label className="material-form-label">Año de cursada</Form.Label>
+                <FieldError field="añoCursada" />
+              </div>
               <Form.Control
                 type="number"
                 name="añoCursada"
                 value={formData.añoCursada || ''}
-                onChange={handleChange}
+                onChange={(e) => { handleChange(e); clearField('añoCursada'); }}
                 className="material-form-control"
                 placeholder='Ej: 2023'
                 min="2000"
@@ -158,10 +203,14 @@ export const MaterialCreateForm = ({
           <Row>
             <Col>
               <Form.Group>
+                <div className="d-flex justify-content-between align-items-baseline">
+                  <Form.Label>Número de parcial</Form.Label>
+                  <FieldError field="parcial" />
+                </div>
                 <Form.Select
                   name="parcial"
-                  value={formData.parcial || ''}
-                  onChange={handleChange}
+                  value={formData.parcial ?? ''}
+                  onChange={(e) => { handleChange(e); clearField('parcial'); }}
                   className="material-form-select"
                 >
                   <option value="" disabled hidden>Número de parcial</option>
@@ -177,14 +226,17 @@ export const MaterialCreateForm = ({
         )}
 
         <Form.Group className="material-form-group">
-          <Form.Label className="material-form-label">Descripción del material</Form.Label>
+          <div className="d-flex justify-content-between align-items-baseline">
+            <Form.Label className="material-form-label">Descripción del material</Form.Label>
+            <FieldError field="descripcion" />
+          </div>
           <Form.Control
             as="textarea"
             rows={3}
             name="descripcion"
             placeholder="Escribí una breve descripción del material que estás subiendo."
             value={formData.descripcion || ''}
-            onChange={handleChange}
+            onChange={(e) => { handleChange(e); clearField('descripcion'); }}
             className="material-form-control"
           />
         </Form.Group>
