@@ -1,4 +1,4 @@
-import "./Pagination.css";
+import "./styles/Pagination.css";
 
 export const Pagination = ({
   currentPage,
