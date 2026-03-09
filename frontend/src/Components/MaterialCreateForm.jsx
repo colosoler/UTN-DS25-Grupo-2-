@@ -6,7 +6,7 @@ import './styles/MaterialCreateForm.css';
 import { ComisionField } from '../Components/FormFields/ComisionField';
 import { CarreraDropdownSelector } from '../Components/FormFields/CarreraDropdownSelector.jsx';
 import { TipoDropdownSelector } from '../Components/FormFields/TipoDropdownSelector';
-
+import { TypeOfFileSelector } from '../Components/FormFields/TypeOfFileSelector'
 export const MaterialCreateForm = ({
   formData,
   setFormData,
@@ -101,7 +101,7 @@ export const MaterialCreateForm = ({
           />
         </Form.Group>
 
-        {!hideFileUpload && (
+        {!hideFileUpload && (<TypeOfFileSelector></TypeOfFileSelector>/*
           <Form.Group className="material-form-group">
             <div className="d-flex justify-content-between align-items-baseline">
               <Form.Label className="material-form-label">Subí el archivo que quieras publicar</Form.Label>
@@ -113,7 +113,7 @@ export const MaterialCreateForm = ({
               onChange={(e) => { handleFileChange(e); clearField('archivo'); }}
               className="material-form-control"
             />
-          </Form.Group>
+          </Form.Group>*/
         )}
 
         <Row className="material-form-row">
