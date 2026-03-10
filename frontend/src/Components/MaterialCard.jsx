@@ -34,17 +34,19 @@ export const MaterialCard = ({ material, onDelete }) => {
     return `${day} ${month} ${year}`;
   };
 
-  // Con esto obtengo el nombre de la carrera
-  const getCarreraName = (carreraId) => {
-    const carreras = {
-      1: 'Ingeniería en Sistemas',
-      3: 'Ingeniería Química',
-      4: 'Ingeniería Industrial',
-      5: 'Ingeniería Mecánica',
-      6: 'Ingeniería Civil',
-      7: 'Ingeniería Eléctrica'
+  const formatTipo = (tipo) => {
+    const tipos = {
+      PARCIAL: 'Parcial',
+      PARCIAL_RESUELTO: 'Parcial Resuelto',
+      FINAL: 'Final',
+      FINAL_RESUELTO: 'Final Resuelto',
+      PRACTICA: 'Práctica',
+      PRACTICA_RESUELTA: 'Práctica Resuelta',
+      APUNTE: 'Apunte',
+      RESUMEN: 'Resumen',
+      OTRO: 'Otro',
     };
-    return carreras[carreraId];
+    return tipos[tipo] || tipo;
   };
 
   // Manejo la eliminación del material
@@ -174,8 +176,8 @@ export const MaterialCard = ({ material, onDelete }) => {
         </div>
 
         <div className="card-badges">
-          <span className="badge badge-type">{material.tipo}</span>
-          <span className="badge badge-career">{getCarreraName(material.carreraId)}</span>
+          <span className="badge badge-type">{formatTipo(material.tipo)}</span>
+          <span className="badge badge-career">{material.carreraNombre}</span>
         </div>
 
         <div className="card-footer">
