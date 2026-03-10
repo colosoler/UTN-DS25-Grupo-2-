@@ -24,7 +24,7 @@ export const Alert = ({ show, message, onClose, variant = "success"}) => {
   }
 
   return (
-    <ToastContainer position="top-center" className="p-3 m-2 m-lg-3 w-auto alert-max-width-md" style={{ zIndex: 1080 }}>
+    <ToastContainer position="top-center" className="p-3 m-2 m-lg-3 w-auto alert-max-width-md" style={{ zIndex: 1080, position: 'fixed', top: 0, left: '50%', transform: 'translateX(-50%)' }}>
       <Toast
         show={showToast}
         onClose={handleClose}
