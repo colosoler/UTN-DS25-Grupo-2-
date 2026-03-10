@@ -9,6 +9,7 @@ import { carreraRoutes } from './routes/carrera.route';
 import { signupRoutes } from './routes/signup.routes';
 import { calificacionRoutes } from './routes/calificacion.routes';
 import { reporteRoutes } from './routes/reporte.routes';
+import { favoritoRoutes } from './routes/favorito.routes';
 
 require('dotenv').config()
 
@@ -36,6 +37,7 @@ app.use('/calificaciones', calificacionRoutes);
 app.use('/materias', materiaRoutes);
 app.use('/carreras', carreraRoutes);
 app.use('/reportes', reporteRoutes);
+app.use('/favoritos', favoritoRoutes);
 
 
 app.use(handleError);

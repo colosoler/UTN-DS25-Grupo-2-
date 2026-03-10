@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { MoreVertical, Eye, Flag, Share2, Edit3, Trash2 } from 'lucide-react';
 import { Vote } from './Vote';
+import { FavsButton } from './FavsButton';
 import { Link, useNavigate } from 'react-router-dom';
 import { ReportModel } from './ReportModel';
 import { DeleteConfirm } from "../Components/DeleteConfirm"
@@ -182,10 +183,13 @@ export const MaterialCard = ({ material, onDelete }) => {
 
         <div className="card-footer">
           <Vote material={material} />
-          <Link to={`/material/${material.id}`} className="btn-view-material">
-            <Eye className="icon-btn" />
-            Ver Material
-          </Link>
+          <div className="card-footer-right">
+            <FavsButton materialId={material.id} />
+            <Link to={`/material/${material.id}`} className="btn-view-material">
+              <Eye className="icon-btn" />
+              Ver Material
+            </Link>
+          </div>
         </div>
 
         {/* Mensaje cuando tocan el compartir */}

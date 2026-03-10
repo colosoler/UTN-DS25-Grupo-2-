@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -10,6 +10,7 @@ import { AuthField } from "../Components/AuthField";
 import { getUser, getToken, clearToken } from "../Helpers/auth";
 import { useFetch } from "../Hooks/useFetch";
 import { validateProfilePicture } from "../Validations/fileValidation";
+import { ArrowLeft } from "lucide-react";
 import "./styles/SettingsPage.css";
 
 export const SettingsPage = () => {
@@ -191,6 +192,10 @@ export const SettingsPage = () => {
 
   return (
     <div className="profile-settings-container">
+      <Link to="/profile" className="settings-back-link">
+        <ArrowLeft size={20} />
+        Volver a Mi Perfil
+      </Link>
       <Form.Group className="mb-4">
         <Form.Label className="profile-photo-label">Foto de Perfil</Form.Label>
         <div className="profile-photo-section">

@@ -2,6 +2,7 @@
 import { ReportModel } from './ReportModel';
 import { Vote } from './Vote';
 import { ShareButton } from './ShareButton';
+import { FavsButton } from './FavsButton';
 import { OptionsDropdown } from './OptionsDropdown';
 
     export const Buttons = ({ material, user }) => {
@@ -20,6 +21,9 @@ import { OptionsDropdown } from './OptionsDropdown';
                         )}
                         <div className='col'>
                         <ShareButton shareUrl={`${window.location.origin}/material/${material?.id}`} />
+                        </div>
+                        <div className='col'>
+                        <FavsButton materialId={material?.id} />
                         </div>
                         {isOwner && (
                             <div id="options" className='col'>

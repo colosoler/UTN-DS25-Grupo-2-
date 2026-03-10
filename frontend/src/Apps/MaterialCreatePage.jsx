@@ -139,8 +139,8 @@ export const MaterialCreatePage = () => {
               setIsLoading(true);
               await handleSubmit(data);
               setFormData({});
-              // Redirige sin esperar, el mensaje aparecerá en MyMaterialsPage
-              navigate('/mymaterials', { state: { successMessage: 'Material subido correctamente' } });
+              // Redirige sin esperar, el mensaje aparecerá en MyMaterialsPage dentro de ProfilePage
+              navigate('/profile', { state: { successMessage: 'Material subido correctamente' } });
             } catch (err) {
               console.log('Error onSubmit: ', err);
               setAlert({ show: true, message: err.message, variant: 'danger' });
