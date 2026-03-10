@@ -1,7 +1,7 @@
 import { getUser, getToken } from "../Helpers/auth";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Settings } from "lucide-react";
+import { Settings, Star } from "lucide-react";
 import { Loading } from "../Components/Loading";
 import { MyMaterialsPage } from "./MyMaterialsPage";
 import { useFetch } from "../Hooks/useFetch";
@@ -26,6 +26,10 @@ export const ProfilePage = () => {
           <Link to="/settings" className="profile-settings-link">
             <Settings size={18} />
             Configuración de perfil
+          </Link>
+          <Link to="/favorites" className="profile-favorites-link">
+            <Star size={18} />
+            Mis Favoritos
           </Link>
           <div className="profile-image-container">
             <img

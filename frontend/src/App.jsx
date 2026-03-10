@@ -12,6 +12,7 @@ import { MaterialCreatePage } from './Apps/MaterialCreatePage'
 import { ProfilePage } from './Apps/ProfilePage'
 import { SettingsPage } from './Apps/SettingsPage'
 import { MyMaterialsPage } from './Apps/MyMaterialsPage'
+import { FavoritePage } from './Apps/FavoritePage'
 import { MaterialEditPage } from './Apps/MaterialEditPage'
 import { AdminPage } from './Apps/AdminPage'
 import { RankingPage } from './Apps/RankingPage'
@@ -70,6 +71,11 @@ function App() {
             <LoginRequired>
               <MyMaterialsPage/>
             </LoginRequired>
+          } />
+          <Route path="/favorites" element={
+            <PrivateRoute>
+              <FavoritePage/>
+            </PrivateRoute>
           } />
           <Route path="/edit/:id" element={
             <PrivateRoute>

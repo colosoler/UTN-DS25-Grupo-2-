@@ -161,6 +161,12 @@
   border-top: 1px solid var(--border-color) !important;  
 }
 
+.card-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* Botón Ver Material */
 .btn-view-material {
   display: flex;

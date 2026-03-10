@@ -23,6 +23,7 @@ model User {
   career        Carrera        @relation(fields: [careerId], references: [id])
   materialVotes Calificacion[]
   reportes Reporte[]
+  favoritos Favorito[]
   @@map("users")
 }
 
@@ -81,6 +82,7 @@ model Material {
   user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   materialVotes    Calificacion[]
   reportes Reporte[]
+  favoritos Favorito[]
   @@map("materials")
 }
 
@@ -135,4 +137,17 @@ enum MotivoReporte {
   SPAM
   PLAGIO
   OTRO
+}
+
+model Favorito {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  materialId Int
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id])
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, materialId])
+  @@map("favoritos")
 }
