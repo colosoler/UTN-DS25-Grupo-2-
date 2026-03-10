@@ -186,6 +186,37 @@
     margin-top: 50px;
   }
 
+  .profile-settings-link,
+  .profile-favorites-link {
+    position: static;
+    justify-content: center;
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+
+  .profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profile-card .profile-settings-link,
+  .profile-card .profile-favorites-link {
+    order: 10;
+  }
+
+  .profile-card .profile-favorites-link {
+    margin-top: 12px;
+  }
+
+  .profile-card .profile-image-container {
+    order: -1;
+  }
+
+  .profile-card .profile-info {
+    order: 1;
+  }
+
   .profile-name {
     font-size: 28px;
   }
@@ -247,5 +278,11 @@
 
   .stat-number {
     font-size: 24px;
+  }
+
+  .profile-settings-link,
+  .profile-favorites-link {
+    font-size: 12px;
+    padding: 6px 12px;
   }
 }
