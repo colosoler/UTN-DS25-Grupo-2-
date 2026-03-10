@@ -26,24 +26,46 @@ export const MyMaterialsPage = () => {
   const params = new URLSearchParams(location.search);
   const currentPage = Math.max(1, parseInt(params.get("page") || "1", 10));
   
-  const { data, loading, error } = useFetch(`${API_URL}/materials?userId=${userId}&page=${currentPage}&limit=${ITEMS_PER_PAGE}`);
   const [materials, setMaterials] = useState([]);
   const [searchValue, setSearchValue] = useState("");
-  const [filteredMaterials, setFilteredMaterials] = useState([]);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [successAlert, setSuccessAlert] = useState({ show: false, message: '' });
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
+  const [initialLoad, setInitialLoad] = useState(true);
+
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchValue);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [searchValue]);
+
+  
+  useEffect(() => {
+    if (currentPage !== 1) {
+      const newParams = new URLSearchParams(location.search);
+      newParams.set("page", "1");
+      navigate(`?${newParams.toString()}`, { replace: true });
+    }
+  }, [debouncedSearch]);
+
+  const apiUrl = debouncedSearch
+    ? `${API_URL}/materials?userId=${userId}&query=${encodeURIComponent(debouncedSearch)}&page=${currentPage}&limit=${ITEMS_PER_PAGE}`
+    : `${API_URL}/materials?userId=${userId}&page=${currentPage}&limit=${ITEMS_PER_PAGE}`;
+
+  const { data, loading, error } = useFetch(apiUrl);
 
   useEffect(() => {
-    // Accede a data.data si existe
     if (data && data.data) {
       setMaterials(data.data);
-      setFilteredMaterials(data.data);
       setTotalPages(data.totalPages || 1);
       setTotal(data.total || 0);
+      setInitialLoad(false);
     } else if (Array.isArray(data)) {
       setMaterials(data);
-      setFilteredMaterials(data);
+      setInitialLoad(false);
     }
   }, [data]);
 
@@ -59,20 +81,7 @@ export const MyMaterialsPage = () => {
     }
   }, [location.state]);
 
-  useEffect(() => {
-    if (searchValue) {
-      const filtered = materials.filter(
-        (material) =>
-          material.titulo?.toLowerCase().includes(searchValue.toLowerCase()) ||
-          material.descripcion?.toLowerCase().includes(searchValue.toLowerCase())
-      );
-      setFilteredMaterials(filtered);
-    } else {
-      setFilteredMaterials(materials);
-    }
-  }, [searchValue, materials]);
-
-  if (loading) {return <Loading />} ;
+  if (initialLoad && loading) {return <Loading />} ;
   if (error) return <p>Error: {error.message}</p>;
 
   const handleClear = () => {
@@ -120,8 +129,8 @@ export const MyMaterialsPage = () => {
       </div>
 
       {/* Lista de materiales */}
-      <Row xs={1} md={2} lg={2} className="g-4">
-        {filteredMaterials.length === 0 ? (
+      <Row xs={1} md={2} lg={2} className="g-4" style={{ opacity: loading ? 0.5 : 1, transition: 'opacity 0.2s', pointerEvents: loading ? 'none' : 'auto' }}>
+        {materials.length === 0 ? (
           <Col>
             <Card className="text-center py-5">
               <Card.Body>
@@ -145,7 +154,7 @@ export const MyMaterialsPage = () => {
             </Card>
           </Col>
         ) : (
-          filteredMaterials.map((material) => (
+          materials.map((material) => (
             <Col key={material.id}>
               <MaterialCard material={material} />
             </Col>
@@ -154,7 +163,7 @@ export const MyMaterialsPage = () => {
       </Row>
 
       {/* Paginación */}
-      {!searchValue && filteredMaterials.length > 0 && totalPages > 1 && (
+      {materials.length > 0 && totalPages > 1 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
