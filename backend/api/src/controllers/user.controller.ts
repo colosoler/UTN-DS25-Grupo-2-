@@ -56,7 +56,11 @@ export async function deleteUser(req: Request<{ id: string }>, res: Response,
 next: NextFunction) {
   try {
     const id = parseInt(req.params.id);
-    await userService.deleteUser(id);
+    const { password } = req.body;
+    if (!password) {
+      return res.status(400).json({ success: false, message: 'La contraseña es requerida' });
+    }
+    await userService.deleteUser(id, password);
     res.json({ success: true, message: 'User deleted successfully.' });
   } catch (error) {
     next(error);

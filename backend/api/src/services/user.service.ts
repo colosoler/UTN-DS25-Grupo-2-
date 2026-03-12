@@ -87,11 +87,23 @@ export async function updateUser(id: number, data: UpdateUserRequest ): Promise<
 }
 
 
-export async function deleteUser(id: number): Promise<void> {
+export async function deleteUser(id: number, password: string): Promise<void> {
   try {
-    await prisma.user.delete({
-      where: { id },
-    });
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      const error = new Error('User not found');
+      (error as any).statusCode = 404;
+      throw error;
+    }
+
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+      const error = new Error('Contraseña incorrecta');
+      (error as any).statusCode = 401;
+      throw error;
+    }
+
+    await prisma.user.delete({ where: { id } });
   } catch (e: any) {
     if (e.code === 'P2025') {
       const error = new Error('User not found');
