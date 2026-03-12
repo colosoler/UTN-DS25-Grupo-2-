@@ -7,7 +7,6 @@ import { ComisionField } from "./FormFields/ComisionField";
 
 export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
   const [formData, setFormData, handleChange, handleSubmit] = useForm;
-  const [materiaBusqueda, setMateriaBusqueda] = useState("");
   
   const { data: materias = [], loading: m_loading, error: m_error } = fetchedData?.fetchedMaterias || {};
   const { data: carreras = [], loading: c_loading, error: c_error } = fetchedData?.fetchedCarreras || {};
@@ -31,14 +30,10 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
         : "";
   };
 
-  // Filtrar materias según búsqueda
-  const materiasFiltradasOptions = 
+  // Las opciones se pasan todas; SearchOptions se encarga del filtrado con normalización de acentos
+  const materiasOptions = 
     materias && materias.materias
-      ? materiaBusqueda
-        ? materias.materias.filter(m => 
-            m.nombre.toLowerCase().includes(materiaBusqueda.toLowerCase())
-          ).map(m => ({ value: m.id, option: m.nombre }))
-        : materias.materias.map(m => ({ value: m.id, option: m.nombre }))
+      ? materias.materias.map(m => ({ value: m.id, option: m.nombre }))
       : [];
 
   const showParcialSelect = 
@@ -74,8 +69,7 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
                 });
               }
             }}
-            options={materiasFiltradasOptions}
-            onInputChange={(valor) => setMateriaBusqueda(valor)}
+            options={materiasOptions}
           />
         </div>
         {formData.materiaId &&
