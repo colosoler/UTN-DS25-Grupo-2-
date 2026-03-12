@@ -4,10 +4,11 @@ import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { settingsSchema } from "../Validations/settingsSchema";
-import { DeleteConfirm } from "../Components/DeleteConfirm";
+import { DeleteAccount } from "../Components/DeleteAccount";
 import { Alert } from "../Components/Alert";
 import { AuthField } from "../Components/AuthField";
 import { getUser, getToken, clearToken } from "../Helpers/auth";
+
 import { useFetch } from "../Hooks/useFetch";
 import { validateProfilePicture } from "../Validations/fileValidation";
 import { ArrowLeft } from "lucide-react";
@@ -167,27 +168,24 @@ export const SettingsPage = () => {
   };
 
   // ---------- ELIMINAR CUENTA ----------
-  const handleConfirmDelete = async () => {
-    try {
-      const res = await fetch(`${API_URL}/users/${user.id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${getToken()}` },
-      });
+  const handleConfirmDelete = async (password) => {
+    const res = await fetch(`${API_URL}/users/${user.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`,
+      },
+      body: JSON.stringify({ password }),
+    });
 
-      if (!res.ok) throw new Error("Error al eliminar la cuenta");
-
-      clearToken();
-      setShowDeleteModal(false);
-      setSuccessMessage("Cuenta eliminada correctamente");
-      setShowSuccessToast(true);
-      setTimeout(() => {
-        setShowSuccessToast(false);
-        navigate("/");
-      }, 1500);
-    } catch (error) {
-      console.error(error);
-      setError("root", { type: "manual", message: "Ocurrió un error al eliminar la cuenta." });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.message || "Contraseña incorrecta");
     }
+     
+    setShowDeleteModal(false);
+    clearToken();
+    window.location.href = "/";
   };
 
   return (
@@ -256,13 +254,10 @@ export const SettingsPage = () => {
         </Button>
       </Form>
 
-      <DeleteConfirm
+      <DeleteAccount
         show={showDeleteModal}
         onHide={() => setShowDeleteModal(false)}
         onConfirm={handleConfirmDelete}
-        message="¿Estás seguro de que querés eliminar tu cuenta?"
-        confirmText="acción"
-        buttonTitle="Eliminar cuenta"
       />
 
       <Alert show={showSuccessToast} message={successMessage} onClose={() => setShowSuccessToast(false)} variant="success" />
