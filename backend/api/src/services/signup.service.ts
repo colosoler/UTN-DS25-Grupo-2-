@@ -4,12 +4,23 @@ import jwt from 'jsonwebtoken';
 import { SignUpRequest, SignUpResponse, UserWithoutPassword } from '../types/signup.types';
 
 export async function signup(data: SignUpRequest): Promise<SignUpResponse['data']> {
-  const existingUser = await prisma.user.findUnique({
-    where: { email: data.email }
+  const existingUser = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { email: data.email },
+        { username: data.username }
+      ]
+    }
   });
 
-  if (existingUser) {
+  if (existingUser && existingUser.email === data.email) {
     const error = new Error('El email ya está registrado') as any;
+    error.statusCode = 409;
+    throw error;
+  }
+
+  if (existingUser && existingUser.username === data.username) {
+    const error = new Error('El nombre de usuario ya está registrado') as any;
     error.statusCode = 409;
     throw error;
   }

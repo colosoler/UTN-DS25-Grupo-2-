@@ -52,7 +52,10 @@ export function AuthProvider({children}) {
             }),
         });
 
-        if (!res.ok) throw new Error("Error en el registro");
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.message || "Error en el registro");
+        }
 
         const result = await res.json();
 
