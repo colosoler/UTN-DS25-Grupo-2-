@@ -7,7 +7,7 @@ import { settingsSchema } from "../Validations/settingsSchema";
 import { DeleteAccount } from "../Components/DeleteAccount";
 import { Alert } from "../Components/Alert";
 import { AuthField } from "../Components/AuthField";
-import { getUser, getToken, clearToken } from "../Helpers/auth";
+import { getUser, getToken, clearToken, clearUser } from "../Helpers/auth";
 
 import { useFetch } from "../Hooks/useFetch";
 import { validateProfilePicture } from "../Validations/fileValidation";
@@ -185,6 +185,7 @@ export const SettingsPage = () => {
      
     setShowDeleteModal(false);
     clearToken();
+    clearUser();
     window.location.href = "/";
   };
 
