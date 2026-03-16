@@ -86,13 +86,16 @@ export const Searchbar = ({
 
     // Modo normal: navegar a /search
     const params = new URLSearchParams();
-    let filtros = formData;
+    let filtros = { ...formData };
     let comision = filtros.comision; //pongo comision aparte pq ns como hacer para q no se me borre sola
     //materia y carrera no se envian (sino materiaId y carreraId) 
     filtros.materia = "";
     filtros.carrera = "";
     
-    if (!formData.includeCarrera) filtros.carreraId = null; filtros.comision = "";
+    if (!formData.includeCarrera) {
+      filtros.carreraId = null;
+    }
+    filtros.comision = "";
     filtros.includeCarrera = false;
     //comision = comision.length === 3 ? comision : "";
 

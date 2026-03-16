@@ -1,13 +1,12 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { SearchOptions } from "./SearchOptions";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CarreraExpandedSelector } from "./FormFields/CarreraExpandedSelector";
 import { TipoExpandedSelector } from "./FormFields/TipoExpandedSelector";
 import { ComisionField } from "./FormFields/ComisionField";
 
 export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
   const [formData, setFormData, handleChange, handleSubmit] = useForm;
-  const [materiaBusqueda, setMateriaBusqueda] = useState("");
   
   const { data: materias = [], loading: m_loading, error: m_error } = fetchedData?.fetchedMaterias || {};
   const { data: carreras = [], loading: c_loading, error: c_error } = fetchedData?.fetchedCarreras || {};
@@ -31,14 +30,9 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
         : "";
   };
 
-  // Filtrar materias según búsqueda
-  const materiasFiltradasOptions = 
-    materias && materias.materias
-      ? materiaBusqueda
-        ? materias.materias.filter(m => 
-            m.nombre.toLowerCase().includes(materiaBusqueda.toLowerCase())
-          ).map(m => ({ value: m.id, option: m.nombre }))
-        : materias.materias.map(m => ({ value: m.id, option: m.nombre }))
+  const materiasOptions =
+    materias?.materias
+      ? materias.materias.map(m => ({ value: m.id, option: m.nombre }))
       : [];
 
   const showParcialSelect = 
@@ -70,12 +64,25 @@ export const FiltersModal = ({ show, onHide, useForm, fetchedData }) => {
                   materiaId: selectedValue.value,
                   materia: selectedValue.option,
                   carrera: "",
-                  carreraId: null
+                  carreraId: null,
+                  includeCarrera: false,
+                  comision: ""
+                });
+              } else {
+                // Si se borra o escribe texto libre sin seleccionar una opción,
+                // quitar el filtro por materia para no reutilizar el id anterior.
+                setFormData({
+                  ...formData,
+                  materiaId: null,
+                  materia: "",
+                  carrera: "",
+                  carreraId: null,
+                  includeCarrera: false,
+                  comision: ""
                 });
               }
             }}
-            options={materiasFiltradasOptions}
-            onInputChange={(valor) => setMateriaBusqueda(valor)}
+            options={materiasOptions}
           />
         </div>
         {formData.materiaId &&
