@@ -22,7 +22,13 @@ export const SearchResultPage = () => {
 
 	const tipo = params.get("tipo");
 	if (tipo) {
-		queryParams.append("tipo", tipo.trim().toUpperCase().replace(" ", "_"));
+		const normalizedTipo = tipo
+			.trim()
+			.normalize("NFD")
+			.replace(/[\u0300-\u036f]/g, "")
+			.toUpperCase()
+			.replace(/\s+/g, "_");
+		queryParams.append("tipo", normalizedTipo);
 	}
 
 	const parcial = params.get("parcial");
