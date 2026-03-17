@@ -8,7 +8,15 @@ export const TipoExpandedSelector = ({useForm}) => {
           value={formData.tipo || ""}
           onChange={(e) => handleChange(e, (value) => {
                 value = JSON.parse(value);
-                setFormData({ ...formData, tipo: value.id})
+                const selectedTipo = value.id;
+                const isSameTipo = formData.tipo === selectedTipo;
+                const isParcialTipo = selectedTipo === "Parcial" || selectedTipo === "Parcial resuelto";
+
+                setFormData({
+                  ...formData,
+                  tipo: isSameTipo ? "" : selectedTipo,
+                  parcial: isSameTipo || !isParcialTipo ? null : formData.parcial
+                })
             }
             )}
           options={["Parcial", "Parcial resuelto", "Final", "Final resuelto", "Práctica", "Práctica resuelta", "Apunte", "Resumen", "Otro"].map(tipo => ({ id: tipo, name: tipo }))}
