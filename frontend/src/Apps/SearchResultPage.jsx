@@ -22,7 +22,13 @@ export const SearchResultPage = () => {
 
 	const tipo = params.get("tipo");
 	if (tipo) {
-		queryParams.append("tipo", tipo.trim().toUpperCase().replace(" ", "_"));
+		const normalizedTipo = tipo
+			.trim()
+			.normalize("NFD")
+			.replace(/[\u0300-\u036f]/g, "")
+			.toUpperCase()
+			.replace(/\s+/g, "_");
+		queryParams.append("tipo", normalizedTipo);
 	}
 
 	const parcial = params.get("parcial");
@@ -54,6 +60,7 @@ export const SearchResultPage = () => {
 	const apiUrl = `${import.meta.env.VITE_API_URL}/materials?${queryParams.toString()}`;
 
 	const { data, loading, error } = useFetch(apiUrl);
+	const isLoading = loading || (!data && !error);
 
 	const resultsArray = data?.data;
 	const totalPages = data?.totalPages || 1;
@@ -70,11 +77,16 @@ export const SearchResultPage = () => {
 		<Container style={{paddingTop: "35px"}}>
 			<Searchbar />
 			<Row style={{paddingTop: "35px"}}>
-				{loading && <Loading />}
-				{!loading && resultsArray && resultsArray.length === 0 && (
+				{isLoading && <Loading />}
+				{!isLoading && error && (
+					<Col xs={12}>
+						<p>Ocurrio un error al cargar los resultados.</p>
+					</Col>
+				)}
+				{!isLoading && !error && resultsArray && resultsArray.length === 0 && (
 					<NoResults />
 				)}
-				{!loading && resultsArray && resultsArray.length > 0 && (
+				{!isLoading && !error && resultsArray && resultsArray.length > 0 && (
 					<>
 						<Col xs={12} className="mb-3">
 							<div style={{ color: "#666", fontSize: "0.9rem" }}>
@@ -90,7 +102,7 @@ export const SearchResultPage = () => {
 					</>
 				)}
 			</Row>
-			{!loading && resultsArray && resultsArray.length > 0 && totalPages > 1 && (
+			{!isLoading && !error && resultsArray && resultsArray.length > 0 && totalPages > 1 && (
 				<Pagination
 					currentPage={currentPage}
 					totalPages={totalPages}
