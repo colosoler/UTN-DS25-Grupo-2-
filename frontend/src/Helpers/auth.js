@@ -1,8 +1,26 @@
+function normalizeToken(rawToken) {
+  if (!rawToken) return null;
+
+  let token = String(rawToken).trim();
+  if (token.toLowerCase().startsWith("bearer ")) {
+    token = token.slice(7).trim();
+  }
+  token = token.replace(/^['\"]|['\"]$/g, "");
+
+  if (!token || token === "null" || token === "undefined") return null;
+  return token;
+}
+
 export function getToken() {
-  return localStorage.getItem("token");
+  return normalizeToken(localStorage.getItem("token"));
 }
 export function setToken(token) {
-  localStorage.setItem("token", token);
+  const normalized = normalizeToken(token);
+  if (!normalized) {
+    localStorage.removeItem("token");
+    return;
+  }
+  localStorage.setItem("token", normalized);
 }
 export function clearToken() {
   localStorage.removeItem("token");
