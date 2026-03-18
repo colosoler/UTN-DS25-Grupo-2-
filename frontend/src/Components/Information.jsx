@@ -30,7 +30,7 @@ function Information({ material }) {
 
   const convertirNomTipo = (tipo) => {
     const tipos = {
-      'APUNTES': 'Apuntes',
+      'APUNTE': 'Apunte',
       'PARCIAL': 'Parcial',
       'PARCIAL_RESUELTO': 'Parcial Resuelto',
       'OTRO': 'Otro',
