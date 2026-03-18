@@ -14,6 +14,36 @@ function Information({ material }) {
     {},
     { requireAuth: false}
   );
+
+  // Lógica para parcial relacionado: solo aplica si es PARCIAL o PARCIAL_RESUELTO
+  const isParcialResuelto = material?.tipo === 'PARCIAL_RESUELTO';
+  const isParcial = material?.tipo === 'PARCIAL';
+  const esParcialOResuelto = isParcialResuelto || isParcial;
+  const tieneParcialNum = material?.numeroParcial && material.numeroParcial > 0;
+
+  const convertirNumParcial = (num) => {
+    const sufijos = { 1: 'ro', 2: 'do', 3: 'ro', 4: 'to' };
+    return `${num}${sufijos[num] || ''}`;
+  };
+
+  const labelParcial = tieneParcialNum ? convertirNumParcial(material.numeroParcial) : null;
+
+  const convertirNomTipo = (tipo) => {
+    const tipos = {
+      'APUNTE': 'Apunte',
+      'PARCIAL': 'Parcial',
+      'PARCIAL_RESUELTO': 'Parcial Resuelto',
+      'OTRO': 'Otro',
+      'PRACTICA_RESUELTA': 'Práctica Resuelta',
+      'RESUMEN' : 'Resumen',
+      'FINAL': 'Final',
+      'FINAL_RESUELTO': 'Final Resuelto',
+      'PRACTICA': 'Práctica'
+    };
+    return tipos[tipo] || tipo;
+  };
+
+
   if (!materia) return null;
 
   return (
@@ -41,13 +71,20 @@ function Information({ material }) {
               <strong>Año cursada: </strong> {material.añoCursada}
             </p>
             <p className="info-item ">
-              <strong>Tipo: </strong> {material.tipo}
+              <strong>Tipo: </strong> {convertirNomTipo(material.tipo)}
             </p>
+            {esParcialOResuelto && (
+              <p className="info-item info-item-description">
+                <strong>Parcial relacionado: </strong>
+                {labelParcial ? labelParcial : 'Ninguno'}
+              </p>
+            )}
             {material.descripcion && (
               <p className="info-item info-item-description ">
                 <strong>Descripción: </strong> {material.descripcion}
               </p>
             )}
+            
           </div>
         )}
       </div>

@@ -204,7 +204,7 @@ export const MaterialCreateForm = ({
             <Col>
               <Form.Group>
                 <div className="d-flex justify-content-between align-items-baseline">
-                  <Form.Label>Número de parcial</Form.Label>
+                  <Form.Label>Parcial Relacionado</Form.Label>
                   <FieldError field="parcial" />
                 </div>
                 <Form.Select
@@ -213,7 +213,7 @@ export const MaterialCreateForm = ({
                   onChange={(e) => { handleChange(e); clearField('parcial'); }}
                   className="material-form-select"
                 >
-                  <option value="" disabled hidden>Número de parcial</option>
+                  <option value="" disabled hidden>Seleccionar</option>
                   <option value={0}>Ninguno</option>
                   <option value={1}>1ero</option>
                   <option value={2}>2do</option>
