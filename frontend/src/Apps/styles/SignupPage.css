@@ -16,6 +16,29 @@
   text-decoration: underline !important;
 }
 
+.signup-step-subtitle {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.signup-back-btn {
+  background: none !important;
+  border: none !important;
+  color: #007bff !important;
+  padding: 0 !important;
+  margin-bottom: 1rem !important;
+  font-size: 0.9rem !important;
+  cursor: pointer !important;
+  text-align: left !important;
+}
+
+.signup-back-btn:hover {
+  text-decoration: underline !important;
+  background: none !important;
+}
+
 .auth-divider {
   position: relative;
   margin: 1rem 0;
