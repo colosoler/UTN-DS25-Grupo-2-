@@ -4,11 +4,6 @@
   min-height: 44px;
 }
 
-.google-auth-wrapper > div,
-.google-auth-wrapper iframe {
-  width: 100% !important;
-}
-
 .google-auth-wrapper-disabled {
   opacity: 0.7;
 }
