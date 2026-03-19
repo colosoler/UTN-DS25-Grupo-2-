@@ -1,0 +1,21 @@
+.google-auth-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 44px;
+}
+
+.google-auth-wrapper > div,
+.google-auth-wrapper iframe {
+  width: 100% !important;
+}
+
+.google-auth-wrapper-disabled {
+  opacity: 0.7;
+}
+
+.google-auth-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  cursor: not-allowed;
+}

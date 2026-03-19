@@ -3,12 +3,12 @@ import { useNavigate, Link } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { setToken } from "../Helpers/auth";
 import { signupSchema } from "../Validations/signupSchema";
 import { AuthContainer } from "../Components/AuthContainer";
 import { AuthField } from "../Components/AuthField";
 import { SearchOptions } from "../Components/SearchOptions";
 import { Alert } from "../Components/Alert";
+import { GoogleAuthButton } from "../Components/GoogleAuthButton";
 import { useAuth } from "../Contexts/AuthContext";
 import "./styles/SignupPage.css";
 
@@ -16,9 +16,10 @@ export const SignupPage = () => {
   const navigate = useNavigate();
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [careers, setCareers] = useState([]);
-  const { signup } = useAuth();
+  const [googleError, setGoogleError] = useState("");
+  const { signup, signupWithGoogle } = useAuth();
 
-  const { register, handleSubmit, setValue, setError, clearErrors,formState: { errors, isSubmitting }} = useForm({
+  const { register, handleSubmit, setValue, setError, clearErrors, watch, formState: { errors, isSubmitting }} = useForm({
   resolver: yupResolver(signupSchema),
   mode: "onChange",
 });
@@ -45,6 +46,35 @@ export const SignupPage = () => {
         setError("root", { type: "manual", message: result.error });
     }
 };
+
+  const handleGoogleSuccess = async (response) => {
+    setGoogleError("");
+
+    const selectedCareer = watch("career");
+
+    if (!selectedCareer || Number.isNaN(Number(selectedCareer))) {
+      setError("career", { type: "manual", message: "Debe seleccionar una carrera" });
+      setGoogleError("Seleccioná tu carrera antes de registrarte con Google");
+      return;
+    }
+
+    const result = await signupWithGoogle({
+      credential: response.credential,
+      career: selectedCareer,
+    });
+
+    if (result.success) {
+      setShowSuccessToast(true);
+      setTimeout(() => navigate("/"), 2500);
+      return;
+    }
+
+    setError("root", { type: "manual", message: result.error });
+  };
+
+  const handleGoogleError = () => {
+    setGoogleError("No se pudo registrar la cuenta con Google");
+  };
 
   const handleToastClose = () => setShowSuccessToast(false);
 
@@ -76,6 +106,7 @@ export const SignupPage = () => {
           }
           setValue("career", value, { shouldValidate: true });
           clearErrors("career"); // elimina el error al seleccionar
+          setGoogleError("");
         }}
         />
         {errors.career && <div className="field-error">{"Debe seleccionar una carrera"}</div>}
@@ -83,10 +114,19 @@ export const SignupPage = () => {
 
       {/* Error general */}
       {errors.root && <div className="field-error">{errors.root.message}</div>}
+      {googleError && <div className="field-error">{googleError}</div>}
 
       <Button type="submit" className="w-100" disabled={isSubmitting}>
         {isSubmitting ? "Registrando..." : "Registrarme"}
       </Button>
+
+      <div className="auth-divider"><span>o</span></div>
+
+      <GoogleAuthButton
+        onSuccess={handleGoogleSuccess}
+        onError={handleGoogleError}
+        text="signup_with"
+      />
 
       <p className="signup-register-link">
         ¿Ya tenés cuenta? <Link to="/login">Inicia Sesión</Link>

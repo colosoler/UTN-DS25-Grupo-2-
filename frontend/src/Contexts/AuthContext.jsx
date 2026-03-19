@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import { getToken, setToken, clearToken, getUser, setUser as setLocalUser, parseJWT, isTokenExpired } from '../Helpers/auth';
+import { getToken, setToken, clearToken, getUser, setUser as setLocalUser, clearUser, parseJWT, isTokenExpired } from '../Helpers/auth';
 
 const AuthContext = createContext();
 
@@ -15,9 +15,22 @@ export function AuthProvider({children}) {
             setUser(user);
         }else if (token){
             clearToken();
+            clearUser();
         }
         setLoading(false);
     }, []);
+
+    const persistSession = (token) => {
+        setToken(token);
+        const userData = parseJWT(token);
+        setUser(userData);
+        setLocalUser(userData);
+    };
+
+    const extractErrorMessage = async (res, fallbackMessage) => {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || errorData.error || fallbackMessage);
+    };
 
     const login = async (data) => {
         try {
@@ -27,16 +40,30 @@ export function AuthProvider({children}) {
                 body: JSON.stringify(data),
             });
 
-            if (!res.ok) throw new Error("Correo o contraseña inválidos");
+            if (!res.ok) await extractErrorMessage(res, "Correo o contraseña inválidos");
 
             const { data: responseData } = await res.json();
-            setToken(responseData.token);
-
-            const user = parseJWT(responseData.token)
-            setUser(user);
-            setLocalUser(user);
+            persistSession(responseData.token);
             return { success: true};
         } catch (error){
+            return { success: false, error: error.message };
+        }
+    };
+
+    const loginWithGoogle = async (credential) => {
+        try {
+            const res = await fetch(`${API_URL}/auth/google`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ credential }),
+            });
+
+            if (!res.ok) await extractErrorMessage(res, "No se pudo iniciar sesión con Google");
+
+            const { data: responseData } = await res.json();
+            persistSession(responseData.token);
+            return { success: true };
+        } catch (error) {
             return { success: false, error: error.message };
         }
     };
@@ -60,10 +87,8 @@ export function AuthProvider({children}) {
         const result = await res.json();
 
         if (result.success && result.data?.token) {
+            persistSession(result.data.token);
             const userData = parseJWT(result.data.token);
-            setToken(result.data.token);
-            setUser(userData);
-            setLocalUser(userData);
             return { success: true, user: userData, token: result.data.token };
         }
 
@@ -73,10 +98,43 @@ export function AuthProvider({children}) {
     }
 };
 
+    const signupWithGoogle = async ({ credential, career }) => {
+        try {
+            const careerId = parseInt(career, 10);
+            if (Number.isNaN(careerId)) {
+                throw new Error("Debe seleccionar una carrera válida");
+            }
+
+            const res = await fetch(`${API_URL}/signup/google`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    credential,
+                    careerId,
+                }),
+            });
+
+            if (!res.ok) await extractErrorMessage(res, "No se pudo registrar la cuenta con Google");
+
+            const result = await res.json();
+
+            if (result.success && result.data?.token) {
+                persistSession(result.data.token);
+                const userData = parseJWT(result.data.token);
+                return { success: true, user: userData, token: result.data.token };
+            }
+
+            return { success: false, error: "No se recibió token" };
+        } catch (err) {
+            return { success: false, error: err.message };
+        }
+    };
+
 
 
     const logout = () => {
         clearToken();
+        clearUser();
         setUser(null);
     };
 
@@ -92,8 +150,10 @@ export function AuthProvider({children}) {
     const value = {
         user,
         login,
+        loginWithGoogle,
         logout,
         signup,
+        signupWithGoogle,
         loading,
         isAuthenticated: !!user,
         isAdmin: user?.role === 'ADMIN',

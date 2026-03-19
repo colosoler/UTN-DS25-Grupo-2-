@@ -15,3 +15,26 @@
 .signup-register-link a:hover {
   text-decoration: underline !important;
 }
+
+.auth-divider {
+  position: relative;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.auth-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: 1px solid #d8dee8;
+}
+
+.auth-divider span {
+  position: relative;
+  display: inline-block;
+  padding: 0 0.75rem;
+  background: white;
+  color: #6b7280;
+}
