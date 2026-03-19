@@ -24,6 +24,10 @@ export async function verifyGoogleCredential(credential: string): Promise<TokenP
   const ticket = await getGoogleClient().verifyIdToken({
     idToken: credential,
     audience: googleClientId,
+  }).catch((err: Error) => {
+    const error = new Error('El token de Google no es válido o ha expirado') as Error & { statusCode?: number };
+    error.statusCode = 401;
+    throw error;
   });
 
   const payload = ticket.getPayload();
