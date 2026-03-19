@@ -7,6 +7,10 @@ export interface LoginRequest {
   captchaToken?: string;
 }
 
+export interface GoogleLoginRequest {
+  credential: string;
+}
+
 export interface UserWithoutPassword extends Omit<User, 'password'> {} //Omit sirve para quitar el atributo password de user
 
 export interface LoginResponse {

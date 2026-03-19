@@ -1,11 +1,13 @@
 import { Router } from 'express';
-import { signup } from '../controllers/signup.controller';
+import { signup, signupWithGoogle } from '../controllers/signup.controller';
 import { validate } from '../middlewares/validation.middleware';
-import { createUserSchema } from '../validations/user.validation';
+import { createUserSchema, googleSignupSchema } from '../validations/user.validation';
 
 const router = Router();
 
 router.post('/', validate(createUserSchema), signup);
+
+router.post('/google', validate(googleSignupSchema), signupWithGoogle);
 
 import bcrypt from 'bcrypt';
 router.post('/hash',

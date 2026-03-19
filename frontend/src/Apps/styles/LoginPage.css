@@ -13,3 +13,34 @@
 .login-register-link a:hover {
   text-decoration: underline;
 }
+
+.auth-divider {
+  position: relative;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.auth-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: 1px solid #9ca3af;
+}
+
+.auth-divider span {
+  position: relative;
+  display: inline-block;
+  padding: 0;
+  background: transparent;
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.auth-divider-text {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin: 1rem 0 0.5rem;
+}

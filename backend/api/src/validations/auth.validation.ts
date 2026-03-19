@@ -5,3 +5,7 @@ export const loginSchema = z.object({
     password: z.string(),
     captchaToken: z.string().min(1, 'El token del CAPTCHA es requerido')
 });
+
+export const googleLoginSchema = z.object({
+    credential: z.string().min(1, 'La credencial de Google es requerida')
+});

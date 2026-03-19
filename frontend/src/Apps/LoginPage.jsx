@@ -7,16 +7,18 @@ import { AuthContainer } from "../Components/AuthContainer";
 import { AuthField } from "../Components/AuthField";
 import { Alert } from "../Components/Alert";
 import { CaptchaField } from "../Components/CaptchaField";
+import { GoogleAuthButton } from "../Components/GoogleAuthButton";
 import { Button } from "react-bootstrap";
 import { useAuth } from "../Contexts/AuthContext";
 import "./styles/LoginPage.css";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [captchaToken, setCaptchaToken] = useState(null);
   const [captchaError, setCaptchaError] = useState("");
+  const [googleError, setGoogleError] = useState("");
 
   const {
     register,
@@ -46,6 +48,27 @@ export const LoginPage = () => {
       });
     }
   }
+
+  const handleGoogleSuccess = async (response) => {
+    setGoogleError("");
+    clearErrors("root");
+
+    const result = await loginWithGoogle(response.credential);
+    if (result.success) {
+      setShowSuccessToast(true);
+      setTimeout(() => navigate("/"), 2500);
+      return;
+    }
+
+    setError("root", {
+      type: "manual",
+      message: result.error,
+    });
+  };
+
+  const handleGoogleError = () => {
+    setGoogleError("No se pudo autenticar con Google");
+  };
 
   const handleToastClose = () => setShowSuccessToast(false);
 
@@ -82,6 +105,10 @@ export const LoginPage = () => {
         <div style={{ color: "red", textAlign: "center" }}>{errors.root.message}</div>
       )}
 
+      {googleError && (
+        <div style={{ color: "red", textAlign: "center", marginBottom: "1rem" }}>{googleError}</div>
+      )}
+
       <CaptchaField
         onVerify={setCaptchaToken}
         error={captchaError}
@@ -91,6 +118,14 @@ export const LoginPage = () => {
       <Button type="submit" className="w-100" disabled={isSubmitting}>
         {isSubmitting ? "Ingresando..." : "Ingresar"}
       </Button>
+
+      <p className="auth-divider-text">También podés</p>
+
+      <GoogleAuthButton
+        onSuccess={handleGoogleSuccess}
+        onError={handleGoogleError}
+        text="signin_with"
+      />
 
       <p className="login-register-link">
         ¿No tenés cuenta? <Link to="/signup">Registrate</Link>

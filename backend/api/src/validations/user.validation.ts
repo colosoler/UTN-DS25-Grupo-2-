@@ -23,3 +23,8 @@ username: z.string()
 .trim(),
 });
 export const updateUserSchema = createUserSchema.partial();
+
+export const googleSignupSchema = z.object({
+credential: z.string().min(1, 'La credencial de Google es requerida'),
+careerId: z.number(),
+});
