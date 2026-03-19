@@ -9,6 +9,11 @@ export interface SignUpRequest {
     careerId: number;
 }
 
+export interface GoogleSignUpRequest {
+    credential: string;
+    careerId: number;
+}
+
 export interface UserWithoutPassword extends Omit<User, 'password'> {}
 
 export interface SignUpResponse {
