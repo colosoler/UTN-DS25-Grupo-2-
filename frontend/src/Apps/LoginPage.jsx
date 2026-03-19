@@ -119,7 +119,7 @@ export const LoginPage = () => {
         {isSubmitting ? "Ingresando..." : "Ingresar"}
       </Button>
 
-      <div className="auth-divider"><span>o</span></div>
+      <p className="auth-divider-text">También podés</p>
 
       <GoogleAuthButton
         onSuccess={handleGoogleSuccess}

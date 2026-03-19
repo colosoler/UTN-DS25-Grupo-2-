@@ -93,7 +93,7 @@ export const SignupPage = () => {
         {isSubmitting ? "Registrando..." : "Registrarme"}
       </Button>
 
-      <div className="auth-divider"><span>o</span></div>
+      <p className="auth-divider-text">También podés</p>
 
       <GoogleAuthButton
         onSuccess={handleGoogleSuccess}
