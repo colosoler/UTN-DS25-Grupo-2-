@@ -46,11 +46,14 @@ export const MaterialCreateForm = ({
     if (!formData.materiaId) return { field: 'materiaId', message: 'Debés seleccionar una materia.' };
     if (formData.materiaId && !formData.carreraId) return { field: 'carreraId', message: 'Debés seleccionar una carrera.' };
     if (!formData.tipo) return { field: 'tipo', message: 'Debés seleccionar un tipo de material.' };
-    if (!formData.comision?.trim() || !/\d$/.test(formData.comision)) return { field: 'comision', message: 'La comisión es obligatoria.' };
-    if (!formData.añoCursada) return { field: 'añoCursada', message: 'El año de cursada es obligatorio.' };
-    if (anio < 2000 || anio > añoActual) return { field: 'añoCursada', message: `El año debe estar entre 2000 y ${añoActual}.` };
-    if (showParcialSelect && (formData.parcial === '' || formData.parcial === undefined || formData.parcial === null)) return { field: 'parcial', message: 'Debés seleccionar el número de parcial.' };
-    if (!formData.descripcion?.trim()) return { field: 'descripcion', message: 'La descripción es obligatoria.' };
+    
+    if (formData.añoCursada) {
+      const añoActual = new Date().getFullYear();
+      const año = Number(formData.añoCursada);
+      if (año < 2000 || año > añoActual) {
+        return { field: 'añoCursada', message: `El año debe estar entre 2000 y ${añoActual}.`};
+      }
+    }
     return null;
   };
 
@@ -63,18 +66,16 @@ export const MaterialCreateForm = ({
     }
     setFieldError(null);
 
-    const anio = Number(formData.añoCursada);
-
     const data = {
-      titulo: formData.titulo || '',
-      descripcion: formData.descripcion || '',
-      tipo: formData.tipo || '',
-      archivo: formData.archivo || '',
+      titulo: formData.titulo,
+      descripcion: formData.descripcion,
+      tipo: formData.tipo,
+      archivo: formData.archivo,
       materiaId: Number(formData.materiaId),
       carreraId: Number(formData.carreraId),
-      comision: formData.comision || '',
-      numeroParcial: Number(formData.parcial) || 0,
-      añoCursada: anio === 0 ? new Date().getFullYear() : anio,
+      comision: formData.comision,
+      numeroParcial: Number(formData.parcial),
+      añoCursada: formData.añoCursada,
       userId: Number(userId),
     };
 
@@ -88,7 +89,7 @@ export const MaterialCreateForm = ({
 
         <Form.Group className="material-form-group">
           <div className="d-flex justify-content-between align-items-baseline">
-            <Form.Label className="material-form-label">Título</Form.Label>
+            <Form.Label className="material-form-label">Título*</Form.Label>
             <FieldError field="titulo" />
           </div>
           <Form.Control
@@ -104,7 +105,7 @@ export const MaterialCreateForm = ({
         {!hideFileUpload && (
           <Form.Group className="material-form-group">
             <div className="d-flex justify-content-between align-items-baseline">
-              <Form.Label className="material-form-label">Subí el archivo que quieras publicar</Form.Label>
+              <Form.Label className="material-form-label">Archivo que quieras publicar*</Form.Label>
               <FieldError field="archivo" />
             </div>
             <Form.Control
@@ -120,7 +121,7 @@ export const MaterialCreateForm = ({
           <Col>
             <Form.Group aria-required>
               <div className="d-flex justify-content-between align-items-baseline">
-                <Form.Label className="material-form-label">Materia</Form.Label>
+                <Form.Label className="material-form-label">Materia*</Form.Label>
                 <FieldError field="materiaId" />
               </div>
               <SearchOptions
@@ -151,7 +152,7 @@ export const MaterialCreateForm = ({
             <Col>
               <Form.Group aria-required>
                 <div className="d-flex justify-content-between align-items-baseline">
-                  <Form.Label className="material-form-label">Carrera</Form.Label>
+                  <Form.Label className="material-form-label">Carrera*</Form.Label>
                   <FieldError field="carreraId" />
                 </div>
                 <CarreraDropdownSelector
@@ -167,7 +168,7 @@ export const MaterialCreateForm = ({
           <Col>
             <Form.Group>
               <div className="d-flex justify-content-between align-items-baseline">
-                <Form.Label>Tipo de Material</Form.Label>
+                <Form.Label>Tipo de Material*</Form.Label>
                 <FieldError field="tipo" />
               </div>
               <TipoDropdownSelector useForm={[formData, setFormData, (e) => { handleChange(e); clearField('tipo'); }]} />
@@ -182,7 +183,7 @@ export const MaterialCreateForm = ({
           <Col>
             <Form.Group>
               <div className="d-flex justify-content-between align-items-baseline">
-                <Form.Label className="material-form-label">Año de cursada</Form.Label>
+                <Form.Label className="material-form-label">Año de cursada (opcional)</Form.Label>
                 <FieldError field="añoCursada" />
               </div>
               <Form.Control
@@ -204,7 +205,7 @@ export const MaterialCreateForm = ({
             <Col>
               <Form.Group>
                 <div className="d-flex justify-content-between align-items-baseline">
-                  <Form.Label>Parcial Relacionado</Form.Label>
+                  <Form.Label>Parcial Relacionado (opcional)</Form.Label>
                   <FieldError field="parcial" />
                 </div>
                 <Form.Select
@@ -227,7 +228,7 @@ export const MaterialCreateForm = ({
 
         <Form.Group className="material-form-group">
           <div className="d-flex justify-content-between align-items-baseline">
-            <Form.Label className="material-form-label">Descripción del material</Form.Label>
+            <Form.Label className="material-form-label">Descripción del material (opcional)</Form.Label>
             <FieldError field="descripcion" />
           </div>
           <Form.Control
