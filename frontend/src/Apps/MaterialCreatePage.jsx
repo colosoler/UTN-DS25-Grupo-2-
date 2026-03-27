@@ -100,9 +100,11 @@ export const MaterialCreatePage = () => {
       userId: Number(user.id),
       materiaId: Number(data.materiaId),
       carreraId: Number(data.carreraId),
-      añoCursada: Number(data.añoCursada),
-      numeroParcial: data.numeroParcial ? Number(data.numeroParcial) : undefined,
       tipo: data.tipo,
+      descripcion: data.descripcion ? data.descripcion : undefined,
+      comision: data.comision ? data.comision : undefined,
+      añoCursada: data.añoCursada ?Number(data.añoCursada): undefined,
+      numeroParcial: data.parcial ? Number(data.parcial) : undefined,
     };
 
     console.log('Datos enviados al backend:', payload);

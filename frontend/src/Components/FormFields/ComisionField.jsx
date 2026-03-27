@@ -19,7 +19,7 @@ export const ComisionField = ({ useForm, carreraMateria }) => {
 
     return (
         <Form.Group>
-            <Form.Label>Comisión</Form.Label>
+            <Form.Label>Comisión (opcional)</Form.Label>
             <div className="d-flex">
                 <Form.Control
                     disabled
