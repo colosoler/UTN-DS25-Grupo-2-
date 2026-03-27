@@ -2,11 +2,11 @@ import { TipoMaterial } from "@prisma/client";
 
 export interface Material {
     id: number;
-    añoCursada: number;
+    añoCursada: number | null;
     archivo: string; 
     cantidadReportes: number;
-    comision: string;
-    descripcion: string;
+    comision: string | null;
+    descripcion: string | null;
     fecha: Date;
     numeroParcial: number | null;
     titulo: string;
