@@ -8,22 +8,23 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  email         String         @unique
-  username      String         @unique
-  name          String         @db.VarChar(50)
-  surname       String         @db.VarChar(50)
-  password      String
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  careerId      Int
-  role          Role           @default(USER)
-  materiales    Material[]
-  profilePicture String?       @db.VarChar(1000)
-  career        Carrera        @relation(fields: [careerId], references: [id])
-  materialVotes Calificacion[]
-  reportes Reporte[]
-  favoritos Favorito[]
+  id             Int            @id @default(autoincrement())
+  email          String         @unique
+  username       String         @unique
+  name           String         @db.VarChar(50)
+  surname        String         @db.VarChar(50)
+  password       String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  careerId       Int
+  role           Role           @default(USER)
+  profilePicture String?        @db.VarChar(1000)
+  favoritos      Favorito[]
+  materialVotes  Calificacion[]
+  materiales     Material[]
+  reportes       Reporte[]
+  career         Carrera        @relation(fields: [careerId], references: [id])
+
   @@map("users")
 }
 
@@ -61,11 +62,11 @@ model CarreraMateria {
 
 model Material {
   id               Int            @id @default(autoincrement())
-  añoCursada      Int
+  añoCursada      Int?
   archivo          String
   cantidadReportes Int            @default(0)
-  comision         String         @db.VarChar(50)
-  descripcion      String
+  comision         String?         @db.VarChar(50)
+  descripcion      String?
   fecha            DateTime       @default(now())
   numeroParcial    Int?
   titulo           String         @db.VarChar(200)
@@ -75,15 +76,55 @@ model Material {
   materiaId        Int
   carreraId        Int
   userId           Int
-  upvotes          Int            @default(0)
   downvotes        Int            @default(0)
+  upvotes          Int            @default(0)
+  favoritos        Favorito[]
+  materialVotes    Calificacion[]
   carrera          Carrera        @relation(fields: [carreraId], references: [id])
   materia          Materia        @relation(fields: [materiaId], references: [id])
   user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  materialVotes    Calificacion[]
-  reportes Reporte[]
-  favoritos Favorito[]
+  reportes         Reporte[]
+
   @@map("materials")
+}
+
+model Calificacion {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  materialId Int
+  value      Boolean
+  createdAt  DateTime @default(now())
+  material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, materialId])
+  @@map("material_votes")
+}
+
+model Reporte {
+  id          Int           @id @default(autoincrement())
+  userId      Int
+  materialId  Int
+  descripcion String?
+  motivo      MotivoReporte
+  createdAt   DateTime      @default(now())
+  material    Material      @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id])
+
+  @@unique([userId, materialId])
+  @@map("reportes")
+}
+
+model Favorito {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  materialId Int
+  createdAt  DateTime @default(now())
+  material   Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, materialId])
+  @@map("favoritos")
 }
 
 enum TipoMaterial {
@@ -103,51 +144,9 @@ enum Role {
   ADMIN
 }
 
-model Calificacion {
-  id         Int      @id @default(autoincrement())
-  userId     Int
-  materialId Int
-  value      Boolean
-  createdAt  DateTime @default(now())
-
-  user     User     @relation(fields: [userId], references: [id])
-  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, materialId])
-  @@map("material_votes")
-}
-
-model Reporte {
-  id         Int      @id @default(autoincrement())
-  userId     Int
-  materialId Int
-  descripcion String?
-  motivo      MotivoReporte
-  createdAt  DateTime @default(now())
-
-  user     User     @relation(fields: [userId], references: [id])
-  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, materialId])
-  @@map("reportes")
-}
-
 enum MotivoReporte {
   CONTENIDO_INAPROPIADO
   SPAM
   PLAGIO
   OTRO
-}
-
-model Favorito {
-  id         Int      @id @default(autoincrement())
-  userId     Int
-  materialId Int
-  createdAt  DateTime @default(now())
-
-  user     User     @relation(fields: [userId], references: [id])
-  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, materialId])
-  @@map("favoritos")
 }
