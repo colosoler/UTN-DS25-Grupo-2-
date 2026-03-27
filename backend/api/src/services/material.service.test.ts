@@ -135,7 +135,7 @@ describe('MaterialService - findMaterials', () => {
 			materiaId: mockCreatedMaterial.materiaId.toString(),
 			carreraId: mockCreatedMaterial.carreraId.toString(),
 			tipo: mockCreatedMaterial.tipo,
-			añoCursada: mockCreatedMaterial.añoCursada.toString(),
+			añoCursada: mockCreatedMaterial.añoCursada?.toString(),
 			comision: mockCreatedMaterial.comision,
 			numeroParcial: mockCreatedMaterial.numeroParcial?.toString() || ''
 		});//los pongo toString pq asi llega desde los query params
