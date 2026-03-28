@@ -64,16 +64,20 @@ function Information({ material }) {
             <p className="info-item ">
               <strong>Carrera: </strong> {material.carreraNombre}
             </p>
+            {material.comision && (
             <p className="info-item ">
               <strong>Comisión: </strong> {material.comision}
             </p>
-            <p className="info-item ">
-              <strong>Año cursada: </strong> {material.añoCursada}
-            </p>
+            )}
+            {material.añoCursada && (
+              <p className="info-item ">
+                <strong>Año cursada: </strong> {material.añoCursada}
+              </p>
+            )}
             <p className="info-item ">
               <strong>Tipo: </strong> {convertirNomTipo(material.tipo)}
             </p>
-            {esParcialOResuelto && (
+            {esParcialOResuelto && labelParcial && (
               <p className="info-item info-item-description">
                 <strong>Parcial relacionado: </strong>
                 {labelParcial ? labelParcial : 'Ninguno'}
