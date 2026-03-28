@@ -39,4 +39,6 @@ router.put('/:id', authenticate, authorize('ADMIN', 'USER'), validate(updateMate
 
 router.delete('/:id', authenticate, authorize('ADMIN', 'USER'), materialController.deleteMaterial);
 
+router.delete('/:materialId/reportes', authenticate, authorize('ADMIN'), materialController.clearAllReportsFromMaterial);
+
 export const materialRoutes = router;

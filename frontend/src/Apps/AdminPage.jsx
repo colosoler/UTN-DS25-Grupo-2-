@@ -89,6 +89,36 @@ export const AdminPage = () => {
     }
   };
 
+  const handleRejectReport = async (material) => {
+    if (!window.confirm(`¿Estás seguro de rechazar los reportes y perdonar el material "${material.titulo}"?`)) return;
+
+    try {
+      const response = await fetch(`${API_URL}/materials/${material.id}/reportes`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`, 
+        },
+      });
+
+      if (!response.ok) throw new Error("Error al limpiar los reportes");
+
+      // Lo sacamos de la lista visualmente
+      setReportedMaterials((prev) => prev.filter((m) => m.id !== material.id));
+      setStats((prev) => ({
+        ...prev,
+        reportedMaterialsCount: prev.reportedMaterialsCount - 1,
+      }));
+
+      setAlertMessage("Reportes ignorados. El material está a salvo.");
+      setShowAlert(true);
+
+    } catch (error) {
+      console.error("Error al rechazar el reporte:", error);
+      alert("No se pudo limpiar el reporte.");
+    }
+  };
+
   useEffect(() => {
     if (!users) return;
 
@@ -189,6 +219,7 @@ export const AdminPage = () => {
           materials={reportedMaterials}
           onClose={() => setShowReportedModal(false)}
           onDelete={handleDeleteMaterial}
+          onReject={handleRejectReport}
         />
       )}
 

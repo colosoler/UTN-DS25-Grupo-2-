@@ -265,3 +265,16 @@ export async function deleteMaterial(id: number): Promise<void> {
     throw e;
   }
 }
+
+export async function deleteReportsForMaterial(materialId: number) {
+  await prisma.reporte.deleteMany({
+    where: { materialId }
+  });
+
+  const materialActualizado = await prisma.material.update({
+    where: { id: materialId },
+    data: { cantidadReportes: 0 }
+  });
+
+  return materialActualizado;
+}

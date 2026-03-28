@@ -151,3 +151,16 @@ export async function updateMaterial(req: Request<{ id: string }>, res: Response
         next(error);
     }
 }
+
+export async function clearAllReportsFromMaterial(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { materialId } = req.params;
+    const id = parseInt(materialId);
+
+    await materialService.deleteReportsForMaterial(id);
+
+    res.status(200).json({ message: 'Reportes limpiados correctamente' });
+  } catch (error) {
+    next(error);
+  }
+}

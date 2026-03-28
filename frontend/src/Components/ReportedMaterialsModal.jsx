@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Trash2, AlertTriangle, Eye } from "lucide-react";
+import { Trash2, AlertTriangle, Eye, CheckCircle } from "lucide-react";
 import { useFetch } from "../Hooks/useFetch";
 
-export const ReportedMaterialsModal = ({ materials, onClose, onDelete }) => {
+export const ReportedMaterialsModal = ({ materials, onClose, onDelete, onReject }) => {
   const API_URL = import.meta.env.VITE_API_URL;
   const { data: usersData, loading: usersLoading } = useFetch(`${API_URL}/users`);
   const [materialsWithUser, setMaterialsWithUser] = useState([]);
@@ -77,13 +77,21 @@ export const ReportedMaterialsModal = ({ materials, onClose, onDelete }) => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="btn btn-outline-primary btn-sm"
-                                title="Ver material en nueva pestaña"
+                                title="Ver material"
                               >
                                 <Eye size={16} />
                               </a>
                               <button
-                                className="btn btn-danger-custom btn-sm"
+                                className="btn btn-outline-success btn-sm"
+                                onClick={() => onReject(m)}
+                                title="Ignorar reportes (Mantener material)"
+                              >
+                                <CheckCircle size={16} />
+                              </button>
+                              <button
+                                className="btn btn-outline-danger btn-sm"
                                 onClick={() => onDelete(m)}
+                                title="Eliminar material"
                               >
                                 <Trash2 size={16} />
                               </button>
