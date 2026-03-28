@@ -31,7 +31,7 @@ export async function getAllMaterials(page: number = 1, limit: number = 10): Pro
   const [materials, total, allMaterials] = await Promise.all([
     prisma.material.findMany({
       orderBy: { createdAt: 'desc' },
-      include: materialInclude,
+      include: {...materialInclude, reportes: true},
       skip,
       take: limit,
     }),
@@ -41,7 +41,7 @@ export async function getAllMaterials(page: number = 1, limit: number = 10): Pro
         upvotes: true,
         downvotes: true
       }
-    })
+    }),
   ]);
   
   const materialsWithUser = materials.map(mapMaterialToMaterialWithUser);

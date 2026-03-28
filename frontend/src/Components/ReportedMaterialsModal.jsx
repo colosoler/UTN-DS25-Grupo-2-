@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Trash2, AlertTriangle } from "lucide-react";
+import { Trash2, AlertTriangle, Eye } from "lucide-react";
 import { useFetch } from "../Hooks/useFetch";
 
 export const ReportedMaterialsModal = ({ materials, onClose, onDelete }) => {
@@ -41,28 +41,56 @@ export const ReportedMaterialsModal = ({ materials, onClose, onDelete }) => {
                     <tr>
                       <th>Material</th>
                       <th>Usuario</th>
+                      <th className="text-center">Motivo</th>
                       <th className="text-center">Reportes</th>
                       <th className="text-center">Acción</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {materialsWithUser.map((m) => (
-                      <tr key={m.id}>
-                        <td>{m.titulo}</td>
-                        <td className="text-secondary">{m.userName}</td>
-                        <td className="text-center">
-                          <span className="badge bg-danger rounded-pill">{m.cantidadReportes}</span>
-                        </td>
-                        <td className="text-center">
-                          <button
-                            className="btn btn-danger-custom btn-sm"
-                            onClick={() => onDelete(m)}
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                    {materialsWithUser.map((m) => {
+                      const motivosArray = m.reportes ? m.reportes.map(r => r.motivo) : [];
+                      const motivosUnicos = [...new Set(motivosArray)].join(' | '); 
+                      const tooltipText = motivosUnicos || "Motivo no especificado";
+
+                      return (
+                        <tr key={m.id} className="align-middle">
+                          <td>{m.titulo}</td>
+                          <td className="text-secondary">{m.userName}</td>
+                          
+                          <td className="text-center">
+                            {tooltipText}
+                          </td>
+
+                          <td className="text-center">
+                            <span 
+                            className="badge bg-danger rounded-pill"
+                            style={{ cursor: 'help' }}>
+                              {m.cantidadReportes}
+                            </span>
+                          </td>
+
+
+                          <td className="text-center">
+                            <div className="d-flex justify-content-center gap-2">
+                              <a
+                                href={`/material/${m.id}`} 
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn btn-outline-primary btn-sm"
+                                title="Ver material en nueva pestaña"
+                              >
+                                <Eye size={16} />
+                              </a>
+                              <button
+                                className="btn btn-danger-custom btn-sm"
+                                onClick={() => onDelete(m)}
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      )})}
                   </tbody>
                 </table>
               </div>
