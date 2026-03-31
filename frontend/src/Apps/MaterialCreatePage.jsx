@@ -16,7 +16,7 @@ export const MaterialCreatePage = () => {
     titulo: '',
     descripcion: '',
     tipo: '',
-    archivo: null,
+    archivos: null,
     materiaId: '',
     carreraId: '',
     materia: '',
@@ -41,29 +41,31 @@ export const MaterialCreatePage = () => {
 
   //construir URL para obtener la relación carrera/materia
   const CarreraMateriaURL = formData.materiaId && formData.carreraId
-		? `carreras/${formData.carreraId}/materias/${formData.materiaId}`
-		: false;
-	const { data: carreraMateria, loading: cmLoading } = useFetch(
-		CarreraMateriaURL ? `${API_URL}/${CarreraMateriaURL}` : '', //si no hay url pasa '' para evitar fetch
-		{},
-		{ requireAuth: false },
-		{ enabled: Boolean(CarreraMateriaURL) }
-	);
+    ? `carreras/${formData.carreraId}/materias/${formData.materiaId}`
+    : false;
+  const { data: carreraMateria, loading: cmLoading } = useFetch(
+    CarreraMateriaURL ? `${API_URL}/${CarreraMateriaURL}` : '', //si no hay url pasa '' para evitar fetch
+    {},
+    { requireAuth: false },
+    { enabled: Boolean(CarreraMateriaURL) }
+  );
 
-  // Maneja el cambio de archivo
+  /* Maneja el cambio de archivo
   const handleFileChange = (e) => {
     const file = e.target.files ? e.target.files[0] : null;
     handleChange({ target: { name: 'archivo', value: file } });
-  };
+  };*/
 
   // Subida del archivo a Cloudinary (endpoint separado)
-  const uploadFile = async (file) => {
+  const uploadFile = async (files) => {
     const token = getToken();
     if (!token) throw new Error('No se encontró token de autenticación');
 
     const formDataFile = new FormData();
-    formDataFile.append('archivo', file);
-
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      formDataFile.append('archivo', file); //todos se llaman archivo para recibirlo así en el back
+    }
     const res = await fetch(`${API_URL}/materials/upload`, {
       method: 'POST',
       headers: {
@@ -78,20 +80,21 @@ export const MaterialCreatePage = () => {
     }
 
     const data = await res.json();
-    // Ajustar según tu controller: la URL debería venir en data.url o data.data.url
-    return data.url || data.data?.archivo;
+    return data.url
   };
 
   // Función para enviar formulario completo
   const handleSubmit = async (data) => {
     const token = getToken();
     if (!token) throw new Error('No se encontró token de autenticación');
-
-    let archivoUrl = data.archivo;
-
-    // Si hay un archivo File, lo subimos primero
-    if (data.archivo instanceof File) {
-      archivoUrl = await uploadFile(data.archivo);
+    let archivoUrl = '';
+    try {
+      if (data.archivos?.length > 0) {
+        archivoUrl = await uploadFile(data.archivos);
+      }
+    } catch (err) {
+      console.log('Error en handleSubmit al subir archivo: ', err);
+      throw new Error('Error subiendo el archivo: ' + err.message);
     }
 
     const payload = {
@@ -154,7 +157,7 @@ export const MaterialCreatePage = () => {
           setAlert={setAlert}
           cLoading={cLoading}
           userId={user.id}
-          handleFileChange={handleFileChange}
+          //handleFileChange={handleFileChange}
           carreraMateria={carreraMateria}
           cmLoading={cmLoading}
         />

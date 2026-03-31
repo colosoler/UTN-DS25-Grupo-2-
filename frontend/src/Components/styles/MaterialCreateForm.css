@@ -157,3 +157,18 @@
 	border-color: #adb5bd !important;
 	box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.1) !important;
 }
+
+@keyframes slideDownAnimation {
+  0% {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-down-form {
+  animation: slideDownAnimation 0.3s ease-out forwards;
+}

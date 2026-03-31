@@ -4,7 +4,13 @@ import { Button } from "react-bootstrap";
 export const ExpandedSelector = ({ options = [], name, value, label, onChange}) => {
     //options es una lista de objetos {id, name} 
     // donde id es el valor a guardar y name es lo que se muestra
-
+    // en value se guarda el valor default
+    // para recibir el nuevo value: onChange={ (e) => console.log(JSON.parse(e.targe.value))}
+    // ó:                           onChange={(e) => handleChange(e, (value) => {
+    //            value = JSON.parse(value);
+    //            setFormData({ ...formData, <atributo>: value.id})
+    //        }
+    //        )}
     return (
         options.length === 0
             ? <div> No hay opciones disponibles </div>
