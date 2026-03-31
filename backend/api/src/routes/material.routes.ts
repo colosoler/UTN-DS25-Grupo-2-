@@ -3,8 +3,8 @@ import * as materialController from '../controllers/material.controller';
 import { validate } from '../middlewares/validation.middleware';
 import { createMaterialSchema, updateMaterialSchema } from '../validations/material.validation';
 import { authenticate, authorize } from '../middlewares/auth.middleware';
-import { fileUpload } from '../middlewares/upload.middleware';
-
+import { fileUpload, upload, memoryUpload } from '../middlewares/upload.middleware';
+import { mergeFiles } from '../middlewares/mergeFiles.middleware';
 const router = Router();
 
 router.get('/', (req, res, next) => {
@@ -22,8 +22,9 @@ router.post(
   '/upload',
   authenticate,
   authorize('ADMIN', 'USER'),
-  fileUpload.single('archivo'),
-  materialController.uploadMaterialFile
+  memoryUpload.array('archivo'),
+  mergeFiles,
+  materialController.uploadMaterialFile,
 );
 
 // Crear material

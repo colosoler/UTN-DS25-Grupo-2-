@@ -19,7 +19,7 @@ export const MaterialCreateForm = ({
   cLoading,
   userId,
   carreraMateria,
-  handleFileChange, // <- recibido como prop
+  //handleFileChange, // <- recibido como prop
   hideFileUpload = false, // <- nueva prop para ocultar el campo de archivo
   buttonText = 'Subir', // <- nueva prop para el texto del botón
 }) => {
@@ -42,7 +42,7 @@ export const MaterialCreateForm = ({
     const anio = Number(formData.añoCursada);
 
     if (!formData.titulo?.trim()) return { field: 'titulo', message: 'El título es obligatorio.' };
-    if (!hideFileUpload && !formData.archivo) return { field: 'archivo', message: 'Debés adjuntar un archivo.' };
+    if (!hideFileUpload && !(formData.archivos[0] instanceof File)) return { field: 'archivos', message: 'Debés adjuntar un archivo.' };
     if (!formData.materiaId) return { field: 'materiaId', message: 'Debés seleccionar una materia.' };
     if (formData.materiaId && !formData.carreraId) return { field: 'carreraId', message: 'Debés seleccionar una carrera.' };
     if (!formData.tipo) return { field: 'tipo', message: 'Debés seleccionar un tipo de material.' };
@@ -69,7 +69,7 @@ export const MaterialCreateForm = ({
       titulo: formData.titulo || '',
       descripcion: formData.descripcion || '',
       tipo: formData.tipo || '',
-      archivo: formData.archivo || '',
+      archivos: formData.archivos || null,
       materiaId: Number(formData.materiaId),
       carreraId: Number(formData.carreraId),
       comision: formData.comision || '',
@@ -101,20 +101,12 @@ export const MaterialCreateForm = ({
           />
         </Form.Group>
 
-        {!hideFileUpload && (<TypeOfFileSelector></TypeOfFileSelector>/*
-          <Form.Group className="material-form-group">
-            <div className="d-flex justify-content-between align-items-baseline">
-              <Form.Label className="material-form-label">Subí el archivo que quieras publicar</Form.Label>
-              <FieldError field="archivo" />
-            </div>
-            <Form.Control
-              type="file"
-              name="archivo"
-              onChange={(e) => { handleFileChange(e); clearField('archivo'); }}
-              className="material-form-control"
-            />
-          </Form.Group>*/
-        )}
+        {!hideFileUpload && 
+        (<TypeOfFileSelector 
+          useForm={[formData, setFormData, handleChange]}
+          fieldError={FieldError}
+        />)
+        }
 
         <Row className="material-form-row">
           <Col>

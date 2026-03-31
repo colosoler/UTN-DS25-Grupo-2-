@@ -54,26 +54,29 @@ export async function uploadMaterialFile(
   next: NextFunction
 ) {
   try {
-    console.log('uploadMaterialFile - req.file:', req.file);
-    console.log('uploadMaterialFile - req.body:', req.body);
-
     if (!req.file) {
       return res.status(400).json({ success: false, message: 'No se envió ningún archivo.' });
     }
 
-    // multer-storage-cloudinary puede devolver distintas propiedades según la versión
-    const fileUrl = (req.file as any).path || (req.file as any).secure_url || (req.file as any).location || (req.file as any).url;
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'user_files',
+        allowed_formats: ['pdf'],
+        resource_type: 'raw',
+        type: 'upload', 
+      },
+      (error, result) => {
+        if (error) {
+          return res.status(500).json({ success: false, message: 'Error subiendo a Cloudinary.', error });
+        }
+        if (!result || !result.secure_url) {
+          return res.status(400).json({ success: false, message: 'Archivo subido pero no se encontró URL.' });
+        }
+        return res.json({ url: result.secure_url });
+      }
+    );
 
-    if (!fileUrl) {
-      console.error('uploadMaterialFile: archivo subido pero no se encontró URL en req.file', req.file);
-      return res.status(400).json({ success: false, message: 'Archivo subido pero no se encontró URL.' });
-    }
-
-    res.status(200).json({
-      success: true,
-      url: fileUrl,
-      message: 'Archivo subido correctamente',
-    });
+    uploadStream.end(req.file.buffer);
   } catch (err) {
     next(err);
   }
