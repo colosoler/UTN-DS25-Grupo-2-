@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from "react";
-import { Form, Card } from "react-bootstrap";
+import { Form, Card, Spinner } from "react-bootstrap";
 import * as pdfjsLib from "pdfjs-dist";
 import "../styles/FileUpload.css";
 
@@ -69,9 +69,10 @@ export const FileUpload = ({ useForm, fieldError }) => {
   const [dropTargetIndex, setDropTargetIndex] = useState(null);
 
   // Para animaciones
-  const [movingIndex, setMovingIndex] = useState(null);       // índice que se está moviendo
-  const [movingDir, setMovingDir] = useState(null);           // 'left'|'right'|'up'|'down'
-  const [exitingIndex, setExitingIndex] = useState(null);     // índice que se está eliminando
+  const [movingIndex, setMovingIndex] = useState(null);
+  const [movingDir, setMovingDir] = useState(null);
+  const [exitingIndex, setExitingIndex] = useState(null);
+  const [rotatingIndexes, setRotatingIndexes] = useState(new Set()); // índices rotando
 
   const files = formData.archivos ? Array.from(formData.archivos) : [];
 
@@ -97,7 +98,44 @@ export const FileUpload = ({ useForm, fieldError }) => {
     setTimeout(() => {
       setExitingIndex(null);
       setFiles(Array.from(formData.archivos).filter((_, i) => i !== index));
-    }, 450); // duración de la animación CSS
+    }, 450);
+  };
+
+  // ── Rotar imagen 90° hacia la derecha ────────────────────────
+  const rotateImage = async (index) => {
+    const file = Array.from(formData.archivos)[index];
+    if (!file.type.startsWith("image/")) return;
+
+    // Marcar como cargando
+    setRotatingIndexes(prev => new Set(prev).add(index));
+
+    try {
+      const bitmap = await createImageBitmap(file);
+      const canvas = document.createElement("canvas");
+      canvas.width = bitmap.height;
+      canvas.height = bitmap.width;
+      const ctx = canvas.getContext("2d");
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(Math.PI / 2);
+      ctx.drawImage(bitmap, -bitmap.width / 2, -bitmap.height / 2);
+      bitmap.close();
+
+      const blob = await new Promise((resolve) =>
+        canvas.toBlob(resolve, file.type || "image/jpeg")
+      );
+      const rotatedFile = new File([blob], file.name, { type: file.type || "image/jpeg", lastModified: Date.now() });
+
+      const updated = Array.from(formData.archivos);
+      updated[index] = rotatedFile;
+      setFiles(updated);
+    } finally {
+      // Siempre quitar el loading, incluso si falla
+      setRotatingIndexes(prev => {
+        const next = new Set(prev);
+        next.delete(index);
+        return next;
+      });
+    }
   };
 
   // ── Mover con animación ───────────────────────────────────────
@@ -247,6 +285,8 @@ export const FileUpload = ({ useForm, fieldError }) => {
                 const isMoving = movingIndex === i;
                 const isExiting = exitingIndex === i;
 
+                const isRotating = rotatingIndexes.has(i);
+
                 let cardClass = "file-card";
                 if (isBeingDragged) cardClass += " dragging-card";
                 if (isDropTarget) cardClass += " drop-target";
@@ -268,7 +308,24 @@ export const FileUpload = ({ useForm, fieldError }) => {
                     <span className="file-card-order">{i + 1}</span>
 
                     <div className="file-card-preview">
+                      {isRotating && (
+                        <div className="file-card-loading-overlay">
+                          <Spinner animation="border" size="sm" style={{ color: "var(--primary-color, #4a90e2)" }} />
+                        </div>
+                      )}
                       {getPreview(file)}
+                      {/* Botón: rotar imagen (solo para imágenes, siempre visible) */}
+                      {file.type.startsWith("image/") && (
+                        <button
+                          type="button"
+                          className="file-card-rotate"
+                          onPointerDown={(e) => e.preventDefault()}
+                          onClick={(e) => { e.stopPropagation(); if (!isBusy) rotateImage(i); }}
+                          title="Rotar 90° a la derecha"
+                        >
+                          <i className="bi bi-arrow-clockwise"></i>
+                        </button>
+                      )}
                     </div>
 
                     <Card.Body className="file-card-body">
