@@ -95,8 +95,10 @@
   border: 1px solid var(--border-color, #dee2e6);
   border-radius: 8px;
   overflow: hidden;
-  transition: box-shadow 0.2s ease, transform 0.15s ease;
   background: #fff;
+  /* La transición incluye opacity y transform para animaciones */
+  transition: box-shadow 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
+  will-change: transform;
 }
 
 .file-card:hover {
@@ -104,7 +106,144 @@
   transform: translateY(-2px);
 }
 
-/* Preview area */
+/* ── Drag state ────── */
+.file-card[draggable="true"] {
+  cursor: grab;
+}
+
+.file-card.dragging-card {
+  opacity: 0.35;
+  border: 2px dashed var(--primary-color, #4a90e2);
+  cursor: grabbing;
+  transform: scale(0.95);
+}
+
+.file-card.drop-target {
+  border: 2px solid var(--primary-color, #4a90e2);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.25);
+  transform: scale(1.03);
+}
+
+/* ── Move animations (desktop: left/right) ─ */
+@keyframes slideLeft {
+  0% {
+    transform: translateX(0) translateY(-2px);
+  }
+
+  40% {
+    transform: translateX(-18px) translateY(-2px);
+  }
+
+  100% {
+    transform: translateX(0) translateY(-2px);
+  }
+}
+
+@keyframes slideRight {
+  0% {
+    transform: translateX(0) translateY(-2px);
+  }
+
+  40% {
+    transform: translateX(18px) translateY(-2px);
+  }
+
+  100% {
+    transform: translateX(0) translateY(-2px);
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-18px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(18px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.file-card.moving-left {
+  animation: slideLeft 0.22s ease;
+}
+
+.file-card.moving-right {
+  animation: slideRight 0.22s ease;
+}
+
+.file-card.moving-up {
+  animation: slideUp 0.22s ease;
+}
+
+.file-card.moving-down {
+  animation: slideDown 0.22s ease;
+}
+
+/* ── Delete (explosion) animation ─ */
+@keyframes explodeOut {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+
+  30% {
+    transform: scale(1.15);
+    opacity: 0.8;
+    filter: blur(1px);
+  }
+
+  100% {
+    transform: scale(0.3);
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+.file-card.exiting {
+  animation: explodeOut 0.45s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+  pointer-events: none;
+}
+
+/* ── Order badge ─────────────────── */
+.file-card-order {
+  position: absolute;
+  top: 5px;
+  left: 6px;
+  z-index: 3;
+  color: #000;
+  background: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── Preview area ──────────────────── */
 .file-card-preview {
   width: 100%;
   height: 120px;
@@ -144,7 +283,7 @@
   color: #78909c;
 }
 
-/* Card body */
+/* ── Card body ─────────────────────── */
 .file-card-body {
   padding: 0.4rem 0.5rem !important;
   display: flex;
@@ -166,7 +305,67 @@
   color: #999;
 }
 
-/* Remove button */
+/* ============================
+   Move buttons
+   ============================ */
+.file-card-move {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  /* -webkit-appearance evita que Safari pinte el botón azul */
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+  z-index: 2;
+}
+
+.file-card:hover .file-card-move {
+  opacity: 1;
+}
+
+.file-card-move:focus,
+.file-card-move:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Activo: SIN cambio de color – evita el "queda pintado" en mobile */
+.file-card-move:active {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.file-card-move:hover {
+  background: var(--primary-color, #4a90e2);
+}
+
+.move-prev {
+  top: 50%;
+  left: 4px;
+  transform: translateY(-50%);
+}
+
+.move-next {
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+}
+
+/* ============================
+   Remove button
+   ============================ */
 .file-card-remove {
   position: absolute;
   top: 4px;
@@ -183,7 +382,23 @@
   justify-content: center;
   cursor: pointer;
   opacity: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
   transition: opacity 0.2s ease, background-color 0.2s ease;
+  z-index: 4;
+}
+
+.file-card-remove:focus,
+.file-card-remove:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.file-card-remove:active {
+  background: rgba(0, 0, 0, 0.55);
 }
 
 .file-card:hover .file-card-remove {
@@ -218,4 +433,39 @@
 .file-add-more-btn:hover {
   background-color: #eef4fc;
   border-color: var(--primary-color, #4a90e2);
+}
+
+/* ============================
+   Mobile layout
+   ============================ */
+@media (max-width: 768px) {
+  .file-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* En mobile los botones siempre visibles */
+  .file-card-remove,
+  .file-card-move {
+    opacity: 1;
+  }
+
+  /* Arriba/Abajo en mobile */
+  .move-prev {
+    top: 4px;
+    left: 4px;
+    transform: none;
+  }
+
+  .move-next {
+    top: auto;
+    bottom: 42px;
+    left: 4px;
+    right: auto;
+    transform: none;
+  }
+
+  /* Más espacio en card body para que no tape los botones */
+  .file-card-body {
+    padding-left: 2rem !important;
+  }
 }
