@@ -3,16 +3,18 @@ import * as materialController from '../controllers/material.controller';
 import { validate } from '../middlewares/validation.middleware';
 import { createMaterialSchema, updateMaterialSchema } from '../validations/material.validation';
 import { authenticate, authorize } from '../middlewares/auth.middleware';
-import { fileUpload, upload, memoryUpload } from '../middlewares/upload.middleware';
+import { memoryUpload } from '../middlewares/upload.middleware';
 import { mergeFiles } from '../middlewares/mergeFiles.middleware';
+import { turnFilesToPDF } from '../middlewares/turnFilesToPDF.middleware';
+
 const router = Router();
 
 router.get('/', (req, res, next) => {
-    if (Object.keys(req.query).length > 0) {
-        materialController.findMaterials(req, res, next);
-    } else {
-        materialController.getAllMaterials(req, res, next);
-    }
+  if (Object.keys(req.query).length > 0) {
+    materialController.findMaterials(req, res, next);
+  } else {
+    materialController.getAllMaterials(req, res, next);
+  }
 });
 
 router.get('/:id', materialController.getMaterialById);
@@ -23,6 +25,7 @@ router.post(
   authenticate,
   authorize('ADMIN', 'USER'),
   memoryUpload.array('archivo'),
+  turnFilesToPDF,
   mergeFiles,
   materialController.uploadMaterialFile,
 );
