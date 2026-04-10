@@ -23,7 +23,7 @@ export const TypeOfFileSelector = ({ useForm, fieldError }) => {
       {type === "PDF" &&
         <Form.Group className="material-form-group slide-down-form">
           <div className="d-flex justify-content-between align-items-baseline">
-            <Form.Label className="material-form-label">Subí el pdf</Form.Label>
+            <Form.Label className="material-form-label">Subí tus pdf</Form.Label>
             <FieldError field="archivos" />
           </div>
           <Form.Control
