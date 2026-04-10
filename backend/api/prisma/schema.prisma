@@ -65,7 +65,7 @@ model Material {
   añoCursada      Int?
   archivo          String
   cantidadReportes Int            @default(0)
-  comision         String?         @db.VarChar(50)
+  comision         String?        @db.VarChar(50)
   descripcion      String?
   fecha            DateTime       @default(now())
   numeroParcial    Int?
