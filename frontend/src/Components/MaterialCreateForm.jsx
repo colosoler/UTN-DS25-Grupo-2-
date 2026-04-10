@@ -6,7 +6,7 @@ import './styles/MaterialCreateForm.css';
 import { ComisionField } from '../Components/FormFields/ComisionField';
 import { CarreraDropdownSelector } from '../Components/FormFields/CarreraDropdownSelector.jsx';
 import { TipoDropdownSelector } from '../Components/FormFields/TipoDropdownSelector';
-import { TypeOfFileSelector } from '../Components/FormFields/TypeOfFileSelector'
+import { FileUpload } from '../Components/FormFields/FileUpload'
 export const MaterialCreateForm = ({
   formData,
   setFormData,
@@ -103,7 +103,7 @@ export const MaterialCreateForm = ({
         </Form.Group>
 
         {!hideFileUpload &&
-          (<TypeOfFileSelector
+          (<FileUpload
             useForm={[formData, setFormData, handleChange]}
             fieldError={FieldError}
           />)
