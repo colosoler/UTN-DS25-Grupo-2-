@@ -11,6 +11,7 @@ export interface User {
     password: string;
     profilePicture?: string | null;
     career?: Carrera;
+    points: number;
 }
 
 export interface UserData extends Omit<User, 'password' | 'role'> {}

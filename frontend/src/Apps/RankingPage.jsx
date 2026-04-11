@@ -1,6 +1,7 @@
 import { useRanking } from '../Hooks/useRanking';
 import { Loading } from '../Components/Loading';
 import { Container, Row, Col, Card, Badge } from 'react-bootstrap';
+import { LevelBadge } from '../Components/LevelBadge';
 
 export const RankingPage = () => {
   const { ranking, loading, error } = useRanking();
@@ -54,7 +55,7 @@ export const RankingPage = () => {
               <i className="bi bi-trophy-fill text-warning"></i> Ranking de Usuarios
             </h1>
             <p className="lead text-muted">
-              Los usuarios con mayor puntuación neta basada en los votos de sus publicaciones
+              Los usuarios con mayor puntuación
             </p>
           </div>
         </Col>
@@ -101,6 +102,7 @@ export const RankingPage = () => {
                             </div>
                           )}
                         </div>
+                          <LevelBadge points={user.netScore} />
                       </Col>
                       
                       <Col xs={6} sm={4}>

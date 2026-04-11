@@ -15,7 +15,7 @@ export interface CreateCalificacionRequest {
 export interface UpdateCalificacionRequest {
 	userId?: number;
 	materialId?: number;
-	value?: boolean;
+	value: boolean;
 }
 
 export interface CalificacionResponse {

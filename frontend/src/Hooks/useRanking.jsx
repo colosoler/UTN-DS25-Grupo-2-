@@ -36,9 +36,7 @@ export function useRanking() {
         // Calcular estadísticas para cada usuario
         const usersWithStats = users.map(user => {
           const userMaterials = materials.filter(material => material.userId === user.id);
-          const totalUpvotes = userMaterials.reduce((sum, material) => sum + (material.upvotes || 0), 0);
-          const totalDownvotes = userMaterials.reduce((sum, material) => sum + (material.downvotes || 0), 0);
-          const netScore = totalUpvotes - totalDownvotes;
+          const netScore = user.points;
 
           return {
             id: user.id,

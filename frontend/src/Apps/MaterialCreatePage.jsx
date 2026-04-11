@@ -6,10 +6,12 @@ import { useFetch } from '../Hooks/useFetch.jsx';
 import { getToken } from '../Helpers/auth.js';
 import { useAuth } from '../Contexts/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
+import { PointsModal } from '../Components/PointsModal.jsx';
 
 export const MaterialCreatePage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [pointsAlert, setPointsAlert] = useState(null);
 
   // Hook para manejar los datos del formulario
   const [formData, setFormData, handleChange] = useForm({
@@ -120,11 +122,25 @@ export const MaterialCreatePage = () => {
       },
       body: JSON.stringify(payload),
     });
-
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({ error: 'No se pudo leer el error del backend' }));
       throw new Error(errorData?.message || 'Error creando material');
     }
+
+    let bonusPoints = 0;
+    let bonusBreakdown = []
+
+    if (formData.añoCursada) { bonusPoints += 5; bonusBreakdown.push('Año de Cursada'); }
+    if (formData.comision) { bonusPoints += 5; bonusBreakdown.push('Comisión'); }
+    if (formData.descripcion) { bonusPoints += 5; bonusBreakdown.push('Descripción'); }
+    if (formData.parcial) { bonusPoints += 5; bonusBreakdown.push('N° de Parcial'); }
+
+    setPointsAlert({
+      total: 20 + bonusPoints,
+      base: 20,
+      bonus: bonusPoints,
+      breakdown: bonusBreakdown
+    });
 
     return res.json();
   };
@@ -133,34 +149,41 @@ export const MaterialCreatePage = () => {
     <>
       {isLoading && <Loading />}
       {!isLoading && (
-        <MaterialCreateForm
-          formData={formData}
-          setFormData={setFormData}
-          handleChange={handleChange}
-          materias={materias}
-          carreras={carreras}
-          onSubmit={async (data) => {
-            try {
-              setIsLoading(true);
-              await handleSubmit(data);
-              setFormData({});
-              // Redirige sin esperar, el mensaje aparecerá en MyMaterialsPage dentro de ProfilePage
-              navigate('/profile', { state: { successMessage: 'Material subido correctamente' } });
-            } catch (err) {
-              console.log('Error onSubmit: ', err);
-              setAlert({ show: true, message: err.message, variant: 'danger' });
-            } finally {
-              setIsLoading(false);
-            }
-          }}
-          alert={alert}
-          setAlert={setAlert}
-          cLoading={cLoading}
-          userId={user.id}
-          //handleFileChange={handleFileChange}
-          carreraMateria={carreraMateria}
-          cmLoading={cmLoading}
-        />
+        <div>
+          <PointsModal 
+            pointsAlert={pointsAlert} 
+            onClose={() => {
+              setPointsAlert(null);
+              navigate('/profile',);
+            }}/>
+
+          <MaterialCreateForm
+            formData={formData}
+            setFormData={setFormData}
+            handleChange={handleChange}
+            materias={materias}
+            carreras={carreras}
+            onSubmit={async (data) => {
+              try {
+                setIsLoading(true);
+                await handleSubmit(data);
+                setFormData({});
+              } catch (err) {
+                console.log('Error onSubmit: ', err);
+                setAlert({ show: true, message: err.message, variant: 'danger' });
+              } finally {
+                setIsLoading(false);
+              }
+            }}
+            alert={alert}
+            setAlert={setAlert}
+            cLoading={cLoading}
+            userId={user.id}
+            //handleFileChange={handleFileChange}
+            carreraMateria={carreraMateria}
+            cmLoading={cmLoading}
+          />
+        </div>
       )}
     </>
   );

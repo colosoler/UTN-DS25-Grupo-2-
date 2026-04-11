@@ -25,6 +25,7 @@ export async function getUserById(id: number): Promise<UserData> {
       career: true,
       createdAt: true,
       updatedAt: true,
+      points: true,
       profilePicture: true,
     }
   });
