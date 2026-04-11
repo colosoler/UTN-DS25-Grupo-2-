@@ -1,6 +1,8 @@
 import { CreateCalificacionRequest, UpdateCalificacionRequest } from '../types/calificacion.types';
+import { procesarPuntosPorVoto, procesarEliminacionVoto, procesarActualizacionVoto } from './punto.service';
 import prisma from '../config/prisma';
 import { Calificacion} from '@prisma/client';
+import { getMaterialById } from './material.service';
 
 export async function getAllCalificaciones(): Promise<Calificacion[]> {
 	return prisma.calificacion.findMany({
@@ -73,6 +75,10 @@ export async function createCalificacionByMaterialAndUser(data: CreateCalificaci
 		throw error;
 	}
 
+	await procesarPuntosPorVoto(materialExists.userId, data.value).catch(err => {
+		console.error('Error procesando puntos por voto:', err);
+	});
+
 	const calificacion = await prisma.calificacion.create({
 		data,
 		include: { user: true, material: true},
@@ -140,6 +146,12 @@ export async function updateCalificacionByMaterialAndUser(materialId: number, us
 				},
 			});
 		}
+		const material = await getMaterialById(materialId);
+
+		await procesarActualizacionVoto(material.userId, data.value).catch(err => {
+			console.error('Error procesando puntos por actualización de voto:', err);
+		});
+
 
 		return updated
 	} catch (e: any) {
@@ -211,6 +223,13 @@ export async function deleteCalificacionByMaterialAndUser(materialId: number, us
 				downvotes: !existing.value ? { decrement: 1 } : undefined,
 			},
 		});
+
+		const material = await getMaterialById(materialId);
+
+		await procesarEliminacionVoto(material.userId, existing.value).catch(err => {
+			console.error('Error procesando puntos por eliminación de voto:', err);
+		});
+		
 	} catch (e: any) {
 		if (e.code === 'P2025') {
 			const error = new Error('Calificación no encontrada para este material y usuario') as any;

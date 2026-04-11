@@ -1,6 +1,7 @@
 import { CreateMaterialRequest, MaterialWithUser, UpdateMaterialRequest } from '../types/material.types';
 import prisma from '../config/prisma';
 import { Material, TipoMaterial } from '@prisma/client';
+import {otorgarPuntosPorMaterial} from './punto.service';
 import { Prisma } from '@prisma/client';
 
 const materialInclude = { //objeto para incluir la relación con User y seleccionar solo el username (lo mismo con carrera y su nombre jee)
@@ -205,6 +206,11 @@ export async function createMaterial(data: CreateMaterialRequest): Promise<Mater
       cantidadReportes: 0
     }
   });
+
+  await otorgarPuntosPorMaterial(data.userId, data).catch(err => {
+    console.error('Error otorgando puntos por material:', err);
+  });
+
   return created;
 }
 
