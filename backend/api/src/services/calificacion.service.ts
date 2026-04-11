@@ -122,6 +122,7 @@ export async function updateCalificacionByMaterialAndUser(materialId: number, us
 
 	const existing = await prisma.calificacion.findUnique({
 		where: { userId_materialId: { userId, materialId }},
+		include: { material: true }
 	});
 
 	if (!existing) {
@@ -146,9 +147,8 @@ export async function updateCalificacionByMaterialAndUser(materialId: number, us
 				},
 			});
 		}
-		const material = await getMaterialById(materialId);
 
-		await procesarActualizacionVoto(material.userId, data.value).catch(err => {
+		await procesarActualizacionVoto(existing.material.userId, data.value).catch(err => {
 			console.error('Error procesando puntos por actualización de voto:', err);
 		});
 
@@ -205,6 +205,7 @@ export async function deleteCalificacionByMaterialAndUser(materialId: number, us
 
 	const existing = await prisma.calificacion.findUnique({
 		where: { userId_materialId: { userId, materialId }},
+		include: { material: true }
 	});
 
 	if (!existing) {
@@ -224,9 +225,7 @@ export async function deleteCalificacionByMaterialAndUser(materialId: number, us
 			},
 		});
 
-		const material = await getMaterialById(materialId);
-
-		await procesarEliminacionVoto(material.userId, existing.value).catch(err => {
+		await procesarEliminacionVoto(existing.material.userId, existing.value).catch(err => {
 			console.error('Error procesando puntos por eliminación de voto:', err);
 		});
 		
