@@ -18,7 +18,9 @@ model User {
   updatedAt      DateTime       @updatedAt
   careerId       Int
   role           Role           @default(USER)
+  points Int @default(0)
   profilePicture String?        @db.VarChar(1000)
+  pointsHistory  Punto[]
   favoritos      Favorito[]
   materialVotes  Calificacion[]
   materiales     Material[]
@@ -127,6 +129,16 @@ model Favorito {
   @@map("favoritos")
 }
 
+model Punto {
+  id Int @id @default(autoincrement())
+  userId Int
+  valor Int
+  motivo MotivoPunto
+  createdAt DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@map("puntos")
+}
 enum TipoMaterial {
   PARCIAL
   PARCIAL_RESUELTO
@@ -137,6 +149,13 @@ enum TipoMaterial {
   APUNTE
   RESUMEN
   OTRO
+}
+
+enum MotivoPunto {
+  UPVOTE
+  DOWNVOTE
+  SUBIDA_MATERIAL
+
 }
 
 enum Role {
