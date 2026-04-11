@@ -6,6 +6,7 @@ import { Loading } from "../Components/Loading";
 import { MyMaterialsPage } from "./MyMaterialsPage";
 import { useFetch } from "../Hooks/useFetch";
 import './styles/ProfilePage.css';
+import { LevelBadge } from "../Components/LevelBadge";
 
 export const ProfilePage = () => {
   const user = getUser();
@@ -46,6 +47,7 @@ export const ProfilePage = () => {
               <img src="../images/calendar.png" alt="" />
               Se unió en {new Date(userData.createdAt).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })}
             </p>
+            <LevelBadge points={userData.points}/>
           </div>
         </div>
       </div>
