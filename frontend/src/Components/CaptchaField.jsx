@@ -11,7 +11,7 @@ export const CaptchaField = ({ onVerify, error, clearError }) => {
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", marginBottom: "1rem" }}>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "1rem" }}>
       <ReCAPTCHA
         sitekey={import.meta.env.VITE_RECAPTCHA_SITE}
         onChange={handleChange}
@@ -20,9 +20,8 @@ export const CaptchaField = ({ onVerify, error, clearError }) => {
           onVerify(null);
         }}
       />
-
       {error && (
-        <div style={{ color: "red", textAlign: "center", marginTop: "5px" }}>
+        <div style={{ color: "red", fontSize: "0.8rem", marginTop: "6px" }}>
           {error}
         </div>
       )}
