@@ -28,8 +28,8 @@ export const ProfilePage = () => {
             <Settings size={18} />
             Configuración de perfil
           </Link>
-          <Link to="/favorites" className="profile-favorites-link">
-            <Star size={18} />
+          <Link to="/favorites" className="profile-favorites-link" >
+            <Star size={50} />
             Mis Favoritos
           </Link>
           <div className="profile-image-container">
