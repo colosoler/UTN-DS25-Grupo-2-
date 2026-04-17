@@ -34,6 +34,11 @@ export const MyMaterialsPage = () => {
   const [total, setTotal] = useState(0);
   const [initialLoad, setInitialLoad] = useState(true);
 
+  const handleDelete = (deletedId) => {
+    setMaterials(prev => prev.filter(m => m.id !== deletedId));
+    setSuccessAlert({ show: true, message: 'Material eliminado correctamente' });
+  };
+
   
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -156,7 +161,7 @@ export const MyMaterialsPage = () => {
         ) : (
           materials.map((material) => (
             <Col key={material.id}>
-              <MaterialCard material={material} />
+              <MaterialCard material={material} onDelete={handleDelete} />
             </Col>
           ))
         )}
