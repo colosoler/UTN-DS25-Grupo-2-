@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import { SearchOptions } from '../Components/SearchOptions.jsx';
 import { Alert } from '../Components/Alert.jsx';
 import './styles/MaterialCreateForm.css';
 import { ComisionField } from '../Components/FormFields/ComisionField';
-import { CarreraDropdownSelector } from '../Components/FormFields/CarreraDropdownSelector.jsx';
-import { TipoDropdownSelector } from '../Components/FormFields/TipoDropdownSelector';
+import { CarreraExpandedSelector } from '../Components/FormFields/CarreraExpandedSelector.jsx';
+import { TipoExpandedSelector } from '../Components/FormFields/TipoExpandedSelector';
 import { FileUpload } from '../Components/FormFields/FileUpload'
 export const MaterialCreateForm = ({
   formData,
@@ -21,7 +21,6 @@ export const MaterialCreateForm = ({
   carreraMateria,
   //handleFileChange, // <- recibido como prop
   hideFileUpload = false, // <- nueva prop para ocultar el campo de archivo
-  buttonText = 'Subir', // <- nueva prop para el texto del botón
 }) => {
   const showParcialSelect =
     formData.tipo === 'PARCIAL' || formData.tipo === 'PARCIAL_RESUELTO';
@@ -178,8 +177,8 @@ export const MaterialCreateForm = ({
                       <Form.Label className="material-form-label">Carrera*</Form.Label>
                       <FieldError field="carreraId" />
                     </div>
-                    <CarreraDropdownSelector
-                      useForm={[formData, setFormData, (e) => { handleChange(e); clearField('carreraId'); }]}
+                    <CarreraExpandedSelector
+                      useForm={[formData, setFormData, (e, callback, ...params) => { handleChange(e, callback, ...params); clearField('carreraId'); }]}
                       carreras={cLoading ? [] : carreras}
                     />
                   </Form.Group>
@@ -194,7 +193,7 @@ export const MaterialCreateForm = ({
                     <Form.Label>Tipo de Material*</Form.Label>
                     <FieldError field="tipo" />
                   </div>
-                  <TipoDropdownSelector useForm={[formData, setFormData, (e) => { handleChange(e); clearField('tipo'); }]} />
+                  <TipoExpandedSelector useForm={[formData, setFormData, (e, callback, ...params) => { handleChange(e, callback, ...params); clearField('tipo'); }]} />
                 </Form.Group>
               </Col>
 

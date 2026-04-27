@@ -1,3 +1,12 @@
+/*
+Para llamarlo:
+<CarreraExpandedSelector
+    useForm={[formData, setFormData, (e, callback, ...params) => { handleChange(e, callback, ...params);]}
+    carreras={cLoading ? [] : carreras}
+/>
+
+*/
+
 import { ExpandedSelector } from "./ExpandedSelector";
 export const CarreraExpandedSelector = ({ useForm, carreras }) => {
     const [formData, setFormData, handleChange] = useForm;
