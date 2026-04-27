@@ -33,11 +33,12 @@ export const MaterialCreateForm = ({
   };
 
   const validateStep1 = () => {
-    if (!formData.titulo?.trim()) return { field: 'titulo', message: 'El título es obligatorio.' };
+    if (!formData.titulo) return { field: 'titulo', message: 'El título es obligatorio.' };
     if (!formData.materiaId) return { field: 'materiaId', message: 'Debés seleccionar una materia.' };
     if (!hideFileUpload && (!formData.archivos || !(formData.archivos[0] instanceof File))) {
       return { field: 'archivos', message: 'Debés adjuntar un archivo.' };
     }
+    if (!formData.tipo) return { field: 'tipo', message: 'Debés seleccionar un tipo de material.' };
     return null;
   };
 
@@ -162,6 +163,14 @@ export const MaterialCreateForm = ({
                 fieldError={FieldError}
               />)
             }
+            <Form.Group>
+              <div className="d-flex justify-content-between align-items-baseline">
+                <Form.Label>Tipo de Material*</Form.Label>
+                <FieldError field="tipo" />
+              </div>
+              <TipoExpandedSelector useForm={[formData, setFormData, (e, callback, ...params) => { handleChange(e, callback, ...params); clearField('tipo'); }]} />
+            </Form.Group>
+
 
             <Button type="button" onClick={handleNextStep} className="material-submit-btn w-100 mt-3">Continuar</Button>
           </>
@@ -169,12 +178,15 @@ export const MaterialCreateForm = ({
 
         {step === 2 && (
           <>
+            <span style={{ display: 'block', fontSize: '0.82rem', color: '#8a8a8a', fontStyle: 'italic', marginBottom: '0.75rem' }}>
+              Completá estos campos para sumar puntos y ayudar a la comunidad <p style={{ display: 'inline', fontSyle: null }}>;-)</p>
+            </span>
             {formData.materiaId && (
               <Row className="material-form-row">
                 <Col>
                   <Form.Group aria-required>
                     <div className="d-flex justify-content-between align-items-baseline">
-                      <Form.Label className="material-form-label">Carrera*</Form.Label>
+                      <Form.Label className="material-form-label">Carrera(opcional)</Form.Label>
                       <FieldError field="carreraId" />
                     </div>
                     <CarreraExpandedSelector
@@ -183,25 +195,15 @@ export const MaterialCreateForm = ({
                     />
                   </Form.Group>
                 </Col>
+                {formData.carreraId &&
+                  <Col>
+                    <ComisionField useForm={[formData, setFormData, (e, ...args) => { handleChange(e, ...args); clearField('comision'); }]} carreraMateria={carreraMateria} />
+                    <FieldError field="comision" />
+                  </Col>}
               </Row>
             )}
 
             <Row className="material-form-row">
-              <Col>
-                <Form.Group>
-                  <div className="d-flex justify-content-between align-items-baseline">
-                    <Form.Label>Tipo de Material*</Form.Label>
-                    <FieldError field="tipo" />
-                  </div>
-                  <TipoExpandedSelector useForm={[formData, setFormData, (e, callback, ...params) => { handleChange(e, callback, ...params); clearField('tipo'); }]} />
-                </Form.Group>
-              </Col>
-
-              <Col>
-                <ComisionField useForm={[formData, setFormData, (e, ...args) => { handleChange(e, ...args); clearField('comision'); }]} carreraMateria={carreraMateria} />
-                <FieldError field="comision" />
-              </Col>
-
               <Col>
                 <Form.Group>
                   <div className="d-flex justify-content-between align-items-baseline">
@@ -220,14 +222,11 @@ export const MaterialCreateForm = ({
                   />
                 </Form.Group>
               </Col>
-            </Row>
-
-            {showParcialSelect && (
-              <Row>
+              {showParcialSelect && (
                 <Col>
                   <Form.Group>
                     <div className="d-flex justify-content-between align-items-baseline">
-                      <Form.Label>Parcial Relacionado (opcional)</Form.Label>
+                      <Form.Label>Número de parcial (opcional)</Form.Label>
                       <FieldError field="parcial" />
                     </div>
                     <Form.Select
@@ -237,7 +236,6 @@ export const MaterialCreateForm = ({
                       className="material-form-select"
                     >
                       <option value="" disabled hidden>Seleccionar</option>
-                      <option value={0}>Ninguno</option>
                       <option value={1}>1ero</option>
                       <option value={2}>2do</option>
                       <option value={3}>3ro</option>
@@ -245,8 +243,10 @@ export const MaterialCreateForm = ({
                     </Form.Select>
                   </Form.Group>
                 </Col>
-              </Row>
-            )}
+              )}
+            </Row>
+
+
 
             <Form.Group className="material-form-group">
               <div className="d-flex justify-content-between align-items-baseline">
@@ -272,7 +272,7 @@ export const MaterialCreateForm = ({
             </div>
           </>
         )}
-      </Form>
+      </Form >
 
       <Alert
         show={alert.show}
