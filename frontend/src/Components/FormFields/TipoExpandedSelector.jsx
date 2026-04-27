@@ -39,6 +39,7 @@ export const TipoExpandedSelector = ({ useForm }) => {
         { id: "RESUMEN", name: "Resumen" },
         { id: "OTRO", name: "Otro" },
       ]}
+      onDeselect={() => setFormData({ ...formData, tipo: '', parcial: null })}
     />
   )
 }

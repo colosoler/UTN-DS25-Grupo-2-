@@ -20,6 +20,7 @@ export const CarreraExpandedSelector = ({ useForm, carreras }) => {
                 setFormData({ ...formData, carreraId: value.id, carrera: value.name })
             }
             )}
+            onDeselect={() => setFormData({ ...formData, carreraId: undefined, carrera: '' })}
         ></ExpandedSelector>
     )
 }
