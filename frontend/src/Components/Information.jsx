@@ -7,12 +7,12 @@ function Information({ material }) {
 
   const { data: usuario, loading, error } = useFetch(material?.userId ? `${API_URL}/users/${material.userId}` : null,
     {},
-    { requireAuth: false}
+    { requireAuth: false }
   );
 
-  const { data: materia} = useFetch(material?.materiaId ? `${API_URL}/materias/${material.materiaId}` : null,
+  const { data: materia } = useFetch(material?.materiaId ? `${API_URL}/materias/${material.materiaId}` : null,
     {},
-    { requireAuth: false}
+    { requireAuth: false }
   );
 
   // Lógica para parcial relacionado: solo aplica si es PARCIAL o PARCIAL_RESUELTO
@@ -35,7 +35,7 @@ function Information({ material }) {
       'PARCIAL_RESUELTO': 'Parcial Resuelto',
       'OTRO': 'Otro',
       'PRACTICA_RESUELTA': 'Práctica Resuelta',
-      'RESUMEN' : 'Resumen',
+      'RESUMEN': 'Resumen',
       'FINAL': 'Final',
       'FINAL_RESUELTO': 'Final Resuelto',
       'PRACTICA': 'Práctica'
@@ -54,20 +54,22 @@ function Information({ material }) {
       <div className="info-card-body">
         {loading && <p className='info-loading'>Cargando usuario...</p>}
         {error && <p className='info-error'>Error al cargar usuario.</p>}
-        
+
         {usuario && materia && !loading && (
           <div className="">
             <h5>Creado por: <span className='username'>@{usuario.username}</span></h5>
             <p className="info-item ">
               <strong>Materia: </strong> {materia.materia.nombre}
             </p>
-            <p className="info-item ">
-              <strong>Carrera: </strong> {material.carreraNombre}
-            </p>
+            {material.carreraNombre && (
+              <p className="info-item ">
+                <strong>Carrera: </strong> {material.carreraNombre}
+              </p>
+            )}
             {material.comision && (
-            <p className="info-item ">
-              <strong>Comisión: </strong> {material.comision}
-            </p>
+              <p className="info-item ">
+                <strong>Comisión: </strong> {material.comision}
+              </p>
             )}
             {material.añoCursada && (
               <p className="info-item ">
@@ -88,7 +90,7 @@ function Information({ material }) {
                 <strong>Descripción: </strong> {material.descripcion}
               </p>
             )}
-            
+
           </div>
         )}
       </div>

@@ -104,12 +104,12 @@ export const MaterialCreatePage = () => {
       archivo: archivoUrl,
       userId: Number(user.id),
       materiaId: Number(data.materiaId),
-      carreraId: Number(data.carreraId),
+      carreraId: data.carreraId ? Number(data.carreraId) : null,
       tipo: data.tipo,
-      descripcion: data.descripcion ? data.descripcion : undefined,
-      comision: data.comision ? data.comision : undefined,
-      añoCursada: data.añoCursada ?Number(data.añoCursada): undefined,
-      numeroParcial: data.parcial ? Number(data.parcial) : undefined,
+      descripcion: data.descripcion || null,
+      comision: data.comision || null,
+      añoCursada: data.añoCursada ? Number(data.añoCursada) : null,
+      numeroParcial: data.numeroParcial ? Number(data.numeroParcial) : null,
     };
 
     console.log('Datos enviados al backend:', payload);

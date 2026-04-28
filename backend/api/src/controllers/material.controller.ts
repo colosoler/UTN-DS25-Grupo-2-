@@ -93,10 +93,12 @@ export async function createMaterial(req: Request, res: Response, next: NextFunc
     const payload = {
       ...data,
       materiaId: Number(data.materiaId),
-      carreraId: Number(data.carreraId),
+      carreraId: data.carreraId ? Number(data.carreraId) : null,
       userId: Number(data.userId),
-      añoCursada: Number(data.añoCursada),
-      numeroParcial: data.numeroParcial ? Number(data.numeroParcial) : 0,
+      añoCursada: data.añoCursada ? Number(data.añoCursada) : null,
+      numeroParcial: data.numeroParcial ? Number(data.numeroParcial) : null,
+      comision: data.comision || null,
+      descripcion: data.descripcion || null,
     };
 
     const newMaterial = await materialService.createMaterial(payload);

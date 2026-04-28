@@ -18,12 +18,12 @@ model User {
   updatedAt      DateTime       @updatedAt
   careerId       Int
   role           Role           @default(USER)
-  points Int @default(0)
   profilePicture String?        @db.VarChar(1000)
-  pointsHistory  Punto[]
+  points         Int            @default(0)
   favoritos      Favorito[]
   materialVotes  Calificacion[]
   materiales     Material[]
+  pointsHistory  Punto[]
   reportes       Reporte[]
   career         Carrera        @relation(fields: [careerId], references: [id])
 
@@ -76,13 +76,13 @@ model Material {
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
   materiaId        Int
-  carreraId        Int
+  carreraId        Int?
   userId           Int
   downvotes        Int            @default(0)
   upvotes          Int            @default(0)
   favoritos        Favorito[]
   materialVotes    Calificacion[]
-  carrera          Carrera        @relation(fields: [carreraId], references: [id])
+  carrera          Carrera?       @relation(fields: [carreraId], references: [id])
   materia          Materia        @relation(fields: [materiaId], references: [id])
   user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   reportes         Reporte[]
@@ -130,15 +130,16 @@ model Favorito {
 }
 
 model Punto {
-  id Int @id @default(autoincrement())
-  userId Int
-  valor Int
-  motivo MotivoPunto
-  createdAt DateTime @default(now())
-  user       User     @relation(fields: [userId], references: [id])
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  valor     Int
+  motivo    MotivoPunto
+  createdAt DateTime    @default(now())
+  user      User        @relation(fields: [userId], references: [id])
 
   @@map("puntos")
 }
+
 enum TipoMaterial {
   PARCIAL
   PARCIAL_RESUELTO

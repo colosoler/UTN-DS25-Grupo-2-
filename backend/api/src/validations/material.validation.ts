@@ -7,19 +7,19 @@ export const createMaterialSchema = z.object({
 		.int('El año de cursada debe ser un número entero')
 		.positive('El año de cursada debe ser un número positivo')
 		.max(new Date().getFullYear(), "El año de cursada no puede ser posterior al año actual")
-		.optional(),
+		.nullable().optional(),
 	archivo: z.string()
         .min(1, 'El archivo es un campo requerido'),
 	comision: z.string()
         .max(50, 'La comisión no puede exceder los 50 caracteres')
-		.optional(),
+		.nullable().optional(),
 	descripcion: z.string()
         .max(200, 'La descripción no puede exceder los 200 caracteres')
-        .optional(),
+        .nullable().optional(),
 	numeroParcial: z.number()
 		.int('El número de parcial debe ser un número entero')
 		.positive('El número de parcial debe ser un número positivo')
-		.optional(),
+		.nullable().optional(),
 	titulo: z.string()
         .min(1, 'El título es un campo requerido')
         .max(200, 'El título no puede exceder los 200 caracteres')
@@ -30,7 +30,8 @@ export const createMaterialSchema = z.object({
 		.positive('El ID de la materia debe ser un número positivo'),
 	carreraId: z.number()
 		.int('El ID de la carrera debe ser un número entero')
-		.positive('El ID de la carrera debe ser un número positivo'),
+		.positive('El ID de la carrera debe ser un número positivo')
+		.nullable().optional(),
 	userId: z.number()
 		.int('El ID del usuario debe ser un número entero')
 		.positive('El ID del usuario debe ser un número positivo'),

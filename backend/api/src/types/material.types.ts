@@ -11,7 +11,7 @@ export interface Material {
     numeroParcial: number | null;
     titulo: string;
     materiaId: number;
-    carreraId: number;
+    carreraId: number | null;
     tipo: TipoMaterial;
     userId: number;
     upvotes: number;
@@ -25,14 +25,14 @@ export interface MaterialWithUser extends Material { //interfaz para devolver el
 
 // id, cantidadReportes, fecha no son necesarios.
 export interface CreateMaterialRequest {
-    añoCursada: number;
+    añoCursada?: number | null;
     archivo: string;
-    comision: string;
-    descripcion: string;
-    numeroParcial: number | null;
+    comision?: string | null;
+    descripcion?: string | null;
+    numeroParcial?: number | null;
     titulo: string;
     materiaId: number;
-    carreraId: number;
+    carreraId?: number | null;
     tipo: TipoMaterial;
     userId: number;
 }

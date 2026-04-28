@@ -68,7 +68,6 @@ export const MaterialCreateForm = ({
     if (!formData.titulo?.trim()) return { field: 'titulo', message: 'El título es obligatorio.' };
     if (!hideFileUpload && (!formData.archivos || !(formData.archivos[0] instanceof File))) return { field: 'archivos', message: 'Debés adjuntar un archivo.' };
     if (!formData.materiaId) return { field: 'materiaId', message: 'Debés seleccionar una materia.' };
-    if (formData.materiaId && !formData.carreraId) return { field: 'carreraId', message: 'Debés seleccionar una carrera.' };
     if (!formData.tipo) return { field: 'tipo', message: 'Debés seleccionar un tipo de material.' };
 
     if (formData.añoCursada) {
@@ -92,14 +91,14 @@ export const MaterialCreateForm = ({
 
     const data = {
       titulo: formData.titulo || '',
-      descripcion: formData.descripcion || '',
+      descripcion: formData.descripcion || null,
       tipo: formData.tipo || '',
       archivos: formData.archivos || null,
       materiaId: Number(formData.materiaId),
-      carreraId: Number(formData.carreraId),
-      comision: formData.comision,
-      numeroParcial: Number(formData.parcial),
-      añoCursada: formData.añoCursada,
+      carreraId: formData.carreraId ? Number(formData.carreraId) : null,
+      comision: formData.comision || null,
+      numeroParcial: formData.parcial ? Number(formData.parcial) : null,
+      añoCursada: formData.añoCursada ? Number(formData.añoCursada) : null,
       userId: Number(userId),
     };
 
