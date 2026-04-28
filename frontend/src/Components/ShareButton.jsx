@@ -30,7 +30,7 @@ export const ShareButton = ({ shareUrl }) => {
         className="p-3"
         style={{position: 'fixed', marginBottom: '20px'}}
       >
-        <Toast show={show} bg={isError ? 'danger' : 'success'} delay={1500} autohide>
+        <Toast show={show} className={`utnotas-toast ${isError ? 'utnotas-toast-danger' : ''}`} delay={1500} autohide>
           <Toast.Body className="text-white text-center">
             {isError ? 'Error al copiar el link' : '¡Link copiado al portapapeles!'}
           </Toast.Body>

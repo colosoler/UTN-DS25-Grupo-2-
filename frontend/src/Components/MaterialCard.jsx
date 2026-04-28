@@ -198,7 +198,7 @@ export const MaterialCard = ({ material, onDelete }) => {
           className="p-3"
           style={{position: 'fixed', marginBottom: '20px'}}
         >
-          <Toast show={showCopyMsg} bg={'success'} delay={1500} autohide>
+          <Toast show={showCopyMsg} className="utnotas-toast" delay={1500} autohide>
             <Toast.Body className="text-white text-center">
               {'¡Link copiado al portapapeles!'}
             </Toast.Body>

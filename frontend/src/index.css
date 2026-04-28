@@ -94,3 +94,16 @@ button.btn-primary:hover {
   filter: saturate(1.08) brightness(0.98);
   transform: translateY(-1px);
 }
+
+.toast.utnotas-toast {
+  border: 0;
+  border-radius: 0.85rem;
+  color: #ffffff;
+  background: var(--brand-gradient);
+  box-shadow: 0 14px 34px rgba(40, 36, 30, 0.2);
+  overflow: hidden;
+}
+
+.toast.utnotas-toast-danger {
+  background: linear-gradient(135deg, #5f4631 0%, #7b5f43 55%, #3f3023 100%);
+}
