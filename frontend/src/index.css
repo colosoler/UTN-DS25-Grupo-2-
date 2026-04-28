@@ -1,13 +1,21 @@
 :root{
-  --primary-color: #4f46e5;
-  --secondary-color: #818cf8;
-  --background-color: #f5f7fa;
-  --text-color: #333333;
-  --secondary-text-color: #666666;
-  --border-color: #e0e0e0;
+  --primary-color: #2f6f4e;
+  --primary-color-dark: #214f37;
+  --secondary-color: #7b5f43;
+  --accent-color: #a98255;
+  --background-color: #f5f7f2;
+  --surface-color: #ffffff;
+  --surface-tint: #edf4ec;
+  --text-color: #28241e;
+  --secondary-text-color: #635d52;
+  --border-color: #ddd7cb;
+  --brand-gradient: linear-gradient(135deg, #244b35 0%, #2f6f4e 58%, #7b5f43 100%);
+  --brand-gradient-soft: linear-gradient(135deg, rgba(47, 111, 78, 0.12) 0%, rgba(123, 95, 67, 0.1) 100%);
+  --shadow-soft: 0 14px 40px rgba(40, 36, 30, 0.1);
+  --shadow-hover: 0 18px 44px rgba(47, 111, 78, 0.16);
   --font-size: 16px;
   --font-weight: 400;
-  --font-family: 'Arial', sans-serif;
+  --font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   --upvote-color-hover: #22c55e;
   --upvote-color: #16a34a;
@@ -16,20 +24,73 @@
   --vote-text-neutral: #374151;
   --vote-text-light: #ffffff;
 
-  --indigo-500: #6366f1;
-  --indigo-600: #4f46e5;
-  --indigo-700: #4338ca;
-  --indigo-100-70: rgba(224, 231, 255, 0.7);
-  --indigo-200: #c7d2fe; 
-  --indigo-400: #818cf8;
-  --gray-100: #f3f4f6; 
-  --gray-200: #e5e7eb;
-  --gray-400: #9ca3af;
-  --gray-500: #6b7280;
-  --gray-600: #4b5563;
-  --gray-700: #374151;
-  --gray-800: #1f2937;
+  --indigo-100: #edf4ec;
+  --indigo-500: #2f6f4e;
+  --indigo-600: #2f6f4e;
+  --indigo-700: #214f37;
+  --indigo-100-70: rgba(47, 111, 78, 0.12);
+  --indigo-200: rgba(47, 111, 78, 0.28); 
+  --indigo-400: #6f9a78;
+  --gray-100: #f0eee8; 
+  --gray-200: #ddd7cb;
+  --gray-400: #9a9284;
+  --gray-500: #746c61;
+  --gray-600: #5f584e;
+  --gray-700: #403a32;
+  --gray-800: #28241e;
   --red-500: #ef4444;
-  --inter-font: 'Inter', sans-serif;
+  --inter-font: var(--font-family);
   --text-2xl: 1.5rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  font-weight: var(--font-weight);
+  color: var(--text-color);
+  background-color: var(--background-color);
+  background-image:
+    linear-gradient(135deg, rgba(47, 111, 78, 0.18) 0%, rgba(245, 247, 242, 0.72) 42%, rgba(123, 95, 67, 0.18) 100%),
+    linear-gradient(rgba(40, 36, 30, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(40, 36, 30, 0.055) 1px, transparent 1px);
+  background-size: 100% 100%, 64px 64px, 64px 64px;
+  background-attachment: fixed;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: rgba(169, 130, 85, 0.28);
+  color: var(--text-color);
+}
+
+a {
+  color: var(--primary-color-dark);
+}
+
+.btn-primary,
+.btn.w-100,
+button.btn-primary {
+  background: var(--brand-gradient) !important;
+  border: 0 !important;
+  box-shadow: 0 10px 24px rgba(47, 111, 78, 0.18);
+}
+
+.btn-primary:hover,
+.btn.w-100:hover,
+button.btn-primary:hover {
+  filter: saturate(1.08) brightness(0.98);
+  transform: translateY(-1px);
 }

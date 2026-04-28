@@ -2,7 +2,7 @@
 
 /* Mensajes de error de todos los formularios */
 .field-error {
-  color: red;
+  color: #e11d48;
   font-size: 0.85rem;
   margin-top: 0.25rem;
   text-align: center;
@@ -10,12 +10,12 @@
 
 /* Inputs con error */
 .input-error {
-  border-color: red;
-  box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
+  border-color: #e11d48;
+  box-shadow: 0 0 0 0.2rem rgba(225, 29, 72, 0.18);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 /*Cambio de color de placeholder cuando hay error */
 .input-error::placeholder {
-  color: rgba(255, 0, 0, 0.6);
+  color: rgba(225, 29, 72, 0.65);
 }
