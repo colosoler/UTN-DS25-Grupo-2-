@@ -4,7 +4,7 @@ export function useRanking() {
   const [ranking, setRanking] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
@@ -13,29 +13,15 @@ export function useRanking() {
         setLoading(true);
         setError(null);
 
-        // Obtener usuarios y materiales en paralelo
-        const [usersResponse, materialsResponse] = await Promise.all([
-          fetch(`${API_URL}/users/`, {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-          }),
-          fetch(`${API_URL}/materials/?limit=500`)
-        ]);
+        const usersResponse = await fetch(`${API_URL}/users/`);
 
-        if (!usersResponse.ok || !materialsResponse.ok) {
-          throw new Error('Error al obtener datos');
+        if (!usersResponse.ok) {
+          throw new Error(`Error al obtener usuarios (${usersResponse.status})`);
         }
 
-        const usersData = await usersResponse.json();
-        const materialsData = await materialsResponse.json();
-        
-        const users = usersData;
-        const materials = materialsData.data || materialsData;
+        const users = await usersResponse.json();
 
-        // Calcular estadísticas para cada usuario
         const usersWithStats = users.map(user => {
-          const userMaterials = materials.filter(material => material.userId === user.id);
           const netScore = user.points;
 
           return {
@@ -46,11 +32,10 @@ export function useRanking() {
             profilePicture: user.profilePicture,
             career: user.career?.nombre || 'Sin carrera',
             netScore,
-            materialsCount: userMaterials.length
+            materialsCount: user.materialsCount || 0
           };
         });
 
-        // Ordenar por puntuación neta descendente y tomar los primeros 10
         const sortedRanking = usersWithStats
           .sort((a, b) => b.netScore - a.netScore)
           .slice(0, 10);
