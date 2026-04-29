@@ -1,58 +1,62 @@
 .alert-custom-toast {
-	border: 1px solid rgba(47, 111, 78, 0.22);
-	border-radius: 0.85rem;
-	box-shadow: 0 18px 44px rgba(40, 36, 30, 0.24);
+	border: 1px solid rgba(47, 111, 78, 0.22) !important;
+	border-top: 5px solid var(--primary-color) !important;
+	border-radius: 0.85rem !important;
+	box-shadow: 0 18px 44px rgba(40, 36, 30, 0.24) !important;
 	max-width: 90vw;
-	overflow: hidden;
-	color: var(--text-color);
-	background: rgba(255, 255, 255, 0.96);
-	border-top: 5px solid var(--primary-color);
+	overflow: hidden !important;
+	color: var(--text-color) !important;
+	background: rgba(255, 255, 255, 0.98) !important;
 }
 
 .alert-custom-header {
-	border: none;
-	padding: 0.7rem 1rem 0.45rem;
-	color: var(--primary-color-dark);
-	background: transparent;
-	border-bottom: 1px solid rgba(47, 111, 78, 0.12);
-	font-weight: 800;
+	border: none !important;
+	padding: 0.7rem 1rem 0.45rem !important;
+	color: var(--primary-color-dark) !important;
+	background: rgba(255, 255, 255, 0.98) !important;
+	border-bottom: 1px solid rgba(47, 111, 78, 0.12) !important;
+	font-weight: 800 !important;
 }
 
 .alert-custom-body {
-	padding: 0.75rem 1rem;
-	color: var(--text-color);
-	font-weight: 600;
-	background: transparent;
+	padding: 0.75rem 1rem !important;
+	color: var(--text-color) !important;
+	font-weight: 600 !important;
+	background: rgba(255, 255, 255, 0.98) !important;
 }
 
 .alert-custom-header .btn-close {
-	width: 0.75rem;
-	height: 0.75rem;
-	padding: 0.45rem;
-	border-radius: 999px;
-	background-color: rgba(47, 111, 78, 0.12);
-	opacity: 1;
-	filter: none;
-	box-shadow: none;
+	width: 0.85rem !important;
+	height: 0.85rem !important;
+	padding: 0.45rem !important;
+	border-radius: 999px !important;
+	background-color: rgba(47, 111, 78, 0.12) !important;
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2328241e'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293A1 1 0 0 1 .293 14.293L6.586 8 .293 1.707A1 1 0 0 1 .293.293z'/%3e%3c/svg%3e") !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+	background-size: 0.58rem !important;
+	opacity: 1 !important;
+	filter: none !important;
+	box-shadow: none !important;
 }
 
 .alert-custom-header .btn-close:hover {
-	background-color: rgba(123, 95, 67, 0.16);
-	opacity: 1;
+	background-color: rgba(123, 95, 67, 0.16) !important;
+	opacity: 1 !important;
 }
 
 .alert-custom-toast--success,
 .alert-custom-toast--info {
-	border-top-color: var(--primary-color);
+	border-top-color: var(--primary-color) !important;
 }
 
 .alert-custom-toast--danger,
 .alert-custom-toast--error {
-	border-top-color: #7b5f43;
+	border-top-color: #7b5f43 !important;
 }
 
 .alert-custom-toast--warning {
-	border-top-color: var(--accent-color);
+	border-top-color: var(--accent-color) !important;
 }
 
 .alert-max-width-md {
