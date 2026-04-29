@@ -1,22 +1,18 @@
 import { getUserLevel } from '../Helpers/levels';
+import './styles/LevelBadge.css';
 
 export const LevelBadge = ({ points, className = '' }) => {
   const userLevel = getUserLevel(points);
+  const safePoints = points || 0;
 
   return (
-    <span 
-      className={`badge border ${userLevel.textClass} ${className}`}
-      title={`${points || 0} puntos totales`}
-      style={{ 
-        backgroundColor: userLevel.hex,
-        fontSize: '0.85em', 
-        verticalAlign: 'middle',
-        boxShadow: userLevel.name === 'UTNascar' ? '0 0 12px rgba(255, 232, 0, 0.8)' : 'none',
-        marginBottom: '10px'
-      }}
+    <span
+      className={`level-badge ${className}`}
+      title={`${safePoints} puntos totales`}
+      style={{ '--level-color': userLevel.hex }}
     >
-      <span className="me-1">{userLevel.icon}</span> 
-      {userLevel.name}
+      <span className="level-badge-dot" aria-hidden="true" />
+      <span className="level-badge-name">{userLevel.name}</span>
     </span>
   );
 };

@@ -21,7 +21,7 @@ export const HomePage = () => {
       <Searchbar />
       <section id="carreras">
         <div className="carreras-container">
-          <h1>Seleccioná tu carrera</h1>
+          <h1>Seleccioná una carrera</h1>
           <p>Elegí la ingeniería que te interesa para ver su contenido.</p>
           <div className="carreras-grid">
             {carreras?.map(carrera => (

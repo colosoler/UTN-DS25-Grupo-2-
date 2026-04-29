@@ -1,15 +1,51 @@
+.favorite-page-container {
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 1.1rem;
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+}
+
 .favorite-back-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #555;
+  color: var(--gray-600);
   text-decoration: none;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 650;
   margin-bottom: 1.5rem;
   transition: color 0.2s;
 }
 
 .favorite-back-link:hover {
-  color: #111;
+  color: var(--primary-color-dark);
+}
+
+.favorite-page-heading {
+  text-align: center;
+}
+
+.favorite-page-heading h2 {
+  color: var(--text-color);
+  font-weight: 900 !important;
+}
+
+.favorite-page-heading h2::after {
+  content: "";
+  display: block;
+  width: 5rem;
+  height: 0.3rem;
+  margin: 0.65rem auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+}
+
+.favorite-empty-card {
+  border: 1px solid rgba(123, 95, 67, 0.22) !important;
+  border-radius: 1rem !important;
+  box-shadow: var(--shadow-soft);
+}
+
+.favorite-empty-card .bi-star {
+  color: var(--accent-color) !important;
 }

@@ -76,13 +76,13 @@ export const FavoritePage = () => {
   };
 
   return (
-    <Container className="my-4">
+    <Container className="favorite-page-container my-4">
       <Link to="/profile" className="favorite-back-link">
         <ArrowLeft size={20} />
         Volver a Mi Perfil
       </Link>
 
-      <div className="mb-4">
+      <div className="favorite-page-heading mb-4">
         <h2 className="fw-bold">Mis Favoritos</h2>
         <p className="text-muted">Los materiales que guardaste como favoritos</p>
       </div>
@@ -103,7 +103,7 @@ export const FavoritePage = () => {
       <Row xs={1} md={2} lg={2} className="g-4" style={{ opacity: loading ? 0.5 : 1, transition: 'opacity 0.2s', pointerEvents: loading ? 'none' : 'auto' }}>
         {materials.length === 0 ? (
           <Col>
-            <Card className="text-center py-5">
+            <Card className="favorite-empty-card text-center py-5">
               <Card.Body>
                 <i className="bi bi-star text-muted" style={{ fontSize: "3rem" }}></i>
                 <h4 className="mt-3 text-muted">

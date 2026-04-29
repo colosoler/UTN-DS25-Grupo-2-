@@ -1,0 +1,47 @@
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: 100%;
+  padding: 0.32rem 0.68rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--gray-700);
+  border: 1px solid rgba(23, 20, 38, 0.1);
+  box-shadow: 0 6px 16px rgba(40, 36, 30, 0.06);
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.1;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.level-badge-dot {
+  width: 0.58rem;
+  height: 0.58rem;
+  border-radius: 50%;
+  background: var(--level-color, var(--primary-color));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--level-color, var(--primary-color)) 16%, transparent);
+  flex-shrink: 0;
+}
+
+.level-badge-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.level-badge--profile {
+  margin-top: 0.45rem;
+  font-size: 0.86rem;
+  padding: 0.38rem 0.78rem;
+}
+
+.level-badge--ranking {
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 576px) {
+  .level-badge {
+    max-width: 12rem;
+  }
+}

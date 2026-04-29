@@ -1,12 +1,11 @@
-import { getUser, getToken } from "../Helpers/auth";
-import { useEffect, useState } from "react";
+import { getUser } from "../Helpers/auth";
 import { Link } from "react-router-dom";
 import { Settings, Star } from "lucide-react";
 import { Loading } from "../Components/Loading";
 import { MyMaterialsPage } from "./MyMaterialsPage";
 import { useFetch } from "../Hooks/useFetch";
-import './styles/ProfilePage.css';
 import { LevelBadge } from "../Components/LevelBadge";
+import './styles/ProfilePage.css';
 
 export const ProfilePage = () => {
   const user = getUser();
@@ -26,12 +25,14 @@ export const ProfilePage = () => {
         <div className="profile-card">
           <Link to="/settings" className="profile-settings-link">
             <Settings size={18} />
-            Configuración de perfil
+            <span>Configuracion</span>
           </Link>
-          <Link to="/favorites" className="profile-favorites-link" >
-            <Star size={50} />
-            Mis Favoritos
+
+          <Link to="/favorites" className="profile-favorites-link">
+            <Star size={18} />
+            <span>Mis favoritos</span>
           </Link>
+
           <div className="profile-image-container">
             <img
               src={userData.profilePicture || "../images/profile-user-icon.png"}
@@ -39,15 +40,16 @@ export const ProfilePage = () => {
               className="profile-image"
             />
           </div>
+
           <div className="profile-info">
             <h1 className="profile-name">{userData.name} {userData.surname}</h1>
             <p className="profile-username">@{userData.username}</p>
             <p className="profile-career">Estudiante de {userData.career.nombre}</p>
             <p className="profile-date">
               <img src="../images/calendar.png" alt="" />
-              Se unió en {new Date(userData.createdAt).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })}
+              Se unio en {new Date(userData.createdAt).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })}
             </p>
-            <LevelBadge points={userData.points}/>
+            <LevelBadge points={userData.points} className="level-badge--profile" />
           </div>
         </div>
       </div>

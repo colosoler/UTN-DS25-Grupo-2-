@@ -4,7 +4,7 @@ import "./styles/Alert.css";
 
 export const Alert = ({ show, message, onClose, variant = "success"}) => {
   const [showToast, setShowToast] = useState(show)
-  const color = "#4862caff";
+  const variantClass = `alert-custom-toast--${variant}`;
 
   useEffect(() => {
     setShowToast(show)
@@ -28,23 +28,15 @@ export const Alert = ({ show, message, onClose, variant = "success"}) => {
       <Toast
         show={showToast}
         onClose={handleClose}
-        className="alert-custom-toast" 
-				style={{
-					backgroundColor: color,
-					color: "#ffffff",
-				}}
+        className={`alert-custom-toast ${variantClass}`} 
       >
         <Toast.Header
           closeButton={true}
           className="alert-custom-header" 
-					style={{
-						backgroundColor: color,
-						color: "#ffffff",
-					}}
         >
           <strong className="me-auto">UTNotas</strong>
         </Toast.Header>
-        <Toast.Body className="alert-custom-body" style={{ color: "#ffffff" }}>{message}</Toast.Body>
+        <Toast.Body className="alert-custom-body">{message}</Toast.Body>
       </Toast>
     </ToastContainer>
   )

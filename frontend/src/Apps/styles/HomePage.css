@@ -6,22 +6,22 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
 #root {
   min-height: 100vh;
-  background-color: var(--background-color);
+  background: transparent;
 }
 
 .home-wrapper {
-  height: 100%; 
+  min-height: 100%;
   flex-grow: 1;
-  padding-bottom: 4rem; 
-  background-color: var(--background-color);
+  padding: 2.5em 1rem 4rem;
+  background: transparent;
   font-family: var(--inter-font);
-  padding-top: 2em; 
 }
 
 #carreras {
@@ -38,22 +38,33 @@ html, body {
 
 .carreras-container > h1 {
   text-align: center;
-  font-size: 2.25rem;
-  font-weight: 800;
+  font-size: 2.35rem;
+  font-weight: 850;
   color: var(--gray-800);
   margin-bottom: 0.75rem;
+  letter-spacing: 0;
+}
+
+.carreras-container > h1::after {
+  content: "";
+  display: block;
+  width: 6.5rem;
+  height: 0.35rem;
+  margin: 0.75rem auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
 }
 
 .carreras-container > p {
   text-align: center;
-  color: var(--gray-500);
+  color: var(--gray-600);
   font-size: 1.125rem;
   margin-top: 0.5rem;
   margin-bottom: 2.5rem;
 }
 
 .carreras-grid {
-  display: grid; 
+  display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   width: 100%;
@@ -64,7 +75,7 @@ html, body {
   .carreras-container {
     max-width: 1200px;
   }
-  
+
   .carreras-grid {
     gap: 25px;
   }
@@ -74,11 +85,11 @@ html, body {
   .carreras-container {
     max-width: 1000px;
   }
-  
+
   .carreras-grid {
     gap: 20px;
   }
-  
+
   h1 {
     font-size: 2.6rem;
     margin-bottom: 35px;
@@ -91,37 +102,41 @@ html, body {
     grid-template-rows: repeat(3, 1fr);
     gap: 25px;
   }
-  
+
   .carreras-container {
     max-width: 800px;
   }
-  
+
   h1 {
     font-size: 2.4rem;
     margin-bottom: 30px;
   }
-  
+
   #carreras {
     padding: 25px 15px 35px 15px;
   }
 }
 
 @media (max-width: 768px) {
+  .home-wrapper {
+    padding-top: 1.25rem;
+  }
+
   .carreras-grid {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(6, 1fr);
     gap: 20px;
   }
-  
+
   .carreras-container {
     max-width: 400px;
   }
-  
+
   h1 {
     font-size: 2.2rem;
     margin-bottom: 25px;
   }
-  
+
   #carreras {
     padding: 20px 10px 30px 10px;
   }
@@ -132,11 +147,11 @@ html, body {
     font-size: 2rem;
     margin-bottom: 20px;
   }
-  
+
   #carreras {
     padding: 15px 10px 25px 10px;
   }
-  
+
   .carreras-grid {
     gap: 15px;
   }
