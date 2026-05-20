@@ -1,0 +1,9 @@
+.env
+
+# Node modules
+node_modules/
+
+# Compilados de TypeScript
+dist/
+
+.claude/
