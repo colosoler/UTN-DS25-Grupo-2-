@@ -1,0 +1,61 @@
+services:
+  db:
+    # Postgres 16 LTS en Alpine: no tiene el problema de glibc de Node porque
+    # no corre binarios nativos del proyecto, solo el motor de base de datos
+    image: postgres:16-alpine
+    # Reinicia el contenedor automáticamente si se cae, excepto si lo bajamos a mano
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      # La contraseña viene del .env de la raíz para no hardcodearla en el compose
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      # Volumen nombrado para persistir los datos aunque el contenedor se destruya
+      - postgres_data:/var/lib/postgresql/data
+    # Expuesto solo para desarrollo local (correr prisma migrate dev desde la máquina)
+    # En producción se puede quitar este port
+    ports:
+      - "5432:5432"
+    healthcheck:
+      # pg_isready verifica que Postgres esté listo para recibir conexiones
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend/api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    # Carga las variables del .env del backend (JWT, Cloudinary, etc.)
+    env_file:
+      - ./backend/api/.env
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${DB_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable
+      - FRONTEND_URL=${FRONTEND_URL}
+    # El backend no arranca hasta que el healthcheck de db pase: si arranca
+    # antes, Prisma intenta conectarse y la app se cae porque Postgres no está listo
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      # Vite incrusta las variables VITE_* en el bundle durante el build, no en
+      # runtime, por eso se pasan como args de build y no como environment
+      args:
+        - VITE_API_URL=${VITE_API_URL}
+        - VITE_APP_NAME=${VITE_APP_NAME}
+        - VITE_RECAPTCHA_SITE=${VITE_RECAPTCHA_SITE}
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  # Volumen nombrado administrado por Docker, persiste datos entre reinicios
+  postgres_data:
