@@ -2,6 +2,9 @@
 CREATE TYPE "TipoMaterial" AS ENUM ('PARCIAL', 'PARCIAL_RESUELTO', 'FINAL', 'FINAL_RESUELTO', 'PRACTICA', 'PRACTICA_RESUELTA', 'APUNTE', 'RESUMEN', 'OTRO');
 
 -- CreateEnum
+CREATE TYPE "MotivoPunto" AS ENUM ('UPVOTE', 'DOWNVOTE', 'SUBIDA_MATERIAL', 'VOTO_ACTUALIZADO', 'VOTO_ELIMINADO', 'MATERIAL_ACTUALIZADO');
+
+-- CreateEnum
 CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN');
 
 -- CreateEnum
@@ -20,6 +23,7 @@ CREATE TABLE "users" (
     "careerId" INTEGER NOT NULL,
     "role" "Role" NOT NULL DEFAULT 'USER',
     "profilePicture" VARCHAR(1000),
+    "points" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -54,11 +58,11 @@ CREATE TABLE "carrera_materia" (
 -- CreateTable
 CREATE TABLE "materials" (
     "id" SERIAL NOT NULL,
-    "añoCursada" INTEGER NOT NULL,
+    "añoCursada" INTEGER,
     "archivo" TEXT NOT NULL,
     "cantidadReportes" INTEGER NOT NULL DEFAULT 0,
-    "comision" VARCHAR(50) NOT NULL,
-    "descripcion" TEXT NOT NULL,
+    "comision" VARCHAR(50),
+    "descripcion" TEXT,
     "fecha" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "numeroParcial" INTEGER,
     "titulo" VARCHAR(200) NOT NULL,
@@ -66,7 +70,7 @@ CREATE TABLE "materials" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "materiaId" INTEGER NOT NULL,
-    "carreraId" INTEGER NOT NULL,
+    "carreraId" INTEGER,
     "userId" INTEGER NOT NULL,
     "downvotes" INTEGER NOT NULL DEFAULT 0,
     "upvotes" INTEGER NOT NULL DEFAULT 0,
@@ -107,6 +111,17 @@ CREATE TABLE "favoritos" (
     CONSTRAINT "favoritos_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "puntos" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "valor" INTEGER NOT NULL,
+    "motivo" "MotivoPunto" NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "puntos_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
@@ -132,7 +147,7 @@ ALTER TABLE "carrera_materia" ADD CONSTRAINT "carrera_materia_carreraId_fkey" FO
 ALTER TABLE "carrera_materia" ADD CONSTRAINT "carrera_materia_materiaId_fkey" FOREIGN KEY ("materiaId") REFERENCES "materias"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "materials" ADD CONSTRAINT "materials_carreraId_fkey" FOREIGN KEY ("carreraId") REFERENCES "carreras"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "materials" ADD CONSTRAINT "materials_carreraId_fkey" FOREIGN KEY ("carreraId") REFERENCES "carreras"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "materials" ADD CONSTRAINT "materials_materiaId_fkey" FOREIGN KEY ("materiaId") REFERENCES "materias"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -157,3 +172,6 @@ ALTER TABLE "favoritos" ADD CONSTRAINT "favoritos_materialId_fkey" FOREIGN KEY (
 
 -- AddForeignKey
 ALTER TABLE "favoritos" ADD CONSTRAINT "favoritos_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "puntos" ADD CONSTRAINT "puntos_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

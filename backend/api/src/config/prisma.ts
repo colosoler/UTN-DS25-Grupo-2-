@@ -4,10 +4,11 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import 'dotenv/config'; // Ensure env vars are loaded
 
 const rawUrl = process.env.DATABASE_URL || '';
-const connectionString = rawUrl.split('?')[0]; // Remove ?sslmode=require
+const url = new URL(rawUrl);
+const sslmode = url.searchParams.get('sslmode');
 const pool = new Pool({
-  connectionString,
-  ssl: { rejectUnauthorized: false }
+  connectionString: rawUrl,
+  ssl: sslmode === 'disable' ? false : { rejectUnauthorized: false }
 });
 const adapter = new PrismaPg(pool);
 
